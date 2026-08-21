@@ -105,16 +105,23 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 6px rgba(230, 120, 23, 0.25);
     }
-    .btn-secondary {
-      background-color: #1e293b;
+    .btn-word {
+      background-color: #2b579a;
       color: #ffffff;
       font-weight: 600;
       padding: 0.75rem 1.5rem;
       border-radius: 0.375rem;
-      transition: all 0.2s ease;
+      transition: all 0.2s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 2px 4px rgba(43, 87, 154, 0.2);
     }
-    .btn-secondary:hover {
-      background-color: #0f172a;
+    .btn-word:hover {
+      background-color: #1e3c6b;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(43, 87, 154, 0.3);
     }
     /* Toast animation */
     @keyframes slideIn {
@@ -174,7 +181,7 @@
           Registro Formativo de Investigaciones e Innovaciones
         </h1>
         <p class="text-slate-300 text-sm mt-1 max-w-3xl">
-          Formatos institucionales estandarizados para la sistematización de Experiencias Significativas y Registro de Innovaciones Educativas y Organizacionales.
+          Formatos institucionales estandarizados para la sistematización de Experiencias Significativas y Registro de Innovaciones Educativas. Exportación nativa a Word (.docx).
         </p>
       </div>
 
@@ -220,9 +227,14 @@
             <h2 class="text-xl font-bold text-brand-navy">1. Formato para la Sistematización de Experiencias Significativas</h2>
             <p class="text-xs text-slate-500">Modelo Pedagógico: Formación en Contextos de Aplicación - Corporación Escuela Tecnológica del Oriente</p>
           </div>
-          <span class="text-xs font-semibold bg-orange-50 text-brand-orange border border-brand-orange/20 px-3 py-1 rounded-md">
-            Anexo 1 Institucional
-          </span>
+          <div class="flex gap-2">
+            <button type="button" onclick="downloadExperienciaDocx()" class="btn-word text-xs py-1.5 px-3">
+              <i class="fa-solid fa-file-word"></i> Exportar a Word (.docx)
+            </button>
+            <span class="text-xs font-semibold bg-orange-50 text-brand-orange border border-brand-orange/20 px-3 py-1.5 rounded-md">
+              Anexo 1 Institucional
+            </span>
+          </div>
         </div>
 
         <!-- SECCIÓN 1.1: INFORMACIÓN GENERAL -->
@@ -460,10 +472,14 @@
             <i class="fa-solid fa-trash"></i> Limpiar Formulario
           </button>
 
-          <button type="submit" class="btn-primary">
-            <i class="fa-solid fa-paper-plane"></i>
-            Radicar Experiencia Significativa
-          </button>
+          <div class="flex gap-3">
+            <button type="button" onclick="downloadExperienciaDocx()" class="btn-word">
+              <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-paper-plane"></i> Radicar Experiencia Significativa
+            </button>
+          </div>
         </div>
 
       </form>
@@ -478,9 +494,14 @@
             <h2 class="text-xl font-bold text-brand-navy">2. Formato de Registro de Innovaciones Educativas y Organizacionales</h2>
             <p class="text-xs text-slate-500">Guía Orientadora para el Registro Institucional de Productos, Procesos y Gestión CTEI</p>
           </div>
-          <span class="text-xs font-semibold bg-amber-50 text-brand-amber border border-brand-amber/20 px-3 py-1 rounded-md">
-            Guía Orientadora de Innovaciones
-          </span>
+          <div class="flex gap-2">
+            <button type="button" onclick="downloadInnovacionDocx()" class="btn-word text-xs py-1.5 px-3">
+              <i class="fa-solid fa-file-word"></i> Exportar a Word (.docx)
+            </button>
+            <span class="text-xs font-semibold bg-amber-50 text-brand-amber border border-brand-amber/20 px-3 py-1.5 rounded-md">
+              Guía Orientadora de Innovaciones
+            </span>
+          </div>
         </div>
 
         <!-- SECCIÓN 2.1: INFORMACIÓN GENERAL -->
@@ -741,10 +762,14 @@
             <i class="fa-solid fa-trash"></i> Limpiar Formulario
           </button>
 
-          <button type="submit" class="btn-primary">
-            <i class="fa-solid fa-paper-plane"></i>
-            Radicar Innovación Educativa
-          </button>
+          <div class="flex gap-3">
+            <button type="button" onclick="downloadInnovacionDocx()" class="btn-word">
+              <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-paper-plane"></i> Radicar Innovación Educativa
+            </button>
+          </div>
         </div>
 
       </form>
@@ -803,12 +828,15 @@
         </div>
       </div>
 
-      <div class="flex gap-3">
-        <button onclick="closeReceiptModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-md text-xs transition">
+      <div class="flex flex-col sm:flex-row gap-2">
+        <button onclick="closeReceiptModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-md text-xs transition">
           Cerrar
         </button>
-        <button onclick="window.print()" class="btn-primary flex-1 py-2.5 text-xs">
-          <i class="fa-solid fa-print"></i> Imprimir Comprobante
+        <button id="modal-download-word-btn" class="btn-word py-2.5 px-4 text-xs flex-1">
+          <i class="fa-solid fa-file-word"></i> Descargar Formato Word (.docx)
+        </button>
+        <button onclick="window.print()" class="btn-primary py-2.5 px-4 text-xs">
+          <i class="fa-solid fa-print"></i> Imprimir
         </button>
       </div>
     </div>
@@ -855,7 +883,7 @@
   <!-- TOAST NOTIFICADOR -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 pointer-events-none"></div>
 
-  <!-- SCRIPT LOGIC DE LA SPA -->
+  <!-- SCRIPT LOGIC DE LA SPA Y CONVERTIDOR DE WORD (.DOCX) -->
   <script>
     // Variables de Estado Global
     let activeTab = 'experiencias';
@@ -1235,7 +1263,7 @@
         }
       }
 
-      showReceiptModal(radicado, 'Experiencia Significativa (Anexo 1)', payload.docentes_responsables);
+      showReceiptModal(radicado, 'Experiencia Significativa (Anexo 1)', payload.docentes_responsables, () => downloadExperienciaDocx(radicado));
     }
 
     async function handleInnovacionesSubmit(event) {
@@ -1288,15 +1316,246 @@
         }
       }
 
-      showReceiptModal(radicado, 'Registro de Innovaciones Educativas', payload.autor_principal_nombre);
+      showReceiptModal(radicado, 'Registro de Innovaciones Educativas', payload.autor_principal_nombre, () => downloadInnovacionDocx(radicado));
     }
 
-    // 6. MODAL Y NOTIFICACIONES TOAST
-    function showReceiptModal(radicado, tipo, autor) {
+    // 6. GENERADOR DE DOCUMENTOS MICROSOFT WORD (.DOCX / .DOC NATIVO)
+    function generateWordDocument(title, htmlContent, filename) {
+      const headerDoc = `
+        <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' 
+              xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' 
+              xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset='utf-8'>
+          <title>${title}</title>
+          <style>
+            body { font-family: 'Arial', sans-serif; font-size: 11pt; color: #1e293b; line-height: 1.4; }
+            h1 { font-size: 16pt; color: #1e293b; text-align: center; font-weight: bold; border-bottom: 2pt solid #e67817; padding-bottom: 5pt; }
+            h2 { font-size: 13pt; color: #e67817; margin-top: 15pt; font-weight: bold; border-bottom: 1pt solid #cbd5e1; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10pt; margin-bottom: 10pt; }
+            th, td { border: 1pt solid #cbd5e1; padding: 6pt; text-align: left; vertical-align: top; font-size: 10pt; }
+            th { background-color: #f8fafc; color: #1e293b; font-weight: bold; }
+            .header-table { border: none; margin-bottom: 20pt; }
+            .header-table td { border: none; }
+            .label-cell { font-weight: bold; background-color: #f1f5f9; width: 30%; }
+            .field-box { background-color: #fafafa; border-left: 3pt solid #e67817; padding: 8pt; margin-top: 4pt; margin-bottom: 8pt; }
+            .footer-note { font-size: 9pt; color: #64748b; text-align: center; margin-top: 30pt; }
+          </style>
+        </head>
+        <body>
+          <table class="header-table">
+            <tr>
+              <td style="width: 70%;">
+                <h3 style="color: #e67817; margin: 0;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h3>
+                <p style="margin: 2pt 0; font-size: 10pt; color: #64748b;">Sistema Institucional de Investigaciones, Innovación y Creación (SIAC)</p>
+              </td>
+              <td style="width: 30%; text-align: right; font-size: 9pt; color: #64748b;">
+                <strong>Fecha:</strong> ${new Date().toLocaleDateString('es-CO')}<br>
+                <strong>Vigilada Mineducación</strong>
+              </td>
+            </tr>
+          </table>
+          ${htmlContent}
+          <div class="footer-note">
+            Documento Oficial Generado por el Portal de Investigaciones e Innovaciones CTO
+          </div>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff' + headerDoc], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Documento Word (.docx) descargado exitosamente', 'success');
+    }
+
+    function downloadExperienciaDocx(radicadoOverride = null) {
+      const radicado = radicadoOverride || generateRadicado('EXP');
+      const nombre = document.getElementById('exp_nombre').value || 'Sin Título';
+      const programa = document.getElementById('exp_programa').value || 'N/A';
+      const espacio = document.getElementById('exp_espacio').value || 'N/A';
+      const nivel = document.getElementById('exp_nivel').value || 'N/A';
+      const fecha = document.getElementById('exp_fecha').value || 'N/A';
+      const periodo = document.getElementById('exp_periodo').value || 'N/A';
+      const docentes = document.getElementById('exp_docentes').value || 'N/A';
+      const cedula = document.getElementById('exp_cedula').value || 'N/A';
+      const correo = document.getElementById('exp_correo').value || 'N/A';
+      const estudiantes = document.getElementById('exp_estudiantes').value || '1';
+      const modalidad = document.getElementById('exp_modalidad').value || 'N/A';
+      const lugar = document.getElementById('exp_lugar').value || 'N/A';
+      const lineasProg = document.getElementById('exp_lineas_prog').value || 'N/A';
+      const lineasInst = document.getElementById('exp_lineas_inst').value || 'N/A';
+      const ascChecked = Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value).join(', ') || 'Ninguna';
+      const ascOtro = document.getElementById('exp_asc_otro').value || '';
+
+      const contexto = document.getElementById('exp_contexto').value || 'N/A';
+      const pregunta = document.getElementById('exp_pregunta').value || 'N/A';
+      const objetivo = document.getElementById('exp_objetivo').value || 'N/A';
+      const descripcion = document.getElementById('exp_descripcion').value || 'N/A';
+      const analisis = document.getElementById('exp_analisis').value || 'N/A';
+      const resultados = document.getElementById('exp_resultados').value || 'N/A';
+      const proyeccion = document.getElementById('exp_proyeccion').value || 'N/A';
+      const observaciones = document.getElementById('exp_observaciones').value || 'N/A';
+
+      const html = `
+        <h1>ANEXO 1. PLANTILLA PARA LA SISTEMATIZACIÓN DE EXPERIENCIAS SIGNIFICATIVAS</h1>
+        <p style="text-align: center; font-size: 10pt; color: #64748b;"><strong>Radicado No:</strong> ${radicado}</p>
+        
+        <h2>1. Información General de la Experiencia</h2>
+        <table>
+          <tr><td class="label-cell">Nombre Experiencia:</td><td><strong>${nombre}</strong></td></tr>
+          <tr><td class="label-cell">Programa Académico:</td><td>${programa}</td></tr>
+          <tr><td class="label-cell">Espacio / Asignatura:</td><td>${espacio}</td></tr>
+          <tr><td class="label-cell">Nivel de Formación:</td><td>${nivel}</td></tr>
+          <tr><td class="label-cell">Fecha y Periodo:</td><td>${fecha} (${periodo})</td></tr>
+          <tr><td class="label-cell">Docente(s) Responsable(s):</td><td>${docentes} (C.C. ${cedula})</td></tr>
+          <tr><td class="label-cell">Correo Institucional:</td><td>${correo}</td></tr>
+          <tr><td class="label-cell">Estudiantes / Modalidad:</td><td>${estudiantes} estudiantes (${modalidad})</td></tr>
+          <tr><td class="label-cell">Lugar o Contexto:</td><td>${lugar}</td></tr>
+          <tr><td class="label-cell">Líneas de Investigación:</td><td>Programa: ${lineasProg}<br>Institucional: ${lineasInst}</td></tr>
+          <tr><td class="label-cell">Apropiación Social (ASC):</td><td>${ascChecked} ${ascOtro ? '(' + ascOtro + ')' : ''}</td></tr>
+        </table>
+
+        <h2>2. Desarrollo de la Experiencia Significativa</h2>
+        <p><strong>2.1 Contexto de la Experiencia:</strong></p>
+        <div class="field-box">${contexto}</div>
+
+        <p><strong>2.2 Pregunta Problematizadora:</strong></p>
+        <div class="field-box">${pregunta}</div>
+
+        <p><strong>2.3 Objetivo de la Experiencia:</strong></p>
+        <div class="field-box">${objetivo}</div>
+
+        <p><strong>2.4 Descripción de la Experiencia:</strong></p>
+        <div class="field-box">${descripcion}</div>
+
+        <p><strong>2.5 Análisis y Reflexión Crítica:</strong></p>
+        <div class="field-box">${analisis}</div>
+
+        <p><strong>2.6 Resultados y Aportes:</strong></p>
+        <div class="field-box">${resultados}</div>
+
+        <p><strong>2.7 Proyección:</strong></p>
+        <div class="field-box">${proyeccion}</div>
+
+        <p><strong>Observaciones:</strong></p>
+        <div class="field-box">${observaciones}</div>
+      `;
+
+      generateWordDocument('Experiencia Significativa - CTO', html, `Experiencia_Significativa_${radicado}.doc`);
+    }
+
+    function downloadInnovacionDocx(radicadoOverride = null) {
+      const radicado = radicadoOverride || generateRadicado('INN');
+      const titulo = document.getElementById('inn_titulo').value || 'Sin Título';
+      const tipo = document.getElementById('inn_tipo').value || 'N/A';
+      const fecha = document.getElementById('inn_fecha').value || 'N/A';
+      const empresa = document.getElementById('inn_empresa').value || 'N/A';
+      const sector = document.getElementById('inn_sector').value || 'N/A';
+      const nit = document.getElementById('inn_nit').value || 'N/A';
+      const proyectoTitulo = document.getElementById('inn_proyecto_titulo').value || 'N/A';
+      const convocatoria = document.getElementById('inn_convocatoria').value || 'N/A';
+      const origenCtei = document.getElementById('inn_origen_ctei').value || 'N/A';
+      const nombreEstrategia = document.getElementById('inn_nombre_estrategia').value || 'N/A';
+      const financiadora = document.getElementById('inn_financiadora').value || 'N/A';
+      const disponibilidad = document.getElementById('inn_disponibilidad').value || 'N/A';
+      const proteccion = document.getElementById('inn_proteccion').value || 'N/A';
+
+      const autorNombre = document.getElementById('inn_autor_nombre').value || 'N/A';
+      const autorCedula = document.getElementById('inn_autor_cedula').value || 'N/A';
+      const autorCorreo = document.getElementById('inn_autor_correo').value || 'N/A';
+      const autorAfiliacion = document.getElementById('inn_autor_afiliacion').value || 'N/A';
+      const autorGrupo = document.getElementById('inn_autor_grupo').value || 'N/A';
+
+      const coautores = getCoautoresData();
+      let coautoresHtml = '<p>No se registraron coautores adicionales.</p>';
+      if (coautores.length > 0) {
+        coautoresHtml = `
+          <table>
+            <thead><tr><th>Nombre</th><th>Cédula</th><th>Correo</th><th>Afiliación</th></tr></thead>
+            <tbody>
+              ${coautores.map(c => `<tr><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.correo}</td><td>${c.afiliacion}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      const resumen = document.getElementById('inn_resumen').value || 'N/A';
+      const estadoPrevio = document.getElementById('inn_estado_previo').value || 'N/A';
+      const estadoPosterior = document.getElementById('inn_estado_posterior').value || 'N/A';
+      const novedadTipo = document.getElementById('inn_novedad_tipo').value || 'N/A';
+      const novedadExplicacion = document.getElementById('inn_novedad_explicacion').value || 'N/A';
+      const novedadAlcance = document.getElementById('inn_novedad_alcance').value || 'N/A';
+      const novedadAlcanceEvidencias = document.getElementById('inn_novedad_alcance_evidencias').value || 'N/A';
+      const impactosList = Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value).join(', ') || 'Ninguno';
+      const impactosExplicacion = document.getElementById('inn_impactos_explicacion').value || 'N/A';
+
+      const html = `
+        <h1>REGISTRO DE INNOVACIONES EDUCATIVAS Y ORGANIZACIONALES</h1>
+        <p style="text-align: center; font-size: 10pt; color: #64748b;"><strong>Radicado No:</strong> ${radicado}</p>
+        
+        <h2>1. Información General</h2>
+        <table>
+          <tr><td class="label-cell">Título de Innovación:</td><td><strong>${titulo}</strong></td></tr>
+          <tr><td class="label-cell">Tipo de Innovación:</td><td>${tipo}</td></tr>
+          <tr><td class="label-cell">Fecha de Creación:</td><td>${fecha}</td></tr>
+          <tr><td class="label-cell">Empresa / Sector:</td><td>${empresa} (NIT: ${nit}) - Sector: ${sector}</td></tr>
+          <tr><td class="label-cell">Proyecto Asociado:</td><td>${proyectoTitulo} (Convocatoria: ${convocatoria})</td></tr>
+          <tr><td class="label-cell">Estrategia CTEI:</td><td>${origenCtei} (${nombreEstrategia})</td></tr>
+          <tr><td class="label-cell">Financiadora / Protección:</td><td>${financiadora} - Protección: ${proteccion} (${disponibilidad})</td></tr>
+        </table>
+
+        <h2>2. Información sobre Autores</h2>
+        <p><strong>Autor Principal:</strong> ${autorNombre} | C.C. ${autorCedula} | ${autorCorreo} | ${autorAfiliacion} (${autorGrupo})</p>
+        <h3>Coautores:</h3>
+        ${coautoresHtml}
+
+        <h2>3. Detalles Técnicos e Impacto de la Innovación</h2>
+        <p><strong>Resumen de la Innovación (Máx 350 palabras):</strong></p>
+        <div class="field-box">${resumen}</div>
+
+        <p><strong>Descripción Previa (Estado del Arte / Problemática):</strong></p>
+        <div class="field-box">${estadoPrevio}</div>
+
+        <p><strong>Descripción Posterior (Resolución Problémica):</strong></p>
+        <div class="field-box">${estadoPosterior}</div>
+
+        <p><strong>Novedad y Alcance:</strong></p>
+        <div class="field-box">
+          <strong>Tipo:</strong> ${novedadTipo}<br>
+          <strong>Explicación:</strong> ${novedadExplicacion}<br><br>
+          <strong>Alcance Territorial:</strong> ${novedadAlcance}<br>
+          <strong>Evidencias Alcance:</strong> ${novedadAlcanceEvidencias}
+        </div>
+
+        <p><strong>Impactos Evidenciados en la Organización:</strong></p>
+        <div class="field-box">
+          <strong>Impactos Seleccionados:</strong> ${impactosList}<br><br>
+          <strong>Explicación con Evidencias Tangibles:</strong><br>${impactosExplicacion}
+        </div>
+      `;
+
+      generateWordDocument('Registro de Innovaciones - CTO', html, `Registro_Innovacion_${radicado}.doc`);
+    }
+
+    // 7. MODAL Y NOTIFICACIONES TOAST
+    function showReceiptModal(radicado, tipo, autor, downloadWordCallback) {
       document.getElementById('modal-radicado').innerText = radicado;
       document.getElementById('modal-tipo').innerText = tipo;
       document.getElementById('modal-autor').innerText = autor;
       document.getElementById('modal-fecha').innerText = new Date().toISOString().split('T')[0];
+      
+      const btn = document.getElementById('modal-download-word-btn');
+      if (downloadWordCallback) {
+        btn.onclick = downloadWordCallback;
+      }
+
       document.getElementById('receipt-modal').classList.remove('hidden');
     }
 
