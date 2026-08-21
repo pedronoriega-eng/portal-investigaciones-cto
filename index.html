@@ -81,22 +81,13 @@
           <span id="autosave-text">Borrador listo (Autoguardado 15s)</span>
         </div>
 
-        <button onclick="toggleConfigModal()" class="text-xs font-bold text-white bg-brand-orange hover:bg-brand-orangeHover px-4 py-2 rounded-md flex items-center gap-2 shadow-md transition transform hover:-translate-y-0.5">
-          <i class="fa-solid fa-plug"></i>
-          <span id="supabase-status-label">Conectar Supabase</span>
+        <button onclick="toggleConfigModal()" class="text-xs font-bold text-white bg-brand-orange hover:bg-brand-orangeHover px-3.5 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm transition">
+          <i class="fa-solid fa-database"></i>
+          <span id="supabase-status-label">Supabase Conectado ✅</span>
         </button>
       </div>
     </div>
   </header>
-
-  <!-- PROMINENT SUPABASE CONNECTION BANNER -->
-  <div id="supabase-alert-banner" class="bg-amber-500 text-slate-900 py-2.5 px-4 text-center text-xs font-bold flex items-center justify-center gap-2 shadow-inner">
-    <i class="fa-solid fa-circle-exclamation text-base"></i>
-    <span>¿Deseas conectar tu base de datos Supabase?</span>
-    <button onclick="toggleConfigModal()" class="underline bg-slate-900 text-white px-2.5 py-1 rounded hover:bg-slate-800 ml-2">
-      Ingresar URL y Key de Supabase aquí ⚙️
-    </button>
-  </div>
 
   <!-- BANNER CABECERA SISTEMA -->
   <div class="bg-brand-navy text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-brand-orange/30">
@@ -109,7 +100,7 @@
           Registro Formativo de Investigaciones e Innovaciones
         </h1>
         <p class="text-slate-300 text-sm mt-1 max-w-3xl">
-          Formatos institucionales estandarizados para la sistematización de Experiencias Significativas y Registro de Innovaciones Educativas. Exportación nativa a Word (.docx).
+          Formatos institucionales estandarizados para la sistematización de Experiencias Significativas y Registro de Innovaciones Educativas. Persistencia en Supabase y exportación a Word (.docx).
         </p>
       </div>
 
@@ -148,7 +139,6 @@
     <!-- FORMULARIO 1: EXPERIENCIAS SIGNIFICATIVAS -->
     <div id="tab-content-experiencias" class="bg-white rounded-b-xl border border-slate-200 p-6 md:p-8 shadow-sm">
       <form id="form-experiencias" onsubmit="handleExperienciasSubmit(event)">
-        
         <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
           <div>
             <h2 class="text-xl font-bold text-brand-navy">1. Formato para la Sistematización de Experiencias Significativas</h2>
@@ -164,7 +154,6 @@
           </div>
         </div>
 
-        <!-- SECCIÓN 1.1: INFORMACIÓN GENERAL -->
         <div class="mb-8">
           <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
             1.1 Información General de la Experiencia
@@ -285,7 +274,6 @@
           </div>
         </div>
 
-        <!-- SECCIÓN 1.2: DESARROLLO DE LA EXPERIENCIA -->
         <div class="mb-8">
           <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
             1.2 Desarrollo de la Experiencia Significativa
@@ -609,7 +597,7 @@
           <i class="fa-solid fa-circle-check"></i>
         </div>
         <h3 class="text-xl font-bold text-brand-navy">¡Radicación Exitosa!</h3>
-        <p class="text-xs text-slate-500 mt-1">El formulario se ha registrado en el sistema institucional.</p>
+        <p class="text-xs text-slate-500 mt-1">El formulario se ha registrado en la base de datos de Supabase.</p>
       </div>
       <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 my-4 text-xs space-y-2">
         <div class="flex justify-between border-b border-slate-200 pb-2">
@@ -643,7 +631,7 @@
     </div>
   </div>
 
-  <!-- MODAL: CONFIGURACIÓN SUPABASE -->
+  <!-- MODAL: CONFIGURACIÓN SUPABASE (OPCIONAL) -->
   <div id="config-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border-t-4 border-brand-navy">
       <div class="flex items-center justify-between mb-4">
@@ -656,17 +644,17 @@
       </div>
 
       <p class="text-xs text-slate-600 mb-4">
-        Ingrese las credenciales de su proyecto en Supabase para la persistencia en la nube.
+        Credenciales de Supabase pre-configuradas. Puede modificarlas si lo requiere.
       </p>
 
       <div class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">SUPABASE URL</label>
-          <input type="text" id="cfg-supabase-url" class="input-field text-xs" placeholder="https://joumcvebzatdgluvxgkm.supabase.co">
+          <input type="text" id="cfg-supabase-url" class="input-field text-xs" value="https://joumcvebzatdgluvxgkm.supabase.co">
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">SUPABASE ANON KEY</label>
-          <input type="password" id="cfg-supabase-key" class="input-field text-xs" placeholder="sb_publishable_... o eyJhbGci...">
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">SUPABASE PUBLISHABLE KEY</label>
+          <input type="password" id="cfg-supabase-key" class="input-field text-xs" value="sb_publishable_rVH67ltDqdWsbZ5hQ1pGrg_bXr9v0ZI">
         </div>
       </div>
 
@@ -688,6 +676,10 @@
     let supabaseClient = null;
     let coautoresCount = 0;
 
+    // CREDENCIALES PRE-CONFIGURADAS POR DEFECTO PARA CUALQUIER NAVEGADOR Y DISPOSITIVO
+    const DEFAULT_SUPABASE_URL = 'https://joumcvebzatdgluvxgkm.supabase.co';
+    const DEFAULT_SUPABASE_KEY = 'sb_publishable_rVH67ltDqdWsbZ5hQ1pGrg_bXr9v0ZI';
+
     const DRAFT_KEY = 'teo_portal_investigacion_draft';
     const CFG_KEY = 'teo_supabase_config';
 
@@ -700,20 +692,16 @@
 
     function initSupabase() {
       const cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
-      const url = cfg.url || '';
-      const key = cfg.key || '';
+      const url = cfg.url || DEFAULT_SUPABASE_URL;
+      const key = cfg.key || DEFAULT_SUPABASE_KEY;
 
       if (url && key && window.supabase) {
         try {
           supabaseClient = window.supabase.createClient(url, key);
           document.getElementById('supabase-status-label').innerText = 'Supabase Conectado ✅';
-          document.getElementById('supabase-alert-banner').classList.add('hidden');
         } catch (e) {
           console.warn('Error al iniciar Supabase client:', e);
         }
-      } else {
-        document.getElementById('supabase-status-label').innerText = 'Conectar Supabase ⚙️';
-        document.getElementById('supabase-alert-banner').classList.remove('hidden');
       }
     }
 
@@ -722,8 +710,8 @@
       modal.classList.toggle('hidden');
       if (!modal.classList.contains('hidden')) {
         const cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
-        document.getElementById('cfg-supabase-url').value = cfg.url || 'https://joumcvebzatdgluvxgkm.supabase.co';
-        document.getElementById('cfg-supabase-key').value = cfg.key || '';
+        document.getElementById('cfg-supabase-url').value = cfg.url || DEFAULT_SUPABASE_URL;
+        document.getElementById('cfg-supabase-key').value = cfg.key || DEFAULT_SUPABASE_KEY;
       }
     }
 
