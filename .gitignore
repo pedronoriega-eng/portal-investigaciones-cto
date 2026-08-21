@@ -1,0 +1,23 @@
+# Variables de entorno y credenciales
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Archivos de entorno Antigravity / IDE
+.gemini/
+.vscode/
+.idea/
+
+# Archivos de sistema y logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# Texto temporal extraído
+experiencias_text.txt
+innovaciones_text.txt

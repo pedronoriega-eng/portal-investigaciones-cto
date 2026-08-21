@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformación Integral - Escuela Tecnológica del Oriente</title>
+    <!-- Fuentes (Poppins para modernidad) e Iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* COLORES INSTITUCIONALES E.T.O. */
+            --eto-blue: #002E5D;       /* Azul oscuro institucional */
+            --eto-yellow: #FFC400;     /* Amarillo/Dorado institucional */
+            --eto-yellow-dark: #e6b000;
+            
+            /* Colores Funcionales */
+            --success: #28a745;        /* Verde para resultados curriculares */
+            --impact: #fd7e14;         /* Naranja para impacto social */
+            --bg-light: #f4f6f9;
+            --white: #ffffff;
+            --text-dark: #333;
+            
+            /* Gradientes basados en la marca */
+            --grad-blue: linear-gradient(135deg, #004080 0%, #002E5D 100%);
+            --grad-yellow: linear-gradient(135deg, #FFD54F 0%, #FFC400 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- LOGO INSTITUCIONAL --- */
+        .brand-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            width: 100%;
+            text-align: center;
+        }
+
+        .brand-logo {
+            height: 70px; /* Ajusta el tamaño del logo */
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            background: rgba(255,255,255,0.9);
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .slider-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            padding-top: 80px; /* Espacio para el logo */
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            max-width: 1000px;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+            z-index: 10;
+        }
+
+        /* --- TARJETA PRINCIPAL --- */
+        .card-main {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 46, 93, 0.15); /* Sombra azulada */
+            padding: 40px;
+            width: 100%;
+            position: relative;
+            /* Borde superior con los dos colores institucionales */
+            background-image: linear-gradient(to right, var(--eto-blue) 50%, var(--eto-yellow) 50%);
+            background-size: 100% 8px;
+            background-repeat: no-repeat;
+            background-position: top left;
+        }
+
+        .slide-header { text-align: center; margin-bottom: 30px; }
+        .slide-header h2 {
+            font-size: 2rem;
+            color: var(--eto-blue);
+            margin-bottom: 10px;
+        }
+        .slide-header p {
+            color: #555;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* =========================================
+           SLIDE 1: IMPACTO VISUAL (MARCA ETO)
+           ========================================= */
+        .impact-container {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .inputs-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .impact-card {
+            position: relative;
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            flex: 1;
+            text-align: center;
+            max-width: 320px;
+        }
+
+        .impact-card:hover { transform: translateY(-5px); }
+
+        /* INVESTIGACIÓN: AZUL */
+        .impact-card.research { 
+            background: var(--grad-blue); 
+            color: white;
+        }
+        
+        /* PROYECCIÓN SOCIAL: AMARILLO (Texto oscuro para contraste) */
+        .impact-card.projection { 
+            background: var(--grad-yellow); 
+            color: var(--eto-blue); 
+        }
+
+        .impact-card.result {
+            background: #2c2c2c; 
+            width: 100%; 
+            max-width: 500px;
+            border-bottom: 5px solid var(--eto-yellow); /* Detalle de marca */
+        }
+
+        .icon-bg {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 6rem;
+            opacity: 0.15;
+            transform: rotate(15deg);
+        }
+
+        .main-icon { font-size: 2.2rem; margin-bottom: 10px; display: block; }
+
+        .impact-card h3 { 
+            margin: 0; font-size: 1.2rem; font-weight: 800; 
+            text-transform: uppercase; letter-spacing: 0.5px; 
+        }
+
+        .impact-card span { font-size: 0.9rem; opacity: 0.95; font-weight: 500; }
+
+        .plus-sign { font-size: 2rem; color: #ccc; font-weight: 800; }
+
+        .flow-arrow {
+            text-align: center; color: var(--eto-blue); font-size: 0.8rem; font-weight: 700; letter-spacing: 1px;
+            display: flex; flex-direction: column; align-items: center;
+            animation: float 2s infinite ease-in-out;
+        }
+        .flow-arrow i { font-size: 1.5rem; color: var(--eto-yellow); margin-top: 5px; text-shadow: 0 0 2px rgba(0,0,0,0.2); }
+
+        .tags { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+        .tag { 
+            background: rgba(255,255,255,0.15); padding: 5px 12px; 
+            border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; 
+            color: white;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        /* =========================================
+           SLIDES 2 y 3 (Diagrama de Flujo)
+           ========================================= */
+        .flow-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        /* Cajas de Insumos (Azul claro con borde ETO) */
+        .box-input {
+            background: #eef4fb; /* Azul muy pálido */
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--eto-blue);
+        }
+
+        .arrow-center { font-size: 2rem; color: var(--eto-yellow); text-align: center; }
+
+        .box-output { padding: 25px; border-radius: 15px; color: var(--white); }
+        
+        .box-output.curricular { 
+            background: var(--success); 
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3); 
+        }
+        
+        .box-output.entorno { 
+            background: var(--impact); 
+            box-shadow: 0 8px 20px rgba(253, 126, 20, 0.3); 
+        }
+
+        .box-title {
+            display: flex; align-items: center; font-weight: 700; margin-bottom: 15px; font-size: 1.2rem;
+        }
+        .box-title i { margin-right: 10px; font-size: 1.4rem; }
+        .box-input .box-title { color: var(--eto-blue); }
+        
+        ul { list-style: none; }
+        ul li { margin-bottom: 10px; font-size: 0.95rem; display: flex; align-items: flex-start; }
+        .box-input ul li::before { content: "•"; color: var(--eto-yellow); font-weight: bold; margin-right: 8px; font-size: 1.5rem; line-height: 1rem;}
+        .box-output ul li::before { content: "✓"; margin-right: 8px; font-weight: bold; }
+
+        /* --- NAVEGACIÓN --- */
+        .nav-controls {
+            display: flex; justify-content: space-between; width: 100%; max-width: 1000px;
+            margin: 0 auto 30px; padding: 0 20px; z-index: 20;
+        }
+
+        .btn-nav {
+            background: var(--white); color: var(--eto-blue); border: 2px solid var(--eto-blue);
+            padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-nav:hover { background: var(--eto-blue); color: var(--white); border-color: var(--eto-blue); }
+
+        .progress-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .dot {
+            width: 12px; height: 12px; background: #ddd; border-radius: 50%; transition: all 0.3s;
+        }
+        .dot.active { background: var(--eto-blue); transform: scale(1.3); border: 2px solid var(--eto-yellow); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .brand-logo { height: 50px; }
+            .slider-container { padding-top: 70px; }
+            .inputs-row, .flow-container { flex-direction: column; grid-template-columns: 1fr; }
+            .plus-sign { transform: rotate(45deg); margin: -10px 0; }
+            .arrow-center { transform: rotate(90deg); margin: 10px 0; }
+            .card-main { padding: 20px; max-height: 75vh; overflow-y: auto; }
+            .slide-header h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGO (Header) -->
+    <div class="brand-header">
+        <!-- Se usa una URL genérica del logo de la institución. Si no carga, mostrará el texto alternativo -->
+        <img src="https://et.edu.co/wp-content/uploads/2021/08/Logo-ETO-WEB.png" alt="Logo Escuela Tecnológica del Oriente" class="brand-logo">
+    </div>
+
+    <!-- CONTENEDOR DE SLIDES -->
+    <div class="slider-container">
+
+        <!-- =========================
+             SLIDE 1: MODELO E.T.O. (Mejorado con colores)
+             ========================= -->
+        <div class="slide active" id="slide-1">
+            <div class="card-main">
+                <div class="slide-header">
+                    <h2 style="font-weight: 800; letter-spacing: -1px;">
+                        <i class="fas fa-network-wired"></i> Modelo de Transformación
+                    </h2>
+                    <p>
+                        Articulación estratégica de funciones sustantivas para la transformación institucional y regional.
+                    </p>
+                </div>
+                
+                <div class="impact-container">
+                    <!-- Insumos: Azul y Amarillo -->
+                    <div class="inputs-row">
+                        <!-- Tarjeta Investigación (AZUL) -->
+                        <div class="impact-card research">
+                            <div class="icon-bg"><i class="fas fa-microscope"></i></div>
+                            <div class="card-content">
+                                <i class="fas fa-atom main-icon"></i>
+                                <h3>Investigación</h3>
+                                <span>Generación de Conocimiento</span>
+                            </div>
+                        </div>
+
+                        <div class="plus-sign">+</div>
+
+                        <!-- Tarjeta Proyección (AMARILLO) -->
+                        <div class="impact-card projection">
+                            <div class="icon-bg"><i class="fas fa-sun"></i></div>
+                            <div class="card-content">
+                                <i class="fas fa-hands-helping main-icon"></i>
+                                <h3>Proyección Social</h3>
+                                <span>Impacto en el Entorno</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flecha central -->
+                    <div class="flow-arrow">
+                        <span>INSUMOS ESTRATÉGICOS</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+
+                    <!-- Resultado: Sólido -->
+                    <div class="impact-card result">
+                        <div class="card-content">
+                            <h3>TRANSFORMACIÓN INTEGRAL</h3>
+                            <div class="tags">
+                                <span class="tag"><i class="fas fa-book"></i> Curricular</span>
+                                <span class="tag"><i class="fas fa-city"></i> Regional</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================
+             SLIDE 2: TRANSFORMACIÓN CURRICULAR
+             ========================= -->
+        <div class="slide" id="slide-2">
+            <div class="card-main">
+                <div class="slide-header">
+                    <h2><i class="fas fa-book-reader"></i> Hacia adentro: Transformación Curricular</h2>
+                    <p>La investigación nutre nuestros programas académicos.</p>
+                </div>
+
+                <div class="flow-container">
+                    <div class="box-input">
+                        <div class="box-title"><i class="fas fa-search-plus"></i> Insumos</div>
+                        <ul>
+                            <li>Resultados de Investigación formativa.</li>
+                            <li>Experiencias de prácticas sociales.</li>
+                            <li>Análisis del sector productivo local.</li>
+                        </ul>
+                    </div>
+                    <div class="arrow-center"><i class="fas fa-arrow-right"></i></div>
+                    <div class="box-output curricular">
+                        <div class="box-title"><i class="fas fa-sync-alt"></i> Impacto Académico</div>
+                        <ul>
+                            <li>Planes de estudio pertinentes.</li>
+                            <li>Innovación pedagógica.</li>
+                            <li>Formación crítica en problemas reales.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================
+             SLIDE 3: TRANSFORMACIÓN DEL ENTORNO
+             ========================= -->
+        <div class="slide" id="slide-3">
+            <div class="card-main">
+                <div class="slide-header">
+                    <h2><i class="fas fa-globe-americas"></i> Hacia afuera: Transformación Regional</h2>
+                    <p>Nuestro compromiso con el desarrollo de Santander y el Oriente.</p>
+                </div>
+
+                <div class="flow-container">
+                    <div class="box-input">
+                        <div class="box-title"><i class="fas fa-hand-holding-heart"></i> Acciones</div>
+                        <ul>
+                            <li>Transferencia de conocimiento.</li>
+                            <li>Consultoría y Educación Continua.</li>
+                            <li>Proyectos de desarrollo comunitario.</li>
+                        </ul>
+                    </div>
+                    <div class="arrow-center"><i class="fas fa-arrow-right"></i></div>
+                    <div class="box-output entorno">
+                        <div class="box-title"><i class="fas fa-city"></i> Impacto Social</div>
+                        <ul>
+                            <li>Solución a problemáticas locales.</li>
+                            <li>Desarrollo económico y sostenible.</li>
+                            <li>Reconocimiento e impacto regional.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================
+             SLIDE 4: CONCLUSIÓN
+             ========================= -->
+        <div class="slide" id="slide-4">
+            <div class="card-main" style="text-align: center;">
+                <div class="slide-header">
+                    <h2><i class="fas fa-award"></i> Cultura de Calidad Institucional</h2>
+                </div>
+                <p style="font-size: 1.3rem; margin-bottom: 30px; line-height: 1.8;">
+                    El SIAC garantiza que la <strong>Investigación</strong> y la <strong>Proyección Social</strong> sean el motor de nuestra excelencia.
+                </p>
+                
+                <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <span class="tag" style="background: #eef4fb; color: var(--eto-blue); padding: 10px 20px; font-size: 1rem; border: 1px solid var(--eto-blue);"><i class="fas fa-check-circle"></i> Pertinencia</span>
+                    <span class="tag" style="background: #fff8e1; color: var(--eto-yellow-dark); padding: 10px 20px; font-size: 1rem; border: 1px solid var(--eto-yellow);"><i class="fas fa-eye"></i> Visibilidad</span>
+                </div>
+                
+                <button class="btn-nav" onclick="goToSlide(0)" style="margin-top: 40px; background: var(--eto-blue); color: white;">
+                    <i class="fas fa-redo"></i> Volver al Inicio
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Puntos de Progreso -->
+    <div class="progress-container">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot" onclick="goToSlide(1)"></div>
+        <div class="dot" onclick="goToSlide(2)"></div>
+        <div class="dot" onclick="goToSlide(3)"></div>
+    </div>
+
+    <!-- Botones de Navegación -->
+    <div class="nav-controls">
+        <button class="btn-nav" id="prevBtn" onclick="changeSlide(-1)"><i class="fas fa-arrow-left"></i> Anterior</button>
+        <button class="btn-nav" id="nextBtn" onclick="changeSlide(1)">Siguiente <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateView() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) slide.classList.add('active');
+            });
+            
+            dots.forEach((dot, index) => {
+                dot.classList.remove('active');
+                if (index === currentSlide) dot.classList.add('active');
+            });
+
+            prevBtn.style.opacity = currentSlide === 0 ? "0.5" : "1";
+            nextBtn.innerHTML = currentSlide === slides.length - 1 ? 'Finalizar <i class="fas fa-check"></i>' : 'Siguiente <i class="fas fa-arrow-right"></i>';
+        }
+
+        function changeSlide(dir) {
+            currentSlide += dir;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            updateView();
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            updateView();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") changeSlide(1);
+            if (e.key === "ArrowLeft") changeSlide(-1);
+        });
+    </script>
+</body>
+</html>

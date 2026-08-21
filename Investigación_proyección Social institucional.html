@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigación CETO - Marco Legal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ceto-orange: #F26522;
+            --ceto-green: #009640;
+            --ceto-white: #ffffff;
+            --text-dark: #2D3436;
+            --bg-gray: #F0F2F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Evita doble scrollbar */
+            background-color: var(--bg-gray);
+        }
+
+        /* --- LAYOUT PRINCIPAL (SPLIT SCREEN RÍGIDO) --- */
+        .main-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* --- PANEL IZQUIERDO (CONTENIDO) --- */
+        .text-panel {
+            flex: 0 0 60%; /* Ocupa SIEMPRE el 60% del ancho */
+            max-width: 60%;
+            height: 100%;
+            background: var(--ceto-white);
+            overflow-y: auto; /* Scroll vertical si el contenido es largo */
+            padding: 40px 50px 120px 50px; /* Padding inferior grande para botones */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PANEL DERECHO (IMAGEN) --- */
+        .image-panel {
+            flex: 0 0 40%; /* Ocupa SIEMPRE el 40% del ancho */
+            height: 100%;
+            background-color: #ddd; /* Color de fondo por si falla imagen */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border-left: 5px solid var(--ceto-green);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(0, 150, 64, 0.4), rgba(242, 101, 34, 0.4));
+        }
+
+        /* --- LOGO (BLOQUE ESTÁTICO) --- */
+        /* Al ser bloque estático, empuja el texto hacia abajo. Imposible superponerse. */
+        .logo-block {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-gray);
+        }
+
+        .logo-block img {
+            height: 70px; /* Altura fija para consistencia */
+            width: auto;
+            display: block;
+        }
+
+        /* --- TIPOGRAFÍA --- */
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: var(--ceto-orange);
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--ceto-green);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        /* --- COMPONENTES INTERACTIVOS --- */
+        
+        /* Acordeón */
+        .accordion {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .acc-item {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .acc-item:last-child { border-bottom: none; }
+        
+        .acc-header {
+            background: #f8f9fa;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--ceto-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .acc-header:hover { background: #eee; }
+        
+        .acc-content {
+            display: none; /* Oculto por defecto */
+            padding: 20px;
+            background: #fff;
+            border-top: 2px solid var(--ceto-orange);
+        }
+        .acc-item.active .acc-content { display: block; }
+        .acc-item.active .acc-header { background: var(--ceto-orange); color: white; }
+
+        /* Tarjetas */
+        .card-container {
+            display: grid;
+            gap: 15px;
+        }
+        .card {
+            background: white;
+            border-left: 5px solid var(--ceto-green);
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 0 8px 8px 0;
+        }
+        .card h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--ceto-orange);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        /* Banner de Reinicio */
+        .restart-box {
+            background: white;
+            border: 2px dashed var(--ceto-green);
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .restart-box:hover { transform: scale(1.02); background: #f0fff4; }
+        
+        .restart-btn {
+            background: var(--ceto-orange);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        /* --- CONTROLES DE NAVEGACIÓN (FIJOS) --- */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 40px; /* En el lado derecho, sobre la imagen */
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        /* Ajuste para pantallas pequeñas: Botones pasan a la izquierda si es necesario */
+        @media (max-width: 900px) {
+            .controls { right: 20px; }
+        }
+
+        .btn {
+            background: var(--ceto-white);
+            color: var(--text-dark);
+            border: 2px solid var(--ceto-green);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: var(--ceto-green);
+            color: white;
+        }
+
+        /* Barra de progreso */
+        .progress-track {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 8px;
+            background: #ddd; z-index: 1001;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ceto-orange), var(--ceto-green));
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Animación de entrada */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- BARRA DE PROGRESO -->
+    <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="main-container">
+        
+        <!-- PANEL DE TEXTO (IZQUIERDA) -->
+        <div class="text-panel" id="textPanel">
+            
+            <!-- LOGO: Bloque Físico (No Flotante) -->
+            <div class="logo-block">
+                <!-- Intento cargar imagen local -->
+                <img src="C:\Users\Estudiante 08\Documents\Pedro_Noriega\Acreditación_Alta Calidad\Investigación_Proyección Social\logo_teo.png" 
+                     alt="Logo CETO" 
+                     onerror="this.parentElement.innerHTML='<h2 style=\'color:#009640; margin:0;\'>TECNOLÓGICA DEL ORIENTE</h2><small>Institución de Educación Superior</small>';">
+            </div>
+
+            <!-- Aquí se inyecta el contenido dinámicamente -->
+            <div id="contentContainer" class="fade-in">
+                <!-- Contenido JS -->
+            </div>
+
+        </div>
+
+        <!-- PANEL DE IMAGEN (DERECHA) -->
+        <div class="image-panel" id="imagePanel">
+            <div class="image-overlay"></div>
+        </div>
+
+    </div>
+
+    <!-- BOTONES DE NAVEGACIÓN -->
+    <div class="controls">
+        <button class="btn" onclick="prevSlide()">&#8592; Anterior</button>
+        <button class="btn" onclick="nextSlide()">Siguiente &#8594;</button>
+    </div>
+
+    <script>
+        // --- BASE DE DATOS DE SLIDES ---
+        const slides = [
+            {
+                // SLIDE 1: PORTADA
+                title: "Investigación y Proyección Social",
+                subtitle: "Requisitos Normativos y Calidad",
+                content: `
+                    <p>Bienvenido a la presentación interactiva diseñada para la <strong>Corporación Escuela Tecnológica del Oriente</strong>.</p>
+                    <p>Analizaremos cómo dar cumplimiento estricto y estratégico a:</p>
+                    <ul style="margin-top:20px;">
+                        <li><strong style="color:var(--ceto-orange)">Decreto 1330 de 2019:</strong> Registro Calificado (Condiciones de base).</li>
+                        <li><strong style="color:var(--ceto-green)">Acuerdo CESU 01 de 2025:</strong> Nuevo modelo de Acreditación.</li>
+                        <li><strong>Lineamientos SIAC:</strong> Gestión y aseguramiento de la calidad.</li>
+                    </ul>
+                    <div style="background:#e8f5e9; border-left:4px solid var(--ceto-green); padding:15px; margin-top:20px;">
+                        <strong>Objetivo:</strong> Alinear los procesos institucionales con las nuevas exigencias de impacto territorial y resultados de aprendizaje.
+                    </div>
+                `,
+                image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            },
+            {
+                // SLIDE 2: DECRETO 1330
+                title: "Decreto 1330 de 2019",
+                subtitle: "Condiciones Habilitantes",
+                content: `
+                    <p>El Decreto establece los mínimos obligatorios para operar. Para una Institución Tecnológica, el enfoque es aplicado.</p>
+                    <div class="accordion">
+                        <!-- Art 1 -->
+                        <div class="acc-item" onclick="toggleAcc(this)">
+                            <div class="acc-header">Art. 2.5.3.2.3.2.6 Investigación <span style="font-size:1.5rem">+</span></div>
+                            <div class="acc-content">
+                                <p><strong>Exigencia:</strong> Formación en investigación para desarrollar pensamiento crítico.</p>
+                                <ul>
+                                    <li>Uso de TIC en investigación.</li>
+                                    <li>Productos tangibles de profesores.</li>
+                                    <li><strong>Clave CETO:</strong> Investigación aplicada que resuelva problemas reales del sector productivo.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Art 2 -->
+                        <div class="acc-item" onclick="toggleAcc(this)">
+                            <div class="acc-header">Art. 2.5.3.2.3.2.7 Sector Externo <span style="font-size:1.5rem">+</span></div>
+                            <div class="acc-content">
+                                <p><strong>Exigencia:</strong> Vinculación real con el entorno.</p>
+                                <ul>
+                                    <li>Articulación del currículo con necesidades sociales.</li>
+                                    <li>Trabajo con comunidades y gremios.</li>
+                                    <li>Evidencias de impacto en la región.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            },
+            {
+                // SLIDE 3: ACUERDO 01 2025 - INV
+                title: "Acuerdo 01 de 2025: Investigación",
+                subtitle: "Factor 6: Aportes e Innovación",
+                content: `
+                    <p>Para la Alta Calidad, no basta con "intentar", se debe "demostrar". Características completas:</p>
+                    <div class="card-container">
+                        <div class="card">
+                            <h3>Caract. 21: Procesos</h3>
+                            <p>Políticas claras, semilleros activos y fomento explícito a la actividad investigativa de docentes y estudiantes.</p>
+                        </div>
+                        <div class="card">
+                            <h3>Caract. 22: Logros e Impactos</h3>
+                            <p>Evidencia de productos: Tecnología, obras artísticas o soluciones sociales. Se mide la <strong>calidad</strong> y la relevancia.</p>
+                        </div>
+                        <div class="card">
+                            <h3>Caract. 23: Visibilidad</h3>
+                            <p>Participación en redes (RedCOLSI, MinCiencias). Los productos deben circular nacional e internacionalmente.</p>
+                        </div>
+                    </div>
+                `,
+                image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            },
+            {
+                // SLIDE 4: ACUERDO 01 2025 - PROY
+                title: "Acuerdo 01 de 2025: Proyección",
+                subtitle: "Factor 7: Interacción con el Entorno",
+                content: `
+                    <p>Este es el factor diferenciador para la Tecnológica del Oriente: El Territorio.</p>
+                    <div class="accordion">
+                        <div class="acc-item" onclick="toggleAcc(this)">
+                            <div class="acc-header">Caract. 24: Contribuciones <span style="font-size:1.5rem">+</span></div>
+                            <div class="acc-content">
+                                <p>La institución identifica problemas colectivos/ambientales de Colombia y participa en su solución (Políticas públicas, ODS).</p>
+                            </div>
+                        </div>
+                        <div class="acc-item" onclick="toggleAcc(this)">
+                            <div class="acc-header">Caract. 25: Contextos <span style="font-size:1.5rem">+</span></div>
+                            <div class="acc-content">
+                                <p>El programa demuestra que entiende las dinámicas de Santander y adapta su currículo a esa realidad cultural y económica.</p>
+                            </div>
+                        </div>
+                        <div class="acc-item" onclick="toggleAcc(this)">
+                            <div class="acc-header">Caract. 26: Interacción <span style="font-size:1.5rem">+</span></div>
+                            <div class="acc-content">
+                                <p>Relación sistemática con graduados y sector externo. Capacidad de respuesta ágil ante cambios del mercado laboral.</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            },
+            {
+                // SLIDE 5: 3 SUGERENCIAS
+                title: "3 Sugerencias de Cumplimiento",
+                subtitle: "Estrategia Práctica para CETO",
+                content: `
+                    <p>Para cumplir los 3 referentes normativos simultáneamente:</p>
+                    
+                    <div class="card" style="border-left-color: var(--ceto-orange); margin-bottom:10px;">
+                        <h3>1. Aprendizaje Basado en Retos (ABR)</h3>
+                        <p>Integre en el currículo problemas reales de empresas de Bucaramanga. Los estudiantes investigan para resolverlos. <br><em>Cumple: Art. 2.5.3.2.3.2.6 (1330) y Caract. 21 (01/2025).</em></p>
+                    </div>
+
+                    <div class="card" style="border-left-color: var(--ceto-green); margin-bottom:10px;">
+                        <h3>2. SIAC con Indicadores de Impacto</h3>
+                        <p>No mida solo "número de convenios". Mida "empleos generados" o "procesos mejorados" en las empresas aliadas.<br><em>Cumple: Caract. 22 y 24.</em></p>
+                    </div>
+
+                    <div class="card" style="border-left-color: #333; margin-bottom:10px;">
+                        <h3>3. Repositorio Digital Abierto</h3>
+                        <p>Visibilice todos los productos tecnológicos y artísticos en la web. La visibilidad es obligatoria para la acreditación.<br><em>Cumple: Caract. 23.</em></p>
+                    </div>
+                `,
+                image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            },
+            {
+                // SLIDE 6: FINALIZACIÓN
+                title: "¡Muchas Gracias!",
+                subtitle: "Hacia la Acreditación",
+                content: `
+                    <p style="text-align:center; margin-top:20px;">
+                        Hemos completado el recorrido normativo. La <strong>Corporación Escuela Tecnológica del Oriente</strong> cuenta con las bases para fortalecer su investigación y proyección social.
+                    </p>
+                    
+                    <div class="restart-box" onclick="resetSlides()">
+                        <h3 style="color:var(--ceto-orange); margin:0;">¿Repasar presentación?</h3>
+                        <p>Clic aquí para volver al inicio</p>
+                        <button class="restart-btn">&#8634; REINICIAR</button>
+                    </div>
+                `,
+                image: "https://images.unsplash.com/photo-1523287562758-66c7fc58967f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            }
+        ];
+
+        // --- LÓGICA JAVASCRIPT ---
+        let currentIndex = 0;
+        const textPanel = document.getElementById('textPanel');
+        const contentContainer = document.getElementById('contentContainer');
+        const imagePanel = document.getElementById('imagePanel');
+        const progressBar = document.getElementById('progressBar');
+
+        function loadSlide(index) {
+            const data = slides[index];
+            
+            // 1. Efecto fade out texto
+            contentContainer.style.opacity = 0;
+            
+            setTimeout(() => {
+                // 2. Cambiar contenido
+                contentContainer.innerHTML = `
+                    <h1>${data.title}</h1>
+                    <h2>${data.subtitle}</h2>
+                    ${data.content}
+                `;
+                // 3. Efecto fade in texto
+                contentContainer.style.opacity = 1;
+                // 4. Scroll al top del texto (importante)
+                textPanel.scrollTop = 0;
+            }, 200);
+
+            // 5. Cambiar Imagen
+            imagePanel.style.backgroundImage = `url('${data.image}')`;
+
+            // 6. Actualizar barra de progreso
+            const percent = ((index + 1) / slides.length) * 100;
+            progressBar.style.width = `${percent}%`;
+        }
+
+        function nextSlide() {
+            if (currentIndex < slides.length - 1) {
+                currentIndex++;
+                loadSlide(currentIndex);
+            }
+        }
+
+        function prevSlide() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadSlide(currentIndex);
+            }
+        }
+
+        function resetSlides() {
+            currentIndex = 0;
+            loadSlide(0);
+        }
+
+        function toggleAcc(el) {
+            // Cerrar hermanos
+            const siblings = el.parentElement.querySelectorAll('.acc-item');
+            siblings.forEach(sib => {
+                if (sib !== el) sib.classList.remove('active');
+            });
+            // Alternar actual
+            el.classList.toggle('active');
+        }
+
+        // Navegación Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Iniciar
+        loadSlide(0);
+
+    </script>
+</body>
+</html>
