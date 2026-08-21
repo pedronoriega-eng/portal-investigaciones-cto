@@ -6,35 +6,27 @@
   <title>Portal de Investigaciones e Innovaciones - Tecnológica del Oriente</title>
   <meta name="description" content="Sistema Institucional de Captura de Información Científica, Experiencias Significativas e Innovaciones Educativas.">
   
-  <!-- Favicon / Institutional Meta -->
   <link rel="canonical" href="https://www.tecnologicadeloriente.edu.co/investigacion/">
-  
-  <!-- Fonts: Inter & Plus Jakarta Sans (Official institutional fonts) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Custom Tailwind Config for Official Institutional Brand Tokens -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             brand: {
-              orange: '#e67817',      /* Color oficial primary orange */
-              orangeHover: '#d1670f', /* Hover state */
-              orangeLight: '#fef3e7', /* Tint bg */
-              amber: '#eb9705',       /* Accent amber */
-              navy: '#1e293b',        /* Slate dark text/headings */
-              dark: '#1A1A1B',        /* Dark carbón */
-              slate: '#67768e',      /* Muted secondary text */
-              bgLight: '#f8fafc'     /* Institutional light background */
+              orange: '#e67817',
+              orangeHover: '#d1670f',
+              orangeLight: '#fef3e7',
+              amber: '#eb9705',
+              navy: '#1e293b',
+              dark: '#1A1A1B',
+              slate: '#67768e',
+              bgLight: '#f8fafc'
             }
           },
           fontFamily: {
@@ -46,91 +38,22 @@
     }
   </script>
   
-  <!-- Supabase JS Client CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
-      color: #1e293b;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .active-tab {
-      border-bottom: 3px solid #e67817;
-      color: #e67817;
-      font-weight: 700;
-      background-color: #ffffff;
-    }
-    .inactive-tab {
-      border-bottom: 3px solid transparent;
-      color: #67768e;
-      font-weight: 500;
-    }
-    .inactive-tab:hover {
-      color: #1e293b;
-      background-color: #f1f5f9;
-    }
-    .input-field {
-      width: 100%;
-      padding: 0.625rem 0.875rem;
-      border: 1px solid #cbd5e1;
-      border-radius: 0.375rem;
-      font-size: 0.9375rem;
-      transition: all 0.2s ease-in-out;
-      background-color: #ffffff;
-    }
-    .input-field:focus {
-      outline: none;
-      border-color: #e67817;
-      box-shadow: 0 0 0 3px rgba(230, 120, 23, 0.15);
-    }
-    .btn-primary {
-      background-color: #e67817;
-      color: #ffffff;
-      font-weight: 600;
-      padding: 0.75rem 1.75rem;
-      border-radius: 0.375rem;
-      transition: all 0.2s ease-in-out;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      box-shadow: 0 2px 4px rgba(230, 120, 23, 0.2);
-    }
-    .btn-primary:hover {
-      background-color: #d1670f;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(230, 120, 23, 0.25);
-    }
-    .btn-word {
-      background-color: #2b579a;
-      color: #ffffff;
-      font-weight: 600;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.375rem;
-      transition: all 0.2s ease-in-out;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      box-shadow: 0 2px 4px rgba(43, 87, 154, 0.2);
-    }
-    .btn-word:hover {
-      background-color: #1e3c6b;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 6px rgba(43, 87, 154, 0.3);
-    }
-    /* Toast animation */
-    @keyframes slideIn {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .toast-anim {
-      animation: slideIn 0.3s forwards ease-out;
-    }
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .active-tab { border-bottom: 3px solid #e67817; color: #e67817; font-weight: 700; background-color: #ffffff; }
+    .inactive-tab { border-bottom: 3px solid transparent; color: #67768e; font-weight: 500; }
+    .inactive-tab:hover { color: #1e293b; background-color: #f1f5f9; }
+    .input-field { width: 100%; padding: 0.625rem 0.875rem; border: 1px solid #cbd5e1; border-radius: 0.375rem; font-size: 0.9375rem; transition: all 0.2s ease-in-out; background-color: #ffffff; }
+    .input-field:focus { outline: none; border-color: #e67817; box-shadow: 0 0 0 3px rgba(230, 120, 23, 0.15); }
+    .btn-primary { background-color: #e67817; color: #ffffff; font-weight: 600; padding: 0.75rem 1.75rem; border-radius: 0.375rem; transition: all 0.2s ease-in-out; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 2px 4px rgba(230, 120, 23, 0.2); }
+    .btn-primary:hover { background-color: #d1670f; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(230, 120, 23, 0.25); }
+    .btn-word { background-color: #2b579a; color: #ffffff; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.375rem; transition: all 0.2s ease-in-out; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 2px 4px rgba(43, 87, 154, 0.2); }
+    .btn-word:hover { background-color: #1e3c6b; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(43, 87, 154, 0.3); }
+    @keyframes slideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .toast-anim { animation: slideIn 0.3s forwards ease-out; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased bg-slate-50">
@@ -138,7 +61,6 @@
   <!-- TOP HEADER INSTITUCIONAL -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <!-- LOGO TECNOLÓGICA DEL ORIENTE -->
       <div class="flex items-center space-x-4">
         <a href="https://www.tecnologicadeloriente.edu.co/investigacion/" target="_blank" class="flex items-center">
           <img src="https://tecnologicadeloriente.edu.co/wp-content/uploads/2024/09/LOGO-ILLUSTRATOR-01.png" 
@@ -153,22 +75,28 @@
         </div>
       </div>
 
-      <!-- STATUS BAR & QUICK ACTIONS -->
       <div class="flex items-center space-x-3">
-        <!-- Live Autosave Status -->
         <div id="autosave-badge" class="flex items-center text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
           <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
           <span id="autosave-text">Borrador listo (Autoguardado 15s)</span>
         </div>
 
-        <!-- Supabase Status Trigger Button -->
-        <button onclick="toggleConfigModal()" class="text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-md flex items-center gap-1.5 transition">
-          <i class="fa-solid fa-database text-brand-orange"></i>
-          <span id="supabase-status-label">Modo Demo / Failsafe</span>
+        <button onclick="toggleConfigModal()" class="text-xs font-bold text-white bg-brand-orange hover:bg-brand-orangeHover px-4 py-2 rounded-md flex items-center gap-2 shadow-md transition transform hover:-translate-y-0.5">
+          <i class="fa-solid fa-plug"></i>
+          <span id="supabase-status-label">Conectar Supabase</span>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- PROMINENT SUPABASE CONNECTION BANNER -->
+  <div id="supabase-alert-banner" class="bg-amber-500 text-slate-900 py-2.5 px-4 text-center text-xs font-bold flex items-center justify-center gap-2 shadow-inner">
+    <i class="fa-solid fa-circle-exclamation text-base"></i>
+    <span>¿Deseas conectar tu base de datos Supabase?</span>
+    <button onclick="toggleConfigModal()" class="underline bg-slate-900 text-white px-2.5 py-1 rounded hover:bg-slate-800 ml-2">
+      Ingresar URL y Key de Supabase aquí ⚙️
+    </button>
+  </div>
 
   <!-- BANNER CABECERA SISTEMA -->
   <div class="bg-brand-navy text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-brand-orange/30">
@@ -185,7 +113,6 @@
         </p>
       </div>
 
-      <!-- Progreso General -->
       <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 w-full md:w-64">
         <div class="flex justify-between text-xs font-semibold mb-1">
           <span class="text-slate-300">Progreso del Formulario</span>
@@ -244,25 +171,18 @@
           </h3>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <!-- Nombre de la Experiencia -->
             <div class="md:col-span-2">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de la Experiencia Significativa *</label>
               <input type="text" id="exp_nombre" required class="input-field" placeholder="Ej: Implementación de laboratorio de realidad virtual en biología">
             </div>
-
-            <!-- Programa Académico -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Programa Académico *</label>
               <input type="text" id="exp_programa" required class="input-field" placeholder="Ej: Ingeniería de Sistemas">
             </div>
-
-            <!-- Espacio Académico -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Espacio Académico / Asignatura *</label>
               <input type="text" id="exp_espacio" required class="input-field" placeholder="Ej: Proyecto Integrador II">
             </div>
-
-            <!-- Nivel de Formación -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nivel de Formación *</label>
               <select id="exp_nivel" required class="input-field">
@@ -273,44 +193,30 @@
                 <option value="Especialización">Especialización</option>
               </select>
             </div>
-
-            <!-- Fecha de Presentación -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha de Presentación *</label>
               <input type="date" id="exp_fecha" required class="input-field">
             </div>
-
-            <!-- Periodo Académico -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Periodo Académico *</label>
               <input type="text" id="exp_periodo" required class="input-field" placeholder="Ej: 2026-1">
             </div>
-
-            <!-- Docente(s) Responsable(s) -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Docente(s) Responsables *</label>
               <input type="text" id="exp_docentes" required class="input-field" placeholder="Nombres y apellidos del docente">
             </div>
-
-            <!-- Cédula Docente -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Documento / Cédula Docente *</label>
               <input type="text" id="exp_cedula" required class="input-field" placeholder="C.C. No.">
             </div>
-
-            <!-- Correo Institucional -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico Institucional *</label>
               <input type="email" id="exp_correo" required class="input-field" placeholder="docente@tecnologicadeloriente.edu.co">
             </div>
-
-            <!-- Número de Estudiantes -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">No. Estudiantes Participantes *</label>
               <input type="number" id="exp_estudiantes" min="1" required class="input-field" placeholder="Ej: 25">
             </div>
-
-            <!-- Modalidad -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Modalidad *</label>
               <select id="exp_modalidad" required class="input-field">
@@ -321,26 +227,19 @@
                 <option value="Dual">Dual</option>
               </select>
             </div>
-
-            <!-- Lugar o Contexto -->
             <div class="md:col-span-2">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Lugar o Contexto de Desarrollo *</label>
               <input type="text" id="exp_lugar" required class="input-field" placeholder="Ej: Aula Laboratorio 3B / Empresa Aliada SAS">
             </div>
-
-            <!-- Línea de Investigación Programa -->
             <div class="md:col-span-3">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Línea(s) de Investigación del Programa</label>
               <input type="text" id="exp_lineas_prog" class="input-field" placeholder="Líneas específicas declaradas en el programa">
             </div>
-
-            <!-- Línea Institucional -->
             <div class="md:col-span-3">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Línea(s) Institucional(es) de Investigación Relacionada(s)</label>
               <input type="text" id="exp_lineas_inst" class="input-field" placeholder="Línea institucional CTO">
             </div>
 
-            <!-- Apropiación Social del Conocimiento (ASC) Checkboxes -->
             <div class="md:col-span-3 bg-slate-50 p-4 rounded-md border border-slate-200">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-2">
                 Apropiación Social del Conocimiento (ASC) - Espacio / Evento de Divulgación *
@@ -393,85 +292,52 @@
           </h3>
 
           <div class="space-y-5">
-            <!-- 2.1 Contexto -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                2.1 Contexto de la Experiencia *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.1 Contexto de la Experiencia *</label>
               <p class="text-xs text-slate-500 mb-1.5">¿Dónde se desarrolló?, ¿con quién (empresa, población, comunidad)?, condiciones del contexto y ¿por qué se realizó en esta población?</p>
               <textarea id="exp_contexto" rows="3" required class="input-field" placeholder="Describa el contexto detalladamente..."></textarea>
             </div>
-
-            <!-- 2.2 Pregunta Problematizadora -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                2.2 Pregunta Problematizadora *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.2 Pregunta Problematizadora *</label>
               <p class="text-xs text-slate-500 mb-1.5">Formule la pregunta que orienta la reflexión y resultados (Ej: ¿Cómo aporta esta experiencia a la solución de un problema real?)</p>
               <textarea id="exp_pregunta" rows="2" required class="input-field" placeholder="Formule la pregunta orientadora..."></textarea>
             </div>
-
-            <!-- 2.3 Objetivo -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                2.3 Objetivo de la Experiencia Significativa *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.3 Objetivo de la Experiencia Significativa *</label>
               <p class="text-xs text-slate-500 mb-1.5">Indique el objetivo principal (Ej: Analizar los aprendizajes derivados de..., identificar aportes de...)</p>
               <textarea id="exp_objetivo" rows="2" required class="input-field" placeholder="Objetivo general de la experiencia..."></textarea>
             </div>
-
-            <!-- 2.4 Descripción -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                2.4 Descripción de la Experiencia *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.4 Descripción de la Experiencia *</label>
               <p class="text-xs text-slate-500 mb-1.5">Describa actividades realizadas, metodología utilizada y actores involucrados.</p>
               <textarea id="exp_descripcion" rows="4" required class="input-field" placeholder="Detalle paso a paso el desarrollo de la experiencia..."></textarea>
             </div>
-
-            <!-- 2.5 Análisis y Reflexión Crítica -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                2.5 Análisis y Reflexión Crítica *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.5 Análisis y Reflexión Crítica *</label>
               <p class="text-xs text-slate-500 mb-1.5">Responda: ¿Qué funcionó bien?, ¿qué dificultades se presentaron? y ¿qué aprendizajes se generaron?</p>
               <textarea id="exp_analisis" rows="4" required class="input-field" placeholder="Análisis reflexivo sobre los logros y dificultades..."></textarea>
             </div>
-
-            <!-- 2.6 Resultados y Aportes -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                2.6 Resultados y Aportes *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.6 Resultados y Aportes *</label>
               <p class="text-xs text-slate-500 mb-1.5">Describa aportes en al menos 2 ámbitos (Educativos, sociales, organizacionales, tecnológicos o investigativos).</p>
               <textarea id="exp_resultados" rows="3" required class="input-field" placeholder="Describa los resultados tangibles u obtenidos..."></textarea>
             </div>
-
-            <!-- 2.7 Proyección -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                2.7 Proyección *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.7 Proyección *</label>
               <p class="text-xs text-slate-500 mb-1.5">Indique brevemente cómo esta experiencia puede replicarse en otro escenario y mejorarse.</p>
               <textarea id="exp_proyeccion" rows="2" required class="input-field" placeholder="Plan de replicabilidad y mejora continua..."></textarea>
             </div>
-
-            <!-- Observaciones -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Observaciones Adicionales
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Observaciones Adicionales</label>
               <textarea id="exp_observaciones" rows="2" class="input-field" placeholder="Observaciones complementarias si aplica..."></textarea>
             </div>
           </div>
         </div>
 
-        <!-- BOTONES DE ACCIÓN -->
         <div class="flex items-center justify-between border-t border-slate-200 pt-6">
           <button type="button" onclick="clearCurrentForm('experiencias')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
             <i class="fa-solid fa-trash"></i> Limpiar Formulario
           </button>
-
           <div class="flex gap-3">
             <button type="button" onclick="downloadExperienciaDocx()" class="btn-word">
               <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
@@ -481,14 +347,12 @@
             </button>
           </div>
         </div>
-
       </form>
     </div>
 
     <!-- FORMULARIO 2: INNOVACIONES EDUCATIVAS -->
     <div id="tab-content-innovaciones" class="bg-white rounded-b-xl border border-slate-200 p-6 md:p-8 shadow-sm hidden">
       <form id="form-innovaciones" onsubmit="handleInnovacionesSubmit(event)">
-        
         <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
           <div>
             <h2 class="text-xl font-bold text-brand-navy">2. Formato de Registro de Innovaciones Educativas y Organizacionales</h2>
@@ -504,20 +368,15 @@
           </div>
         </div>
 
-        <!-- SECCIÓN 2.1: INFORMACIÓN GENERAL -->
         <div class="mb-8">
           <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
             2.1 Información General de la Innovación
           </h3>
-
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <!-- Título de la Innovación -->
             <div class="md:col-span-3">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título de la Innovación *</label>
               <input type="text" id="inn_titulo" required class="input-field" placeholder="Conciso, claro, original e informativo">
             </div>
-
-            <!-- Tipo de Innovación -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipo de Innovación *</label>
               <select id="inn_tipo" required class="input-field">
@@ -528,44 +387,30 @@
                 <option value="En métodos de comercialización de la empresa">En métodos de comercialización de la empresa</option>
               </select>
             </div>
-
-            <!-- Fecha de Creación -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha de Creación *</label>
               <input type="date" id="inn_fecha" required class="input-field">
             </div>
-
-            <!-- Nombre de la Empresa -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de la Empresa / Entidad *</label>
               <input type="text" id="inn_empresa" required class="input-field" placeholder="Ej: Construcar LRC SAS / Corporación CTO">
             </div>
-
-            <!-- Sector de la Empresa -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Sector Económico / Ámbito *</label>
               <input type="text" id="inn_sector" required class="input-field" placeholder="Ej: Educación / Construcción">
             </div>
-
-            <!-- NIT -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">NIT de la Empresa</label>
               <input type="text" id="inn_nit" class="input-field" placeholder="900.000.000-1">
             </div>
-
-            <!-- Proyecto de Investigación Asociado -->
             <div class="md:col-span-2">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título del Proyecto de Investigación Asociado</label>
               <input type="text" id="inn_proyecto_titulo" class="input-field" placeholder="Si aplica, indique título del proyecto">
             </div>
-
-            <!-- Convocatoria -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de Convocatoria</label>
               <input type="text" id="inn_convocatoria" class="input-field" placeholder="Ej: Convocatoria Interna 2026-I">
             </div>
-
-            <!-- Origen CTEI -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Estrategia CTEI de Origen *</label>
               <select id="inn_origen_ctei" required class="input-field">
@@ -578,20 +423,14 @@
                 <option value="Trabajo de grado">Trabajo de grado</option>
               </select>
             </div>
-
-            <!-- Nombre Estrategia CTEI -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de Estrategia CTEI *</label>
               <input type="text" id="inn_nombre_estrategia" required class="input-field" placeholder="Ej: Semillero InnovaTech">
             </div>
-
-            <!-- Institución Financiadora -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Institución Financiadora *</label>
               <input type="text" id="inn_financiadora" required class="input-field" placeholder="Ej: Tecnológica del Oriente">
             </div>
-
-            <!-- Disponibilidad -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Disponibilidad *</label>
               <select id="inn_disponibilidad" required class="input-field">
@@ -599,8 +438,6 @@
                 <option value="No restringido">No restringido</option>
               </select>
             </div>
-
-            <!-- Protección Intelectual -->
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Protección Intelectual *</label>
               <select id="inn_proteccion" required class="input-field">
@@ -613,13 +450,10 @@
           </div>
         </div>
 
-        <!-- SECCIÓN 2.2: INFORMACIÓN DE AUTORES Y COAUTORES -->
         <div class="mb-8">
           <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
             2.2 Información sobre los Autores de la Innovación
           </h3>
-
-          <!-- Autor Principal -->
           <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 mb-4">
             <h4 class="text-xs font-bold text-brand-orange uppercase mb-3"><i class="fa-solid fa-user-check"></i> Autor Principal (Investigador)</h4>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -646,7 +480,6 @@
             </div>
           </div>
 
-          <!-- Coautores Dinámicos -->
           <div class="p-4 bg-white rounded-lg border border-slate-200">
             <div class="flex items-center justify-between mb-3">
               <h4 class="text-xs font-bold text-slate-700 uppercase"><i class="fa-solid fa-users"></i> Coautores Adicionales (Opcional)</h4>
@@ -654,44 +487,27 @@
                 <i class="fa-solid fa-plus text-brand-orange"></i> Agregar Coautor
               </button>
             </div>
-            <div id="coautores-container" class="space-y-3">
-              <!-- Filas dinámicas generadas por JS -->
-            </div>
+            <div id="coautores-container" class="space-y-3"></div>
           </div>
         </div>
 
-        <!-- SECCIÓN 2.3: DETALLES TÉCNICOS Y NOVEDAD DE LA INNOVACIÓN -->
         <div class="mb-8">
           <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
             2.3 Información y Evidencias de la Innovación
           </h3>
-
           <div class="space-y-5">
-            <!-- Resumen -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Resumen de la Innovación Efectuada (Máximo 350 palabras) *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Resumen de la Innovación Efectuada (Máximo 350 palabras) *</label>
               <textarea id="inn_resumen" rows="4" required class="input-field" placeholder="Describa sintéticamente el objeto, método y resultado de la innovación..."></textarea>
             </div>
-
-            <!-- Estado Previo / Problemática -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Descripción Previa a la Innovación (Estado del Arte / Problemática Existente) *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Descripción Previa a la Innovación (Estado del Arte / Problemática Existente) *</label>
               <textarea id="inn_estado_previo" rows="3" required class="input-field" placeholder="Describa la situación del proceso o producto antes de aplicar la innovación..."></textarea>
             </div>
-
-            <!-- Estado Posterior / Solución -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Descripción Posterior a la Innovación (Resolución de Situaciones Problémicas) *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Descripción Posterior a la Innovación (Resolución de Situaciones Problémicas) *</label>
               <textarea id="inn_estado_posterior" rows="3" required class="input-field" placeholder="Describa los cambios significativos logrados después de la innovación..."></textarea>
             </div>
-
-            <!-- Novedad y Alcance -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 bg-slate-50 p-4 rounded-lg border border-slate-200">
               <div>
                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Novedad de la Innovación *</label>
@@ -701,7 +517,6 @@
                 </select>
                 <textarea id="inn_novedad_explicacion" rows="3" required class="input-field mt-2" placeholder="Explique de forma clara la razón de la respuesta..."></textarea>
               </div>
-
               <div>
                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alcance Territorial de Novedad *</label>
                 <select id="inn_novedad_alcance" required class="input-field">
@@ -713,11 +528,8 @@
               </div>
             </div>
 
-            <!-- Impactos Económicos u Organizacionales Checkboxes -->
             <div class="bg-slate-50 p-4 rounded-md border border-slate-200">
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-2">
-                Impactos Evidenciados en la Organización *
-              </label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Impactos Evidenciados en la Organización *</label>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                 <label class="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" name="inn_impactos" value="Mejora en la calidad de servicios o bienes" class="rounded text-brand-orange focus:ring-brand-orange">
@@ -744,24 +556,18 @@
                   <span>Mejora en cumplimiento de regulaciones y normas</span>
                 </label>
               </div>
-
               <div class="mt-4">
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Explicación de Impactos con Evidencias Tangibles *
-                </label>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Explicación de Impactos con Evidencias Tangibles *</label>
                 <textarea id="inn_impactos_explicacion" rows="3" required class="input-field" placeholder="Describa los indicadores, datos e informes que respaldan los impactos..."></textarea>
               </div>
             </div>
-
           </div>
         </div>
 
-        <!-- BOTONES DE ACCIÓN -->
         <div class="flex items-center justify-between border-t border-slate-200 pt-6">
           <button type="button" onclick="clearCurrentForm('innovaciones')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
             <i class="fa-solid fa-trash"></i> Limpiar Formulario
           </button>
-
           <div class="flex gap-3">
             <button type="button" onclick="downloadInnovacionDocx()" class="btn-word">
               <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
@@ -771,13 +577,11 @@
             </button>
           </div>
         </div>
-
       </form>
     </div>
 
   </main>
 
-  <!-- FOOTER INSTITUCIONAL -->
   <footer class="bg-brand-navy text-white border-t-4 border-brand-orange py-8 px-4 sm:px-6 lg:px-8 mt-12">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-3">
@@ -790,7 +594,6 @@
           <p>Sistema Institucional de Investigación e Innovación</p>
         </div>
       </div>
-
       <div class="text-xs text-slate-400 text-center md:text-right">
         <p>&copy; 2026 Tecnológica del Oriente - Vigilada Mineducación</p>
         <p class="text-[11px] text-slate-500 mt-0.5">Bucaramanga, Santander, Colombia</p>
@@ -808,7 +611,6 @@
         <h3 class="text-xl font-bold text-brand-navy">¡Radicación Exitosa!</h3>
         <p class="text-xs text-slate-500 mt-1">El formulario se ha registrado en el sistema institucional.</p>
       </div>
-
       <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 my-4 text-xs space-y-2">
         <div class="flex justify-between border-b border-slate-200 pb-2">
           <span class="text-slate-500 font-semibold">Número de Radicado:</span>
@@ -827,7 +629,6 @@
           <span id="modal-fecha" class="text-slate-700">2026-08-21</span>
         </div>
       </div>
-
       <div class="flex flex-col sm:flex-row gap-2">
         <button onclick="closeReceiptModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-md text-xs transition">
           Cerrar
@@ -855,17 +656,17 @@
       </div>
 
       <p class="text-xs text-slate-600 mb-4">
-        Ingrese las credenciales de su proyecto en Supabase para persistencia directa. Si las deja vacías, el portal continuará operando en <strong>Modo Demo / Failsafe</strong>.
+        Ingrese las credenciales de su proyecto en Supabase para la persistencia en la nube.
       </p>
 
       <div class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">SUPABASE URL</label>
-          <input type="text" id="cfg-supabase-url" class="input-field text-xs" placeholder="https://xyzcompany.supabase.co">
+          <input type="text" id="cfg-supabase-url" class="input-field text-xs" placeholder="https://joumcvebzatdgluvxgkm.supabase.co">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">SUPABASE ANON KEY</label>
-          <input type="password" id="cfg-supabase-key" class="input-field text-xs" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6...">
+          <input type="password" id="cfg-supabase-key" class="input-field text-xs" placeholder="sb_publishable_... o eyJhbGci...">
         </div>
       </div>
 
@@ -880,29 +681,23 @@
     </div>
   </div>
 
-  <!-- TOAST NOTIFICADOR -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 pointer-events-none"></div>
 
-  <!-- SCRIPT LOGIC DE LA SPA Y CONVERTIDOR DE WORD (.DOCX) -->
   <script>
-    // Variables de Estado Global
     let activeTab = 'experiencias';
     let supabaseClient = null;
     let coautoresCount = 0;
 
-    // Constante LocalStorage Key
     const DRAFT_KEY = 'teo_portal_investigacion_draft';
     const CFG_KEY = 'teo_supabase_config';
 
-    // Inicialización al cargar el DOM
     document.addEventListener('DOMContentLoaded', () => {
       initSupabase();
       loadDraftFromLocalStorage();
       setupFormListeners();
-      setInterval(saveDraftToLocalStorage, 15000); // Autosave cada 15s
+      setInterval(saveDraftToLocalStorage, 15000);
     });
 
-    // 1. INICIALIZACIÓN DE SUPABASE
     function initSupabase() {
       const cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
       const url = cfg.url || '';
@@ -911,13 +706,14 @@
       if (url && key && window.supabase) {
         try {
           supabaseClient = window.supabase.createClient(url, key);
-          document.getElementById('supabase-status-label').innerText = 'Supabase Conectado';
-          document.getElementById('supabase-status-label').classList.add('text-emerald-600');
+          document.getElementById('supabase-status-label').innerText = 'Supabase Conectado ✅';
+          document.getElementById('supabase-alert-banner').classList.add('hidden');
         } catch (e) {
           console.warn('Error al iniciar Supabase client:', e);
         }
       } else {
-        document.getElementById('supabase-status-label').innerText = 'Modo Demo / Failsafe';
+        document.getElementById('supabase-status-label').innerText = 'Conectar Supabase ⚙️';
+        document.getElementById('supabase-alert-banner').classList.remove('hidden');
       }
     }
 
@@ -926,7 +722,7 @@
       modal.classList.toggle('hidden');
       if (!modal.classList.contains('hidden')) {
         const cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
-        document.getElementById('cfg-supabase-url').value = cfg.url || '';
+        document.getElementById('cfg-supabase-url').value = cfg.url || 'https://joumcvebzatdgluvxgkm.supabase.co';
         document.getElementById('cfg-supabase-key').value = cfg.key || '';
       }
     }
@@ -937,10 +733,9 @@
       localStorage.setItem(CFG_KEY, JSON.stringify({ url, key }));
       toggleConfigModal();
       initSupabase();
-      showToast('Configuración de Supabase actualizada', 'success');
+      showToast('Configuración de Supabase conectada con éxito', 'success');
     }
 
-    // 2. GESTOR DE PESTAÑAS (TABS)
     function switchTab(tab) {
       activeTab = tab;
       const btnExp = document.getElementById('tab-btn-experiencias');
@@ -962,7 +757,6 @@
       updateProgressBar();
     }
 
-    // 3. AGREGAR FILAS DINÁMICAS DE COAUTORES
     function addCoautorRow(data = {}) {
       coautoresCount++;
       const container = document.getElementById('coautores-container');
@@ -971,20 +765,12 @@
       div.id = rowId;
       div.className = 'grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 p-3 rounded border border-slate-200 relative text-xs';
       div.innerHTML = `
-        <div>
-          <input type="text" class="input-field text-xs coautor-nombre" placeholder="Nombre coautor" value="${data.nombre || ''}">
-        </div>
-        <div>
-          <input type="text" class="input-field text-xs coautor-cedula" placeholder="Cédula" value="${data.cedula || ''}">
-        </div>
-        <div>
-          <input type="email" class="input-field text-xs coautor-correo" placeholder="Correo" value="${data.correo || ''}">
-        </div>
+        <div><input type="text" class="input-field text-xs coautor-nombre" placeholder="Nombre coautor" value="${data.nombre || ''}"></div>
+        <div><input type="text" class="input-field text-xs coautor-cedula" placeholder="Cédula" value="${data.cedula || ''}"></div>
+        <div><input type="email" class="input-field text-xs coautor-correo" placeholder="Correo" value="${data.correo || ''}"></div>
         <div class="flex items-center gap-2">
           <input type="text" class="input-field text-xs coautor-afiliacion" placeholder="Afiliación / Rol" value="${data.afiliacion || ''}">
-          <button type="button" onclick="removeCoautorRow('${rowId}')" class="text-rose-500 hover:text-rose-700 p-1.5">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
+          <button type="button" onclick="removeCoautorRow('${rowId}')" class="text-rose-500 hover:text-rose-700 p-1.5"><i class="fa-solid fa-trash-can"></i></button>
         </div>
       `;
       container.appendChild(div);
@@ -1004,14 +790,11 @@
         const cedula = r.querySelector('.coautor-cedula')?.value || '';
         const correo = r.querySelector('.coautor-correo')?.value || '';
         const afiliacion = r.querySelector('.coautor-afiliacion')?.value || '';
-        if (nombre || cedula) {
-          list.push({ nombre, cedula, correo, afiliacion });
-        }
+        if (nombre || cedula) list.push({ nombre, cedula, correo, afiliacion });
       });
       return list;
     }
 
-    // 4. AUTOGUARDADO EN LOCALSTORAGE
     function saveDraftToLocalStorage() {
       const data = {
         activeTab: activeTab,
@@ -1075,7 +858,6 @@
       };
 
       localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-      
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       document.getElementById('autosave-text').innerText = `Guardado automático (${timeStr})`;
       updateProgressBar();
@@ -1181,9 +963,7 @@
 
     function setupFormListeners() {
       document.querySelectorAll('input, select, textarea').forEach(elem => {
-        elem.addEventListener('input', () => {
-          updateProgressBar();
-        });
+        elem.addEventListener('input', () => updateProgressBar());
       });
     }
 
@@ -1210,7 +990,6 @@
       document.getElementById('progress-bar').style.width = `${pct}%`;
     }
 
-    // 5. GENERACIÓN DE RADICADO Y ENVÍO A SUPABASE
     function generateRadicado(prefix) {
       const year = new Date().getFullYear();
       const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -1259,7 +1038,7 @@
           showToast('Registro guardado en Supabase', 'success');
         } catch (err) {
           console.warn('Error al guardar en Supabase:', err);
-          showToast('Modo Demo / Guardado local activado', 'info');
+          showToast('Guardado local activado', 'info');
         }
       }
 
@@ -1312,14 +1091,13 @@
           showToast('Innovación registrada en Supabase', 'success');
         } catch (err) {
           console.warn('Error al guardar en Supabase:', err);
-          showToast('Modo Demo / Guardado local activado', 'info');
+          showToast('Guardado local activado', 'info');
         }
       }
 
       showReceiptModal(radicado, 'Registro de Innovaciones Educativas', payload.autor_principal_nombre, () => downloadInnovacionDocx(radicado));
     }
 
-    // 6. GENERADOR DE DOCUMENTOS MICROSOFT WORD (.DOCX / .DOC NATIVO)
     function generateWordDocument(title, htmlContent, filename) {
       const headerDoc = `
         <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' 
@@ -1406,7 +1184,6 @@
       const html = `
         <h1>ANEXO 1. PLANTILLA PARA LA SISTEMATIZACIÓN DE EXPERIENCIAS SIGNIFICATIVAS</h1>
         <p style="text-align: center; font-size: 10pt; color: #64748b;"><strong>Radicado No:</strong> ${radicado}</p>
-        
         <h2>1. Información General de la Experiencia</h2>
         <table>
           <tr><td class="label-cell">Nombre Experiencia:</td><td><strong>${nombre}</strong></td></tr>
@@ -1421,33 +1198,16 @@
           <tr><td class="label-cell">Líneas de Investigación:</td><td>Programa: ${lineasProg}<br>Institucional: ${lineasInst}</td></tr>
           <tr><td class="label-cell">Apropiación Social (ASC):</td><td>${ascChecked} ${ascOtro ? '(' + ascOtro + ')' : ''}</td></tr>
         </table>
-
         <h2>2. Desarrollo de la Experiencia Significativa</h2>
-        <p><strong>2.1 Contexto de la Experiencia:</strong></p>
-        <div class="field-box">${contexto}</div>
-
-        <p><strong>2.2 Pregunta Problematizadora:</strong></p>
-        <div class="field-box">${pregunta}</div>
-
-        <p><strong>2.3 Objetivo de la Experiencia:</strong></p>
-        <div class="field-box">${objetivo}</div>
-
-        <p><strong>2.4 Descripción de la Experiencia:</strong></p>
-        <div class="field-box">${descripcion}</div>
-
-        <p><strong>2.5 Análisis y Reflexión Crítica:</strong></p>
-        <div class="field-box">${analisis}</div>
-
-        <p><strong>2.6 Resultados y Aportes:</strong></p>
-        <div class="field-box">${resultados}</div>
-
-        <p><strong>2.7 Proyección:</strong></p>
-        <div class="field-box">${proyeccion}</div>
-
-        <p><strong>Observaciones:</strong></p>
-        <div class="field-box">${observaciones}</div>
+        <p><strong>2.1 Contexto de la Experiencia:</strong></p><div class="field-box">${contexto}</div>
+        <p><strong>2.2 Pregunta Problematizadora:</strong></p><div class="field-box">${pregunta}</div>
+        <p><strong>2.3 Objetivo de la Experiencia:</strong></p><div class="field-box">${objetivo}</div>
+        <p><strong>2.4 Descripción de la Experiencia:</strong></p><div class="field-box">${descripcion}</div>
+        <p><strong>2.5 Análisis y Reflexión Crítica:</strong></p><div class="field-box">${analisis}</div>
+        <p><strong>2.6 Resultados y Aportes:</strong></p><div class="field-box">${resultados}</div>
+        <p><strong>2.7 Proyección:</strong></p><div class="field-box">${proyeccion}</div>
+        <p><strong>Observaciones:</strong></p><div class="field-box">${observaciones}</div>
       `;
-
       generateWordDocument('Experiencia Significativa - CTO', html, `Experiencia_Significativa_${radicado}.doc`);
     }
 
@@ -1479,9 +1239,7 @@
         coautoresHtml = `
           <table>
             <thead><tr><th>Nombre</th><th>Cédula</th><th>Correo</th><th>Afiliación</th></tr></thead>
-            <tbody>
-              ${coautores.map(c => `<tr><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.correo}</td><td>${c.afiliacion}</td></tr>`).join('')}
-            </tbody>
+            <tbody>${coautores.map(c => `<tr><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.correo}</td><td>${c.afiliacion}</td></tr>`).join('')}</tbody>
           </table>
         `;
       }
@@ -1499,7 +1257,6 @@
       const html = `
         <h1>REGISTRO DE INNOVACIONES EDUCATIVAS Y ORGANIZACIONALES</h1>
         <p style="text-align: center; font-size: 10pt; color: #64748b;"><strong>Radicado No:</strong> ${radicado}</p>
-        
         <h2>1. Información General</h2>
         <table>
           <tr><td class="label-cell">Título de Innovación:</td><td><strong>${titulo}</strong></td></tr>
@@ -1510,22 +1267,14 @@
           <tr><td class="label-cell">Estrategia CTEI:</td><td>${origenCtei} (${nombreEstrategia})</td></tr>
           <tr><td class="label-cell">Financiadora / Protección:</td><td>${financiadora} - Protección: ${proteccion} (${disponibilidad})</td></tr>
         </table>
-
         <h2>2. Información sobre Autores</h2>
         <p><strong>Autor Principal:</strong> ${autorNombre} | C.C. ${autorCedula} | ${autorCorreo} | ${autorAfiliacion} (${autorGrupo})</p>
         <h3>Coautores:</h3>
         ${coautoresHtml}
-
         <h2>3. Detalles Técnicos e Impacto de la Innovación</h2>
-        <p><strong>Resumen de la Innovación (Máx 350 palabras):</strong></p>
-        <div class="field-box">${resumen}</div>
-
-        <p><strong>Descripción Previa (Estado del Arte / Problemática):</strong></p>
-        <div class="field-box">${estadoPrevio}</div>
-
-        <p><strong>Descripción Posterior (Resolución Problémica):</strong></p>
-        <div class="field-box">${estadoPosterior}</div>
-
+        <p><strong>Resumen de la Innovación:</strong></p><div class="field-box">${resumen}</div>
+        <p><strong>Descripción Previa:</strong></p><div class="field-box">${estadoPrevio}</div>
+        <p><strong>Descripción Posterior:</strong></p><div class="field-box">${estadoPosterior}</div>
         <p><strong>Novedad y Alcance:</strong></p>
         <div class="field-box">
           <strong>Tipo:</strong> ${novedadTipo}<br>
@@ -1533,18 +1282,15 @@
           <strong>Alcance Territorial:</strong> ${novedadAlcance}<br>
           <strong>Evidencias Alcance:</strong> ${novedadAlcanceEvidencias}
         </div>
-
         <p><strong>Impactos Evidenciados en la Organización:</strong></p>
         <div class="field-box">
           <strong>Impactos Seleccionados:</strong> ${impactosList}<br><br>
           <strong>Explicación con Evidencias Tangibles:</strong><br>${impactosExplicacion}
         </div>
       `;
-
       generateWordDocument('Registro de Innovaciones - CTO', html, `Registro_Innovacion_${radicado}.doc`);
     }
 
-    // 7. MODAL Y NOTIFICACIONES TOAST
     function showReceiptModal(radicado, tipo, autor, downloadWordCallback) {
       document.getElementById('modal-radicado').innerText = radicado;
       document.getElementById('modal-tipo').innerText = tipo;
@@ -1552,9 +1298,7 @@
       document.getElementById('modal-fecha').innerText = new Date().toISOString().split('T')[0];
       
       const btn = document.getElementById('modal-download-word-btn');
-      if (downloadWordCallback) {
-        btn.onclick = downloadWordCallback;
-      }
+      if (downloadWordCallback) btn.onclick = downloadWordCallback;
 
       document.getElementById('receipt-modal').classList.remove('hidden');
     }
@@ -1575,9 +1319,7 @@
       toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${message}`;
       
       container.appendChild(toast);
-      setTimeout(() => {
-        toast.remove();
-      }, 3500);
+      setTimeout(() => toast.remove(), 3500);
     }
   </script>
 </body>
