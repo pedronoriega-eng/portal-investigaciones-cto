@@ -76,12 +76,10 @@ Para garantizar trazabilidad 100% homogénea sin errores tipográficos, los form
 - **Formulario 2 (Guía Orientadora - Innovaciones Educativas):** Captura de 24 campos institucionales + dinámico de coautores + radicado `INN-2026-XXXX`.
 - **Autoguardado en LocalStorage:** Cada 15 segundos guarda el borrador (`teo_portal_investigacion_draft`) para evitar pérdida de datos si se cierra la pestaña.
 - **Limpieza Automática tras Radicación:** Al radicar exitosamente en Supabase y generar el recibo/descarga, el formulario y su borrador en `localStorage` se limpian automáticamente (quedando al 0%) para permitir el siguiente diligenciamiento inmediato.
-- **Exportación Nativa a Microsoft Word (.docx) con Encabezado y Pie Institucional Exacto:** Generación en el cliente (`generateWordDocument`, `downloadExperienciaDocx`, `downloadInnovacionDocx`) que incluye:
-  - Recuadro de encabezado con división (`CORPORACIÓN TECNOLÓGICA DEL ORIENTE` en naranja, `Sistema Institucional de Investigaciones, Innovación y Creación (SIAC)`, fecha actual y `Vigilada Mineducación` a la derecha).
-  - Título principal centrado en mayúsculas.
-  - Línea divisoria naranja institucional continua (`border-bottom: 3.5pt solid #e67817`).
-  - Subtítulo de `Radicado No: EXP-2026-XXXX` centrado.
-  - Tabla de datos estructurada con celdas sombreadas y pie de página institucional.
+- **Exportación Nativa a Microsoft Word (.docx) con Encabezado y Pie Institucional Oficial:** Extraído directamente de la plantilla oficial `Formato investigación.docx`:
+  - **Encabezado Institucional Oficial (`header_institucional.png` / `HEADER_B64`):** Banner superior institucional completo.
+  - **Pie de Página Institucional Oficial (`footer_institucional.png` / `FOOTER_B64`):** Banner inferior con información de Bucaramanga y Mineducación.
+  - **Formato Visual:** Título principal centrado en mayúsculas, barra horizontal naranja institucional continua (`border-bottom: 3.5pt solid #e67817`), subtítulo de `Radicado No` centrado y marcado MSO compatible con Microsoft Word.
 
 ### B. `schema.sql` (Script de Migración SQL)
 - Definición de tablas `experiencias_significativas` y `innovaciones_educativas`.
