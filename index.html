@@ -649,7 +649,7 @@
           <i class="fa-solid fa-circle-check"></i>
         </div>
         <h3 class="text-xl font-bold text-brand-navy">¡Radicación Exitosa!</h3>
-        <p class="text-xs text-slate-500 mt-1">El formulario se ha registrado en la base de datos de Supabase.</p>
+        <p class="text-xs text-slate-500 mt-1">El registro fue guardado en Supabase y el formulario quedó listo (limpio) para el siguiente registro.</p>
       </div>
       <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 my-4 text-xs space-y-2">
         <div class="flex justify-between border-b border-slate-200 pb-2">
@@ -671,7 +671,7 @@
       </div>
       <div class="flex flex-col sm:flex-row gap-2">
         <button onclick="closeReceiptModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-md text-xs transition">
-          Cerrar
+          Cerrar (Nuevo Registro)
         </button>
         <button id="modal-download-word-btn" class="btn-word py-2.5 px-4 text-xs flex-1">
           <i class="fa-solid fa-file-word"></i> Descargar Formato Word (.docx)
@@ -1036,6 +1036,40 @@
       return `${prefix}-${year}-${rand}`;
     }
 
+    function resetSubmittedForm(formType, forceSilent = false) {
+      if (formType === 'experiencias') {
+        const form = document.getElementById('form-experiencias');
+        if (form) form.reset();
+      } else if (formType === 'innovaciones') {
+        const form = document.getElementById('form-innovaciones');
+        if (form) form.reset();
+        const coautoresContainer = document.getElementById('coautores-container');
+        if (coautoresContainer) coautoresContainer.innerHTML = '';
+      }
+
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (formType === 'experiencias') {
+            data.experiencias = {};
+          } else if (formType === 'innovaciones') {
+            data.innovaciones = {};
+          }
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+        }
+      } catch (err) {
+        console.error('Error al limpiar borrador:', err);
+      }
+
+      updateProgressBar();
+      document.getElementById('autosave-text').innerText = 'Borrador listo (Autoguardado 15s)';
+      
+      if (!forceSilent) {
+        showToast('Formulario limpiado para un nuevo registro', 'info');
+      }
+    }
+
     async function handleExperienciasSubmit(event) {
       event.preventDefault();
       const radicado = generateRadicado('EXP');
@@ -1075,14 +1109,21 @@
             .insert([payload]);
 
           if (error) throw error;
-          showToast('Registro guardado en Supabase', 'success');
+          showToast('Registro guardado exitosamente en Supabase', 'success');
         } catch (err) {
           console.warn('Error al guardar en Supabase:', err);
           showToast('Guardado local activado', 'info');
         }
       }
 
-      showReceiptModal(radicado, 'Experiencia Significativa (Anexo 1)', payload.docentes_responsables, () => downloadExperienciaDocx(radicado));
+      // Preparar función de descarga con los datos capturados
+      const downloadCallback = () => generateExperienciaDocxFromData(radicado, payload);
+
+      // Mostrar modal de recibo
+      showReceiptModal(radicado, 'Experiencia Significativa (Anexo 1)', payload.docentes_responsables, downloadCallback);
+
+      // Limpiar formulario para el siguiente registro
+      resetSubmittedForm('experiencias', true);
     }
 
     async function handleInnovacionesSubmit(event) {
@@ -1128,60 +1169,220 @@
             .insert([payload]);
 
           if (error) throw error;
-          showToast('Innovación registrada en Supabase', 'success');
+          showToast('Innovación registrada exitosamente en Supabase', 'success');
         } catch (err) {
           console.warn('Error al guardar en Supabase:', err);
           showToast('Guardado local activado', 'info');
         }
       }
 
-      showReceiptModal(radicado, 'Registro de Innovaciones Educativas', payload.autor_principal_nombre, () => downloadInnovacionDocx(radicado));
+      // Preparar función de descarga con datos capturados
+      const downloadCallback = () => generateInnovacionDocxFromData(radicado, payload);
+
+      // Mostrar modal de recibo
+      showReceiptModal(radicado, 'Registro de Innovaciones Educativas', payload.autor_principal_nombre, downloadCallback);
+
+      // Limpiar formulario para el siguiente registro
+      resetSubmittedForm('innovaciones', true);
     }
 
-    function generateWordDocument(title, htmlContent, filename) {
-      const headerDoc = `
+    function generateWordDocument(docTitle, mainTitle, radicado, bodyHtml, filename) {
+      const currentDate = new Date().toLocaleDateString('es-CO');
+      const fullDocHtml = `
         <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' 
               xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' 
               xmlns='http://www.w3.org/TR/REC-html40'>
         <head>
           <meta charset='utf-8'>
-          <title>${title}</title>
+          <title>${docTitle}</title>
           <style>
-            body { font-family: 'Arial', sans-serif; font-size: 11pt; color: #1e293b; line-height: 1.4; }
-            h1 { font-size: 16pt; color: #1e293b; text-align: center; font-weight: bold; border-bottom: 2pt solid #e67817; padding-bottom: 5pt; }
-            h2 { font-size: 13pt; color: #e67817; margin-top: 15pt; font-weight: bold; border-bottom: 1pt solid #cbd5e1; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10pt; margin-bottom: 10pt; }
-            th, td { border: 1pt solid #cbd5e1; padding: 6pt; text-align: left; vertical-align: top; font-size: 10pt; }
-            th { background-color: #f8fafc; color: #1e293b; font-weight: bold; }
-            .header-table { border: none; margin-bottom: 20pt; }
-            .header-table td { border: none; }
-            .label-cell { font-weight: bold; background-color: #f1f5f9; width: 30%; }
-            .field-box { background-color: #fafafa; border-left: 3pt solid #e67817; padding: 8pt; margin-top: 4pt; margin-bottom: 8pt; }
-            .footer-note { font-size: 9pt; color: #64748b; text-align: center; margin-top: 30pt; }
+            @page Section1 {
+              size: 8.5in 11.0in;
+              margin: 0.8in 0.8in 0.8in 0.8in;
+            }
+            div.Section1 { page: Section1; }
+            body { font-family: 'Arial', sans-serif; font-size: 10.5pt; color: #1e293b; line-height: 1.4; }
+            
+            /* ENCABEZADO INSTITUCIONAL EXACTO */
+            table.header-box {
+              width: 100%;
+              border: 1pt dashed #cbd5e1;
+              border-collapse: collapse;
+              margin-bottom: 16pt;
+            }
+            table.header-box td {
+              padding: 8pt 10pt;
+              vertical-align: middle;
+            }
+            .header-left {
+              width: 70%;
+              border-right: 1pt dashed #cbd5e1;
+            }
+            .header-right {
+              width: 30%;
+              text-align: right;
+            }
+            .header-brand-title {
+              font-size: 12pt;
+              font-weight: bold;
+              color: #e67817;
+              margin: 0 0 2pt 0;
+              text-transform: uppercase;
+              font-family: 'Arial', sans-serif;
+            }
+            .header-sub-title {
+              font-size: 9pt;
+              color: #64748b;
+              margin: 0;
+              font-family: 'Arial', sans-serif;
+            }
+            .header-meta {
+              font-size: 9pt;
+              color: #64748b;
+              margin: 0;
+              font-family: 'Arial', sans-serif;
+            }
+
+            /* BLOQUE TITULO Y LINEA NARANJA CONTINUA */
+            .title-section {
+              text-align: center;
+              margin-top: 10pt;
+              margin-bottom: 16pt;
+            }
+            .main-doc-title {
+              font-size: 13.5pt;
+              font-weight: bold;
+              color: #0f172a;
+              text-transform: uppercase;
+              text-align: center;
+              margin: 0 0 8pt 0;
+              line-height: 1.3;
+            }
+            .orange-divider-line {
+              border-bottom: 3.5pt solid #e67817;
+              width: 100%;
+              margin-top: 6pt;
+              margin-bottom: 10pt;
+            }
+            .radicado-badge {
+              font-size: 10.5pt;
+              font-weight: bold;
+              color: #475569;
+              text-align: center;
+              margin: 0;
+            }
+
+            /* SECCIONES Y TABLAS */
+            h2 {
+              font-size: 11.5pt;
+              color: #e67817;
+              margin-top: 16pt;
+              margin-bottom: 6pt;
+              font-weight: bold;
+              border-bottom: 1.5pt solid #cbd5e1;
+              padding-bottom: 3pt;
+              text-transform: uppercase;
+            }
+            h3 {
+              font-size: 10.5pt;
+              color: #1e293b;
+              margin-top: 10pt;
+              margin-bottom: 4pt;
+              font-weight: bold;
+            }
+            table.data-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 8pt;
+              margin-bottom: 12pt;
+            }
+            table.data-table th, table.data-table td {
+              border: 1pt solid #cbd5e1;
+              padding: 6pt 8pt;
+              text-align: left;
+              vertical-align: top;
+              font-size: 9.5pt;
+            }
+            table.data-table th {
+              background-color: #f1f5f9;
+              color: #1e293b;
+              font-weight: bold;
+            }
+            .label-cell {
+              font-weight: bold;
+              background-color: #f8fafc;
+              width: 32%;
+              color: #334155;
+            }
+            .field-box {
+              background-color: #fafafa;
+              border-left: 3pt solid #e67817;
+              border-top: 1pt solid #f1f5f9;
+              border-right: 1pt solid #f1f5f9;
+              border-bottom: 1pt solid #f1f5f9;
+              padding: 8pt 10pt;
+              margin-top: 4pt;
+              margin-bottom: 10pt;
+              font-size: 9.5pt;
+            }
+            table.footer-box {
+              width: 100%;
+              border-top: 2pt solid #e67817;
+              margin-top: 30pt;
+              padding-top: 8pt;
+            }
+            table.footer-box td {
+              border: none;
+              font-size: 8.5pt;
+              color: #64748b;
+            }
           </style>
         </head>
         <body>
-          <table class="header-table">
-            <tr>
-              <td style="width: 70%;">
-                <h3 style="color: #e67817; margin: 0;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h3>
-                <p style="margin: 2pt 0; font-size: 10pt; color: #64748b;">Sistema Institucional de Investigaciones, Innovación y Creación (SIAC)</p>
-              </td>
-              <td style="width: 30%; text-align: right; font-size: 9pt; color: #64748b;">
-                <strong>Fecha:</strong> ${new Date().toLocaleDateString('es-CO')}<br>
-                <strong>Vigilada Mineducación</strong>
-              </td>
-            </tr>
-          </table>
-          ${htmlContent}
-          <div class="footer-note">
-            Documento Oficial Generado por el Portal de Investigaciones e Innovaciones CTO
+          <div class="Section1">
+            <!-- ENCABEZADO RECUADRO INSTITUCIONAL -->
+            <table class="header-box">
+              <tr>
+                <td class="header-left">
+                  <p class="header-brand-title">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</p>
+                  <p class="header-sub-title">Sistema Institucional de Investigaciones, Innovación y Creación (SIAC)</p>
+                </td>
+                <td class="header-right">
+                  <p class="header-meta"><strong>Fecha:</strong> ${currentDate}</p>
+                  <p class="header-meta" style="font-weight: bold; margin-top: 2pt;">Vigilada Mineducación</p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- TITULO PRINCIPAL Y BARRA NARANJA INSTITUCIONAL -->
+            <div class="title-section">
+              <div class="main-doc-title">${mainTitle}</div>
+              <div class="orange-divider-line"></div>
+              <div class="radicado-badge"><strong>Radicado No:</strong> ${radicado}</div>
+            </div>
+
+            <!-- CONTENIDO PRINCIPAL -->
+            ${bodyHtml}
+
+            <!-- PIE DE PAGINA INSTITUCIONAL -->
+            <table class="footer-box">
+              <tr>
+                <td>
+                  <strong>Corporación Tecnológica del Oriente</strong> - Sistema Institucional de Investigaciones, Innovación y Creación (SIAC)<br>
+                  Documento Oficial Registrado en el Portal de Investigaciones e Innovaciones CTO
+                </td>
+                <td style="text-align: right;">
+                  Bucaramanga, Santander, Colombia<br>
+                  <strong>Vigilada Mineducación</strong>
+                </td>
+              </tr>
+            </table>
           </div>
         </body>
         </html>
       `;
 
-      const blob = new Blob(['\ufeff' + headerDoc], { type: 'application/msword' });
+      const blob = new Blob(['\ufeff' + fullDocHtml], { type: 'application/msword' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -1190,145 +1391,198 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('Documento Word (.docx) descargado exitosamente', 'success');
+      showToast('Documento Word (.docx) descargado con formato oficial', 'success');
     }
 
     function downloadExperienciaDocx(radicadoOverride = null) {
       const radicado = radicadoOverride || generateRadicado('EXP');
-      const nombre = document.getElementById('exp_nombre').value || 'Sin Título';
-      const programa = document.getElementById('exp_programa').value || 'N/A';
-      const espacio = document.getElementById('exp_espacio').value || 'N/A';
-      const nivel = document.getElementById('exp_nivel').value || 'N/A';
-      const fecha = document.getElementById('exp_fecha').value || 'N/A';
-      const periodo = document.getElementById('exp_periodo').value || 'N/A';
-      const docentes = document.getElementById('exp_docentes').value || 'N/A';
-      const cedula = document.getElementById('exp_cedula').value || 'N/A';
-      const correo = document.getElementById('exp_correo').value || 'N/A';
-      const estudiantes = document.getElementById('exp_estudiantes').value || '1';
-      const modalidad = document.getElementById('exp_modalidad').value || 'N/A';
-      const lugar = document.getElementById('exp_lugar').value || 'N/A';
-      const lineasProg = document.getElementById('exp_lineas_prog').value || 'N/A';
-      const lineasInst = document.getElementById('exp_lineas_inst').value || 'N/A';
-      const ascChecked = Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value).join(', ') || 'Ninguna';
-      const ascOtro = document.getElementById('exp_asc_otro').value || '';
+      const payload = {
+        radicado: radicado,
+        nombre_experiencia: document.getElementById('exp_nombre').value,
+        programa_academico: document.getElementById('exp_programa').value,
+        espacio_academico: document.getElementById('exp_espacio').value,
+        nivel_formacion: document.getElementById('exp_nivel').value,
+        fecha_presentacion: document.getElementById('exp_fecha').value,
+        periodo_academico: document.getElementById('exp_periodo').value,
+        docentes_responsables: document.getElementById('exp_docentes').value,
+        cedula_docente: document.getElementById('exp_cedula').value,
+        correo_docente: document.getElementById('exp_correo').value,
+        num_estudiantes: document.getElementById('exp_estudiantes').value,
+        modalidad: document.getElementById('exp_modalidad').value,
+        lugar_contexto: document.getElementById('exp_lugar').value,
+        lineas_investigacion_programa: document.getElementById('exp_lineas_prog').value,
+        lineas_investigacion_institucional: document.getElementById('exp_lineas_inst').value,
+        espacio_divulgacion_asc: Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value),
+        espacio_divulgacion_otro: document.getElementById('exp_asc_otro').value,
+        contexto_experiencia: document.getElementById('exp_contexto').value,
+        pregunta_problematizadora: document.getElementById('exp_pregunta').value,
+        objetivo_experiencia: document.getElementById('exp_objetivo').value,
+        descripcion_experiencia: document.getElementById('exp_descripcion').value,
+        analisis_reflexion: document.getElementById('exp_analisis').value,
+        resultados_aportes: document.getElementById('exp_resultados').value,
+        proyeccion: document.getElementById('exp_proyeccion').value,
+        observaciones: document.getElementById('exp_observaciones').value
+      };
+      generateExperienciaDocxFromData(radicado, payload);
+    }
 
-      const contexto = document.getElementById('exp_contexto').value || 'N/A';
-      const pregunta = document.getElementById('exp_pregunta').value || 'N/A';
-      const objetivo = document.getElementById('exp_objetivo').value || 'N/A';
-      const descripcion = document.getElementById('exp_descripcion').value || 'N/A';
-      const analisis = document.getElementById('exp_analisis').value || 'N/A';
-      const resultados = document.getElementById('exp_resultados').value || 'N/A';
-      const proyeccion = document.getElementById('exp_proyeccion').value || 'N/A';
-      const observaciones = document.getElementById('exp_observaciones').value || 'N/A';
+    function generateExperienciaDocxFromData(radicado, p) {
+      const mainTitle = 'ANEXO 1. PLANTILLA PARA LA SISTEMATIZACIÓN DE EXPERIENCIAS SIGNIFICATIVAS';
+      const ascChecked = (p.espacio_divulgacion_asc && p.espacio_divulgacion_asc.length > 0) 
+        ? p.espacio_divulgacion_asc.join(', ') 
+        : 'Ninguna';
+      const ascOtro = p.espacio_divulgacion_otro ? ` (${p.espacio_divulgacion_otro})` : '';
 
-      const html = `
-        <h1>ANEXO 1. PLANTILLA PARA LA SISTEMATIZACIÓN DE EXPERIENCIAS SIGNIFICATIVAS</h1>
-        <p style="text-align: center; font-size: 10pt; color: #64748b;"><strong>Radicado No:</strong> ${radicado}</p>
+      const bodyHtml = `
         <h2>1. Información General de la Experiencia</h2>
-        <table>
-          <tr><td class="label-cell">Nombre Experiencia:</td><td><strong>${nombre}</strong></td></tr>
-          <tr><td class="label-cell">Programa Académico:</td><td>${programa}</td></tr>
-          <tr><td class="label-cell">Espacio / Asignatura:</td><td>${espacio}</td></tr>
-          <tr><td class="label-cell">Nivel de Formación:</td><td>${nivel}</td></tr>
-          <tr><td class="label-cell">Fecha y Periodo:</td><td>${fecha} (${periodo})</td></tr>
-          <tr><td class="label-cell">Docente(s) Responsable(s):</td><td>${docentes} (C.C. ${cedula})</td></tr>
-          <tr><td class="label-cell">Correo Institucional:</td><td>${correo}</td></tr>
-          <tr><td class="label-cell">Estudiantes / Modalidad:</td><td>${estudiantes} estudiantes (${modalidad})</td></tr>
-          <tr><td class="label-cell">Lugar o Contexto:</td><td>${lugar}</td></tr>
-          <tr><td class="label-cell">Líneas de Investigación:</td><td>Programa: ${lineasProg}<br>Institucional: ${lineasInst}</td></tr>
-          <tr><td class="label-cell">Apropiación Social (ASC):</td><td>${ascChecked} ${ascOtro ? '(' + ascOtro + ')' : ''}</td></tr>
+        <table class="data-table">
+          <tr><td class="label-cell">Nombre Experiencia:</td><td><strong>${p.nombre_experiencia || 'Sin Título'}</strong></td></tr>
+          <tr><td class="label-cell">Programa Académico:</td><td>${p.programa_academico || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Espacio / Asignatura:</td><td>${p.espacio_academico || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Nivel de Formación:</td><td>${p.nivel_formacion || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Fecha y Periodo:</td><td>${p.fecha_presentacion || 'N/A'} (${p.periodo_academico || 'N/A'})</td></tr>
+          <tr><td class="label-cell">Docente(s) Responsable(s):</td><td>${p.docentes_responsables || 'N/A'} (C.C. ${p.cedula_docente || 'N/A'})</td></tr>
+          <tr><td class="label-cell">Correo Institucional:</td><td>${p.correo_docente || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Estudiantes / Modalidad:</td><td>${p.num_estudiantes || 1} estudiantes (${p.modalidad || 'N/A'})</td></tr>
+          <tr><td class="label-cell">Lugar o Contexto:</td><td>${p.lugar_contexto || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Líneas de Investigación:</td><td>Programa: ${p.lineas_investigacion_programa || 'N/A'}<br>Institucional: ${p.lineas_investigacion_institucional || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Apropiación Social (ASC):</td><td>${ascChecked}${ascOtro}</td></tr>
         </table>
+
         <h2>2. Desarrollo de la Experiencia Significativa</h2>
-        <p><strong>2.1 Contexto de la Experiencia:</strong></p><div class="field-box">${contexto}</div>
-        <p><strong>2.2 Pregunta Problematizadora:</strong></p><div class="field-box">${pregunta}</div>
-        <p><strong>2.3 Objetivo de la Experiencia:</strong></p><div class="field-box">${objetivo}</div>
-        <p><strong>2.4 Descripción de la Experiencia:</strong></p><div class="field-box">${descripcion}</div>
-        <p><strong>2.5 Análisis y Reflexión Crítica:</strong></p><div class="field-box">${analisis}</div>
-        <p><strong>2.6 Resultados y Aportes:</strong></p><div class="field-box">${resultados}</div>
-        <p><strong>2.7 Proyección:</strong></p><div class="field-box">${proyeccion}</div>
-        <p><strong>Observaciones:</strong></p><div class="field-box">${observaciones}</div>
+        <p><strong>2.1 Contexto de la Experiencia:</strong></p>
+        <div class="field-box">${p.contexto_experiencia || 'N/A'}</div>
+
+        <p><strong>2.2 Pregunta Problematizadora:</strong></p>
+        <div class="field-box">${p.pregunta_problematizadora || 'N/A'}</div>
+
+        <p><strong>2.3 Objetivo de la Experiencia:</strong></p>
+        <div class="field-box">${p.objetivo_experiencia || 'N/A'}</div>
+
+        <p><strong>2.4 Descripción de la Experiencia:</strong></p>
+        <div class="field-box">${p.descripcion_experiencia || 'N/A'}</div>
+
+        <p><strong>2.5 Análisis y Reflexión Crítica:</strong></p>
+        <div class="field-box">${p.analisis_reflexion || 'N/A'}</div>
+
+        <p><strong>2.6 Resultados y Aportes:</strong></p>
+        <div class="field-box">${p.resultados_aportes || 'N/A'}</div>
+
+        <p><strong>2.7 Proyección:</strong></p>
+        <div class="field-box">${p.proyeccion || 'N/A'}</div>
+
+        <p><strong>Observaciones Adicionales:</strong></p>
+        <div class="field-box">${p.observaciones || 'N/A'}</div>
       `;
-      generateWordDocument('Experiencia Significativa - CTO', html, `Experiencia_Significativa_${radicado}.doc`);
+
+      generateWordDocument('Experiencia Significativa - CTO', mainTitle, radicado, bodyHtml, `Experiencia_Significativa_${radicado}.doc`);
     }
 
     function downloadInnovacionDocx(radicadoOverride = null) {
       const radicado = radicadoOverride || generateRadicado('INN');
-      const titulo = document.getElementById('inn_titulo').value || 'Sin Título';
-      const tipo = document.getElementById('inn_tipo').value || 'N/A';
-      const fecha = document.getElementById('inn_fecha').value || 'N/A';
-      const empresa = document.getElementById('inn_empresa').value || 'N/A';
-      const sector = document.getElementById('inn_sector').value || 'N/A';
-      const nit = document.getElementById('inn_nit').value || 'N/A';
-      const proyectoTitulo = document.getElementById('inn_proyecto_titulo').value || 'N/A';
-      const convocatoria = document.getElementById('inn_convocatoria').value || 'N/A';
-      const origenCtei = document.getElementById('inn_origen_ctei').value || 'N/A';
-      const nombreEstrategia = document.getElementById('inn_nombre_estrategia').value || 'N/A';
-      const financiadora = document.getElementById('inn_financiadora').value || 'N/A';
-      const disponibilidad = document.getElementById('inn_disponibilidad').value || 'N/A';
-      const proteccion = document.getElementById('inn_proteccion').value || 'N/A';
+      const payload = {
+        radicado: radicado,
+        titulo_innovacion: document.getElementById('inn_titulo').value,
+        tipo_innovacion: document.getElementById('inn_tipo').value,
+        fecha_creacion: document.getElementById('inn_fecha').value,
+        nombre_empresa: document.getElementById('inn_empresa').value,
+        sector_empresa: document.getElementById('inn_sector').value,
+        nit_empresa: document.getElementById('inn_nit').value,
+        proyecto_investigacion_titulo: document.getElementById('inn_proyecto_titulo').value,
+        proyecto_investigacion_convocatoria: document.getElementById('inn_convocatoria').value,
+        origen_estrategia_ctei: document.getElementById('inn_origen_ctei').value,
+        nombre_estrategia_ctei: document.getElementById('inn_nombre_estrategia').value,
+        institucion_financiadora: document.getElementById('inn_financiadora').value,
+        disponibilidad: document.getElementById('inn_disponibilidad').value,
+        tipo_proteccion: document.getElementById('inn_proteccion').value,
+        autor_principal_nombre: document.getElementById('inn_autor_nombre').value,
+        autor_principal_cedula: document.getElementById('inn_autor_cedula').value,
+        autor_principal_correo: document.getElementById('inn_autor_correo').value,
+        autor_principal_afiliacion: document.getElementById('inn_autor_afiliacion').value,
+        autor_principal_grupo_facultad: document.getElementById('inn_autor_grupo').value,
+        coautores_json: getCoautoresData(),
+        resumen_innovacion: document.getElementById('inn_resumen').value,
+        estado_previo_problematica: document.getElementById('inn_estado_previo').value,
+        estado_posterior_solucion: document.getElementById('inn_estado_posterior').value,
+        novedad_tipo: document.getElementById('inn_novedad_tipo').value,
+        novedad_explicacion: document.getElementById('inn_novedad_explicacion').value,
+        novedad_alcance: document.getElementById('inn_novedad_alcance').value,
+        novedad_alcance_evidencias: document.getElementById('inn_novedad_alcance_evidencias').value,
+        impactos_economicos_list: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
+        impactos_explicacion_evidencias: document.getElementById('inn_impactos_explicacion').value
+      };
+      generateInnovacionDocxFromData(radicado, payload);
+    }
 
-      const autorNombre = document.getElementById('inn_autor_nombre').value || 'N/A';
-      const autorCedula = document.getElementById('inn_autor_cedula').value || 'N/A';
-      const autorCorreo = document.getElementById('inn_autor_correo').value || 'N/A';
-      const autorAfiliacion = document.getElementById('inn_autor_afiliacion').value || 'N/A';
-      const autorGrupo = document.getElementById('inn_autor_grupo').value || 'N/A';
-
-      const coautores = getCoautoresData();
-      let coautoresHtml = '<p>No se registraron coautores adicionales.</p>';
+    function generateInnovacionDocxFromData(radicado, p) {
+      const mainTitle = 'REGISTRO DE INNOVACIONES EDUCATIVAS Y ORGANIZACIONALES';
+      const coautores = p.coautores_json || [];
+      let coautoresHtml = '<p style="font-size:9.5pt; color:#64748b;">No se registraron coautores adicionales.</p>';
       if (coautores.length > 0) {
         coautoresHtml = `
-          <table>
-            <thead><tr><th>Nombre</th><th>Cédula</th><th>Correo</th><th>Afiliación</th></tr></thead>
-            <tbody>${coautores.map(c => `<tr><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.correo}</td><td>${c.afiliacion}</td></tr>`).join('')}</tbody>
+          <table class="data-table">
+            <thead>
+              <tr><th>Nombre Coautor</th><th>Cédula</th><th>Correo Electrónico</th><th>Afiliación / Rol</th></tr>
+            </thead>
+            <tbody>
+              ${coautores.map(c => `<tr><td>${c.nombre || ''}</td><td>${c.cedula || ''}</td><td>${c.correo || ''}</td><td>${c.afiliacion || ''}</td></tr>`).join('')}
+            </tbody>
           </table>
         `;
       }
 
-      const resumen = document.getElementById('inn_resumen').value || 'N/A';
-      const estadoPrevio = document.getElementById('inn_estado_previo').value || 'N/A';
-      const estadoPosterior = document.getElementById('inn_estado_posterior').value || 'N/A';
-      const novedadTipo = document.getElementById('inn_novedad_tipo').value || 'N/A';
-      const novedadExplicacion = document.getElementById('inn_novedad_explicacion').value || 'N/A';
-      const novedadAlcance = document.getElementById('inn_novedad_alcance').value || 'N/A';
-      const novedadAlcanceEvidencias = document.getElementById('inn_novedad_alcance_evidencias').value || 'N/A';
-      const impactosList = Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value).join(', ') || 'Ninguno';
-      const impactosExplicacion = document.getElementById('inn_impactos_explicacion').value || 'N/A';
+      const impactosList = (p.impactos_economicos_list && p.impactos_economicos_list.length > 0) 
+        ? p.impactos_economicos_list.join(', ') 
+        : 'Ninguno';
 
-      const html = `
-        <h1>REGISTRO DE INNOVACIONES EDUCATIVAS Y ORGANIZACIONALES</h1>
-        <p style="text-align: center; font-size: 10pt; color: #64748b;"><strong>Radicado No:</strong> ${radicado}</p>
-        <h2>1. Información General</h2>
-        <table>
-          <tr><td class="label-cell">Título de Innovación:</td><td><strong>${titulo}</strong></td></tr>
-          <tr><td class="label-cell">Tipo de Innovación:</td><td>${tipo}</td></tr>
-          <tr><td class="label-cell">Fecha de Creación:</td><td>${fecha}</td></tr>
-          <tr><td class="label-cell">Empresa / Sector:</td><td>${empresa} (NIT: ${nit}) - Sector: ${sector}</td></tr>
-          <tr><td class="label-cell">Proyecto Asociado:</td><td>${proyectoTitulo} (Convocatoria: ${convocatoria})</td></tr>
-          <tr><td class="label-cell">Estrategia CTEI:</td><td>${origenCtei} (${nombreEstrategia})</td></tr>
-          <tr><td class="label-cell">Financiadora / Protección:</td><td>${financiadora} - Protección: ${proteccion} (${disponibilidad})</td></tr>
+      const bodyHtml = `
+        <h2>1. Información General de la Innovación</h2>
+        <table class="data-table">
+          <tr><td class="label-cell">Título de Innovación:</td><td><strong>${p.titulo_innovacion || 'Sin Título'}</strong></td></tr>
+          <tr><td class="label-cell">Tipo de Innovación:</td><td>${p.tipo_innovacion || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Fecha de Creación:</td><td>${p.fecha_creacion || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Empresa / Sector:</td><td>${p.nombre_empresa || 'N/A'} (NIT: ${p.nit_empresa || 'N/A'}) - Sector: ${p.sector_empresa || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Proyecto Asociado:</td><td>${p.proyecto_investigacion_titulo || 'N/A'} (Convocatoria: ${p.proyecto_investigacion_convocatoria || 'N/A'})</td></tr>
+          <tr><td class="label-cell">Estrategia CTEI:</td><td>${p.origen_estrategia_ctei || 'N/A'} (${p.nombre_estrategia_ctei || 'N/A'})</td></tr>
+          <tr><td class="label-cell">Financiadora / Protección:</td><td>${p.institucion_financiadora || 'N/A'} - Protección: ${p.tipo_proteccion || 'N/A'} (${p.disponibilidad || 'N/A'})</td></tr>
         </table>
+
         <h2>2. Información sobre Autores</h2>
-        <p><strong>Autor Principal:</strong> ${autorNombre} | C.C. ${autorCedula} | ${autorCorreo} | ${autorAfiliacion} (Programa: ${autorGrupo})</p>
-        <h3>Coautores:</h3>
+        <table class="data-table">
+          <tr><td class="label-cell">Autor Principal:</td><td><strong>${p.autor_principal_nombre || 'N/A'}</strong> (C.C. ${p.autor_principal_cedula || 'N/A'})</td></tr>
+          <tr><td class="label-cell">Correo / Afiliación:</td><td>${p.autor_principal_correo || 'N/A'} - ${p.autor_principal_afiliacion || 'N/A'}</td></tr>
+          <tr><td class="label-cell">Programa / Facultad:</td><td>${p.autor_principal_grupo_facultad || 'N/A'}</td></tr>
+        </table>
+        
+        <h3>Coautores Adicionales:</h3>
         ${coautoresHtml}
+
         <h2>3. Detalles Técnicos e Impacto de la Innovación</h2>
-        <p><strong>Resumen de la Innovación:</strong></p><div class="field-box">${resumen}</div>
-        <p><strong>Descripción Previa:</strong></p><div class="field-box">${estadoPrevio}</div>
-        <p><strong>Descripción Posterior:</strong></p><div class="field-box">${estadoPosterior}</div>
+        <p><strong>Resumen de la Innovación:</strong></p>
+        <div class="field-box">${p.resumen_innovacion || 'N/A'}</div>
+
+        <p><strong>Descripción Previa (Estado del Arte / Problemática):</strong></p>
+        <div class="field-box">${p.estado_previo_problematica || 'N/A'}</div>
+
+        <p><strong>Descripción Posterior (Solución e Impacto):</strong></p>
+        <div class="field-box">${p.estado_posterior_solucion || 'N/A'}</div>
+
         <p><strong>Novedad y Alcance:</strong></p>
         <div class="field-box">
-          <strong>Tipo:</strong> ${novedadTipo}<br>
-          <strong>Explicación:</strong> ${novedadExplicacion}<br><br>
-          <strong>Alcance Territorial:</strong> ${novedadAlcance}<br>
-          <strong>Evidencias Alcance:</strong> ${novedadAlcanceEvidencias}
+          <strong>Tipo de Novedad:</strong> ${p.novedad_tipo || 'N/A'}<br>
+          <strong>Explicación de la Novedad:</strong> ${p.novedad_explicacion || 'N/A'}<br><br>
+          <strong>Alcance Territorial:</strong> ${p.novedad_alcance || 'N/A'}<br>
+          <strong>Evidencias del Alcance:</strong> ${p.novedad_alcance_evidencias || 'N/A'}
         </div>
+
         <p><strong>Impactos Evidenciados en la Organización:</strong></p>
         <div class="field-box">
           <strong>Impactos Seleccionados:</strong> ${impactosList}<br><br>
-          <strong>Explicación con Evidencias Tangibles:</strong><br>${impactosExplicacion}
+          <strong>Explicación con Evidencias Tangibles:</strong><br>${p.impactos_explicacion_evidencias || 'N/A'}
         </div>
       `;
-      generateWordDocument('Registro de Innovaciones - CTO', html, `Registro_Innovacion_${radicado}.doc`);
+
+      generateWordDocument('Registro de Innovaciones - CTO', mainTitle, radicado, bodyHtml, `Registro_Innovacion_${radicado}.doc`);
     }
 
     function showReceiptModal(radicado, tipo, autor, downloadWordCallback) {

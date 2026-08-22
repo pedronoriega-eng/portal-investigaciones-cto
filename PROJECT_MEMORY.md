@@ -1,9 +1,8 @@
 # 🧠 MEMORIA INTEGRAL DEL PROYECTO DE INVESTIGACIONES E INNOVACIONES (CTO)
 
 **Institución:** Corporación Tecnológica del Oriente  
-**Sistema:** Portal Institucional de Captura de Información Científica, Experiencias Significativas e Innovaciones Educativas (SIAC / I+D+i)  
-**Fecha de Última Actualización:** 21 de Agosto de 2026  
-**Autor / Desarrollador:** Pedro Noriega (`pedronoriega-eng`) & Antigravity AI  
+**Sistema:** Portal Institucional de Captura de Información Científica, Experiencias Significativas e Innovaciones Educativas (SIAC / I+D+i) - **Fecha de Última Actualización:** 22 de Agosto de 2026  
+- **Autor / Desarrollador:** Pedro Noriega (`pedronoriega-eng`) & Antigravity AI  
 
 ---
 
@@ -76,7 +75,13 @@ Para garantizar trazabilidad 100% homogénea sin errores tipográficos, los form
 - **Formulario 1 (Anexo 1 - Experiencias Significativas):** Captura de 18 campos institucionales + selección múltiple ASC + radicado `EXP-2026-XXXX`.
 - **Formulario 2 (Guía Orientadora - Innovaciones Educativas):** Captura de 24 campos institucionales + dinámico de coautores + radicado `INN-2026-XXXX`.
 - **Autoguardado en LocalStorage:** Cada 15 segundos guarda el borrador (`teo_portal_investigacion_draft`) para evitar pérdida de datos si se cierra la pestaña.
-- **Exportación Nativa a Microsoft Word (.docx):** Funciones JavaScript nativas (`downloadExperienciaDocx()` y `downloadInnovacionDocx()`) que generan documentos `.doc`/`.docx` formateados con tablas institucionales sin librerías pesadas.
+- **Limpieza Automática tras Radicación:** Al radicar exitosamente en Supabase y generar el recibo/descarga, el formulario y su borrador en `localStorage` se limpian automáticamente (quedando al 0%) para permitir el siguiente diligenciamiento inmediato.
+- **Exportación Nativa a Microsoft Word (.docx) con Encabezado y Pie Institucional Exacto:** Generación en el cliente (`generateWordDocument`, `downloadExperienciaDocx`, `downloadInnovacionDocx`) que incluye:
+  - Recuadro de encabezado con división (`CORPORACIÓN TECNOLÓGICA DEL ORIENTE` en naranja, `Sistema Institucional de Investigaciones, Innovación y Creación (SIAC)`, fecha actual y `Vigilada Mineducación` a la derecha).
+  - Título principal centrado en mayúsculas.
+  - Línea divisoria naranja institucional continua (`border-bottom: 3.5pt solid #e67817`).
+  - Subtítulo de `Radicado No: EXP-2026-XXXX` centrado.
+  - Tabla de datos estructurada con celdas sombreadas y pie de página institucional.
 
 ### B. `schema.sql` (Script de Migración SQL)
 - Definición de tablas `experiencias_significativas` y `innovaciones_educativas`.
