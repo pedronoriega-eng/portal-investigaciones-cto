@@ -1300,14 +1300,39 @@
       });
     }
 
-    function createContentBlock(text) {
-      const { Paragraph, TextRun } = docx;
+    function createQuestionPromptParagraph(text) {
+      const { Paragraph, TextRun, AlignmentType } = docx;
       return new Paragraph({
-        spacing: { before: 40, after: 140 },
+        spacing: { before: 20, after: 60 },
+        alignment: AlignmentType.JUSTIFY,
         children: [
-          new TextRun({ text: text || "N/A", size: 19, color: "334155", font: "Arial" })
+          new TextRun({ text: text, italics: true, size: 18, color: "64748B", font: "Arial" })
         ]
       });
+    }
+
+    function createContentBlock(text) {
+      const { Paragraph, TextRun, AlignmentType } = docx;
+      if (!text || !text.trim()) {
+        return [new Paragraph({
+          spacing: { before: 40, after: 140 },
+          alignment: AlignmentType.JUSTIFY,
+          children: [new TextRun({ text: "N/A", size: 19, color: "334155", font: "Arial" })]
+        })];
+      }
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length === 0) {
+        return [new Paragraph({
+          spacing: { before: 40, after: 140 },
+          alignment: AlignmentType.JUSTIFY,
+          children: [new TextRun({ text: "N/A", size: 19, color: "334155", font: "Arial" })]
+        })];
+      }
+      return lines.map(line => new Paragraph({
+        spacing: { before: 40, after: 140 },
+        alignment: AlignmentType.JUSTIFY,
+        children: [new TextRun({ text: line, size: 19, color: "334155", font: "Arial" })]
+      }));
     }
 
     function createDocxTable(rowsData) {
@@ -1468,21 +1493,29 @@
         createDocxTable(tableRows),
         createHeadingParagraph("2. Desarrollo de la Experiencia Significativa"),
         createSubheadingParagraph("2.1 Contexto de la Experiencia:"),
-        createContentBlock(p.contexto_experiencia),
+        createQuestionPromptParagraph("Pregunta orientadora: ¿Dónde se desarrolló?, ¿con quién (empresa, población, comunidad)?, condiciones del contexto y ¿por qué se realizó en esta población?"),
+        ...createContentBlock(p.contexto_experiencia),
         createSubheadingParagraph("2.2 Pregunta Problematizadora:"),
-        createContentBlock(p.pregunta_problematizadora),
-        createSubheadingParagraph("2.3 Objetivo de la Experiencia:"),
-        createContentBlock(p.objetivo_experiencia),
+        createQuestionPromptParagraph("Pregunta orientadora: Formule la pregunta que orienta la reflexión y resultados (Ej: ¿Cómo aporta esta experiencia a la solución de un problema real del entorno?)"),
+        ...createContentBlock(p.pregunta_problematizadora),
+        createSubheadingParagraph("2.3 Objetivo de la Experiencia Significativa:"),
+        createQuestionPromptParagraph("Pregunta orientadora: Indique el objetivo general de la experiencia significativa (Ej: Analizar los aprendizajes derivados de..., identificar los aportes de...)"),
+        ...createContentBlock(p.objetivo_experiencia),
         createSubheadingParagraph("2.4 Descripción de la Experiencia:"),
-        createContentBlock(p.descripcion_experiencia),
+        createQuestionPromptParagraph("Pregunta orientadora: Describa las actividades realizadas, metodología utilizada, etapas desarrolladas y los actores involucrados."),
+        ...createContentBlock(p.descripcion_experiencia),
         createSubheadingParagraph("2.5 Análisis y Reflexión Crítica:"),
-        createContentBlock(p.analisis_reflexion),
+        createQuestionPromptParagraph("Pregunta orientadora: Responda: ¿Qué funcionó bien?, ¿qué dificultades se presentaron durante el proceso? y ¿qué aprendizajes significativos se generaron?"),
+        ...createContentBlock(p.analisis_reflexion),
         createSubheadingParagraph("2.6 Resultados y Aportes:"),
-        createContentBlock(p.resultados_aportes),
+        createQuestionPromptParagraph("Pregunta orientadora: Describa los aportes y resultados obtenidos en al menos dos ámbitos (Educativos, sociales, organizacionales, tecnológicos o investigativos)."),
+        ...createContentBlock(p.resultados_aportes),
         createSubheadingParagraph("2.7 Proyección:"),
-        createContentBlock(p.proyeccion),
+        createQuestionPromptParagraph("Pregunta orientadora: Indique brevemente cómo esta experiencia puede mejorarse y replicarse en otro escenario académico u organizacional."),
+        ...createContentBlock(p.proyeccion),
         createSubheadingParagraph("Observaciones Adicionales:"),
-        createContentBlock(p.observaciones),
+        createQuestionPromptParagraph("Pregunta orientadora: Registre cualquier observación complementaria relevante que no haya sido abordada anteriormente."),
+        ...createContentBlock(p.observaciones),
         createHeadingParagraph("2.8 Referencias Bibliográficas (Sistema APA 6ª Edición)"),
         ...createApaParagraphs(p.referencias_apa)
       ];
@@ -1579,15 +1612,15 @@
         createDocxTable(tableRowsAutores),
         createHeadingParagraph("3. Detalles Técnicos e Impacto de la Innovación"),
         createSubheadingParagraph("Resumen de la Innovación:"),
-        createContentBlock(p.resumen_innovacion),
+        ...createContentBlock(p.resumen_innovacion),
         createSubheadingParagraph("Descripción Previa (Estado del Arte / Problemática):"),
-        createContentBlock(p.estado_previo_problematica),
+        ...createContentBlock(p.estado_previo_problematica),
         createSubheadingParagraph("Descripción Posterior (Solución e Impacto):"),
-        createContentBlock(p.estado_posterior_solucion),
+        ...createContentBlock(p.estado_posterior_solucion),
         createSubheadingParagraph("Novedad y Alcance:"),
-        createContentBlock(`Tipo de Novedad: ${p.novedad_tipo || 'N/A'}\nExplicación de Novedad: ${p.novedad_explicacion || 'N/A'}\nAlcance Territorial: ${p.novedad_alcance || 'N/A'}\nEvidencias de Alcance: ${p.novedad_alcance_evidencias || 'N/A'}`),
+        ...createContentBlock(`Tipo de Novedad: ${p.novedad_tipo || 'N/A'}\nExplicación de Novedad: ${p.novedad_explicacion || 'N/A'}\nAlcance Territorial: ${p.novedad_alcance || 'N/A'}\nEvidencias de Alcance: ${p.novedad_alcance_evidencias || 'N/A'}`),
         createSubheadingParagraph("Impactos Evidenciados en la Organización:"),
-        createContentBlock(`Impactos Seleccionados: ${impactosList}\n\nExplicación con Evidencias Tangibles:\n${p.impactos_explicacion_evidencias || 'N/A'}`),
+        ...createContentBlock(`Impactos Seleccionados: ${impactosList}\n\nExplicación con Evidencias Tangibles:\n${p.impactos_explicacion_evidencias || 'N/A'}`),
         createHeadingParagraph("4. Referencias Bibliográficas (Sistema APA 6ª Edición)"),
         ...createApaParagraphs(p.referencias_apa)
       ];
