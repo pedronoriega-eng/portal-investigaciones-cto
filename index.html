@@ -1331,19 +1331,48 @@
         proyeccion_mejora: getVal('exp_proyeccion_mejora'),
         proyeccion_replicabilidad: getVal('exp_proyeccion_replicabilidad'),
         observaciones: getVal('exp_observaciones'),
-        contexto_experiencia: `Ubicación/Población: ${getVal('exp_contexto_poblacion')}\nCondiciones/Justificación: ${getVal('exp_contexto_condiciones')}`,
-        descripcion_experiencia: `Actividades/Fases: ${getVal('exp_descripcion_fases')}\nMetodología/Actores: ${getVal('exp_descripcion_metodologia')}`,
-        analisis_reflexion: `¿Qué funcionó bien?: ${getVal('exp_analisis_logros')}\n¿Qué dificultades hubo?: ${getVal('exp_analisis_dificultades')}\n¿Qué aprendizajes se generaron?: ${getVal('exp_analisis_aprendizajes')}`,
-        resultados_aportes: `Aportes Educativos/Investigativos: ${getVal('exp_resultados_educativos')}\nAportes Sociales/Organizacionales: ${getVal('exp_resultados_sociales')}`,
-        proyeccion: `Plan de Mejora: ${getVal('exp_proyeccion_mejora')}\nReplicabilidad: ${getVal('exp_proyeccion_replicabilidad')}`,
+        contexto_experiencia: `a) Dónde: ${getVal('exp_contexto_donde')}\nb) Con quién: ${getVal('exp_contexto_con_quien')}\nc) Condiciones: ${getVal('exp_contexto_condiciones')}\nd) Por qué: ${getVal('exp_contexto_por_que')}`,
+        descripcion_experiencia: `a) Actividades: ${getVal('exp_descripcion_actividades')}\nb) Metodología: ${getVal('exp_descripcion_metodologia')}\nc) Actores: ${getVal('exp_descripcion_actores')}`,
+        analisis_reflexion: `a) ¿Qué funcionó bien?: ${getVal('exp_analisis_logros')}\nb) Dificultades/Limitaciones: ${getVal('exp_analisis_dificultades')}\nc) Aprendizajes generados: ${getVal('exp_analisis_aprendizajes')}`,
+        resultados_aportes: `a) Educativos/Investigativos: ${getVal('exp_resultados_educativos')}\nb) Sociales/Organizacionales/Tecnológicos: ${getVal('exp_resultados_sociales')}`,
+        proyeccion: `a) Plan de Mejora: ${getVal('exp_proyeccion_mejora')}\nb) Replicabilidad: ${getVal('exp_proyeccion_replicabilidad')}`,
         referencias_apa: getVal('exp_referencias')
       };
 
       if (supabaseClient) {
         try {
+          // Payload limpio filtrado únicamente con las columnas válidas existentes en Supabase PostgreSQL
+          const dbPayload = {
+            radicado: payload.radicado,
+            nombre_experiencia: payload.nombre_experiencia,
+            programa_academico: payload.programa_academico,
+            espacio_academico: payload.espacio_academico,
+            nivel_formacion: payload.nivel_formacion,
+            fecha_presentacion: payload.fecha_presentacion,
+            periodo_academico: payload.periodo_academico,
+            docentes_responsables: payload.docentes_responsables,
+            cedula_docente: payload.cedula_docente,
+            correo_docente: payload.correo_docente,
+            num_estudiantes: payload.num_estudiantes,
+            modalidad: payload.modalidad,
+            lugar_contexto: payload.lugar_contexto,
+            lineas_investigacion_programa: payload.lineas_investigacion_programa,
+            lineas_investigacion_institucional: payload.lineas_investigacion_institucional,
+            espacio_divulgacion_asc: payload.espacio_divulgacion_asc,
+            espacio_divulgacion_otro: payload.espacio_divulgacion_otro,
+            contexto_experiencia: payload.contexto_experiencia,
+            pregunta_problematizadora: payload.pregunta_problematizadora,
+            objetivo_experiencia: payload.objetivo_experiencia,
+            descripcion_experiencia: payload.descripcion_experiencia,
+            analisis_reflexion: payload.analisis_reflexion,
+            resultados_aportes: payload.resultados_aportes,
+            proyeccion: payload.proyeccion,
+            observaciones: payload.observaciones
+          };
+
           const { data, error } = await supabaseClient
             .from('experiencias_significativas')
-            .insert([payload]);
+            .insert([dbPayload]);
 
           if (error) throw error;
           showToast('Registro guardado exitosamente en Supabase', 'success');
@@ -1403,10 +1432,42 @@
 
       if (supabaseClient) {
         try {
-          let insertPayload = { ...payload };
+          // Payload limpio filtrado únicamente con las columnas válidas existentes en Supabase PostgreSQL
+          const dbPayload = {
+            radicado: payload.radicado,
+            titulo_innovacion: payload.titulo_innovacion,
+            tipo_innovacion: payload.tipo_innovacion,
+            fecha_creacion: payload.fecha_creacion,
+            nombre_empresa: payload.nombre_empresa,
+            sector_empresa: payload.sector_empresa,
+            nit_empresa: payload.nit_empresa,
+            proyecto_investigacion_titulo: payload.proyecto_investigacion_titulo,
+            proyecto_investigacion_convocatoria: payload.proyecto_investigacion_convocatoria,
+            origen_estrategia_ctei: payload.origen_estrategia_ctei,
+            nombre_estrategia_ctei: payload.nombre_estrategia_ctei,
+            institucion_financiadora: payload.institucion_financiadora,
+            disponibilidad: payload.disponibilidad,
+            tipo_proteccion: payload.tipo_proteccion,
+            autor_principal_nombre: payload.autor_principal_nombre,
+            autor_principal_cedula: payload.autor_principal_cedula,
+            autor_principal_correo: payload.autor_principal_correo,
+            autor_principal_afiliacion: payload.autor_principal_afiliacion,
+            autor_principal_grupo_facultad: payload.autor_principal_grupo_facultad,
+            coautores_json: payload.coautores_json,
+            resumen_innovacion: payload.resumen_innovacion,
+            estado_previo_problematica: payload.estado_previo_problematica,
+            estado_posterior_solucion: payload.estado_posterior_solucion,
+            novedad_tipo: payload.novedad_tipo,
+            novedad_explicacion: payload.novedad_explicacion,
+            novedad_alcance: payload.novedad_alcance,
+            novedad_alcance_evidencias: payload.novedad_alcance_evidencias,
+            impactos_economicos_list: payload.impactos_economicos_list,
+            impactos_explicacion_evidencias: payload.impactos_explicacion_evidencias
+          };
+
           const { data, error } = await supabaseClient
             .from('innovaciones_educativas')
-            .insert([insertPayload]);
+            .insert([dbPayload]);
 
           if (error) throw error;
           showToast('Innovación registrada exitosamente en Supabase', 'success');
