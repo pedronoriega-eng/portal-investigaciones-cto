@@ -1250,10 +1250,75 @@
       document.getElementById('progress-bar').style.width = `${pct}%`;
     }
 
-        function generateRadicado(prefix) {
+    function getProgramCode(programa) {
+      if (!programa || !programa.trim()) return 'CTO';
+      const p = programa.toUpperCase();
+      if (p.includes('ADMINISTRACI')) return 'ADM';
+      if (p.includes('DERECHO')) return 'DER';
+      if (p.includes('SOFTWARE') || p.includes('DESARROLLO') || p.includes('SISTEMAS')) return 'SOF';
+      if (p.includes('INDUSTRIAL')) return 'IND';
+      if (p.includes('INFANTIL') || p.includes('EDUCACI') || p.includes('LICENCIATURA')) return 'EDU';
+      if (p.includes('SALUD') || p.includes('SST') || p.includes('HIGIENE')) return 'SST';
+      if (p.includes('PROYECTOS')) return 'PRO';
+      if (p.includes('DATOS') || p.includes('NEGOCIOS') || p.includes('ANALÍTICA') || p.includes('ANALITICA')) return 'DAT';
+      if (p.includes('PEDAGOG')) return 'PED';
+      if (p.includes('INVESTIGACI')) return 'INV';
+      
+      const clean = p.replace(/[^A-Z]/g, '');
+      return (clean.substring(0, 3) || 'CTO').padEnd(3, 'X');
+    }
+
+    function getPeriodoCode(periodoStr) {
       const year = new Date().getFullYear();
-      const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
-      return `${prefix}-${year}-${rand}`;
+      if (!periodoStr || !periodoStr.trim()) return `${year}1`;
+      const digits = periodoStr.replace(/[^0-9]/g, '');
+      if (digits.length >= 5) return digits.substring(0, 5);
+      if (digits.length === 4) return `${digits}1`;
+      if (digits.length > 0) return `${year}${digits.substring(0, 1)}`;
+      return `${year}1`;
+    }
+
+    async function generateRadicadoAsync(prefix, programaStr, periodoStr) {
+      const typeCode = prefix; // 'EXP' o 'INN'
+      const progCode = getProgramCode(programaStr);
+      const semCode = getPeriodoCode(periodoStr);
+
+      let count = 1;
+      const storageKey = `teo_radicado_count_${typeCode}`;
+
+      if (supabaseClient) {
+        try {
+          const tableName = typeCode === 'EXP' ? 'experiencias_significativas' : 'innovaciones_educativas';
+          const { count: dbCount, error } = await supabaseClient
+            .from(tableName)
+            .select('*', { count: 'exact', head: true });
+          
+          if (!error && typeof dbCount === 'number') {
+            count = dbCount + 1;
+          } else {
+            count = (parseInt(localStorage.getItem(storageKey)) || 0) + 1;
+          }
+        } catch (e) {
+          count = (parseInt(localStorage.getItem(storageKey)) || 0) + 1;
+        }
+      } else {
+        count = (parseInt(localStorage.getItem(storageKey)) || 0) + 1;
+      }
+
+      localStorage.setItem(storageKey, count);
+      const consecutiveStr = String(count).padStart(3, '0');
+
+      return `${typeCode}-${progCode}-${semCode}-${consecutiveStr}`;
+    }
+
+    function generateRadicado(prefix, programaStr = '', periodoStr = '') {
+      const typeCode = prefix;
+      const progCode = getProgramCode(programaStr);
+      const semCode = getPeriodoCode(periodoStr);
+      const storageKey = `teo_radicado_count_${typeCode}`;
+      const count = (parseInt(localStorage.getItem(storageKey)) || 0) + 1;
+      const consecutiveStr = String(count).padStart(3, '0');
+      return `${typeCode}-${progCode}-${semCode}-${consecutiveStr}`;
     }
 
     function resetSubmittedForm(formType, forceSilent = false) {
@@ -1294,7 +1359,9 @@
 
     async function handleExperienciasSubmit(event) {
       event.preventDefault();
-      const radicado = generateRadicado('EXP');
+      const progVal = getVal('exp_programa');
+      const perVal = getVal('exp_periodo');
+      const radicado = await generateRadicadoAsync('EXP', progVal, perVal);
 
       const payload = {
         radicado: radicado,
@@ -1394,7 +1461,9 @@
 
     async function handleInnovacionesSubmit(event) {
       event.preventDefault();
-      const radicado = generateRadicado('INN');
+      const progVal = document.getElementById('inn_autor_grupo').value || document.getElementById('inn_tipo').value;
+      const perVal = document.getElementById('inn_fecha').value;
+      const radicado = await generateRadicadoAsync('INN', progVal, perVal);
 
       const payload = {
         radicado: radicado,
@@ -1625,7 +1694,9 @@
     }
 
     function downloadExperienciaDocx(radicadoOverride = null) {
-      const radicado = radicadoOverride || generateRadicado('EXP');
+      const progVal = getVal('exp_programa');
+      const perVal = getVal('exp_periodo');
+      const radicado = radicadoOverride || generateRadicado('EXP', progVal, perVal);
       const payload = {
         radicado: radicado,
         nombre_experiencia: getVal('exp_nombre'),
@@ -1672,7 +1743,9 @@
     }
 
     function downloadInnovacionDocx(radicadoOverride = null) {
-      const radicado = radicadoOverride || generateRadicado('INN');
+      const progVal = document.getElementById('inn_autor_grupo').value || document.getElementById('inn_tipo').value;
+      const perVal = document.getElementById('inn_fecha').value;
+      const radicado = radicadoOverride || generateRadicado('INN', progVal, perVal);
       const payload = {
         radicado: radicado,
         titulo_innovacion: document.getElementById('inn_titulo').value,
