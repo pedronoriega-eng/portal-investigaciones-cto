@@ -14,6 +14,10 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    function getVal(id) {
+      const el = document.getElementById(id);
+      return el ? (el.value || '') : '';
+    }
     tailwind.config = {
       theme: {
         extend: {
@@ -307,46 +311,158 @@
             1.2 Desarrollo de la Experiencia Significativa
           </h3>
 
-          <div class="space-y-5">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.1 Contexto de la Experiencia *</label>
-              <p class="text-xs text-slate-500 mb-1.5">¿Dónde se desarrolló?, ¿con quién (empresa, población, comunidad)?, condiciones del contexto y ¿por qué se realizó en esta población?</p>
-              <textarea id="exp_contexto" rows="3" required class="input-field" placeholder="Describa el contexto detalladamente..."></textarea>
+          <div class="space-y-6">
+            <!-- 2.1 CONTEXTO DE LA EXPERIENCIA -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.1</span>
+                <span>Contexto de la Experiencia</span>
+              </h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.1.a) Ubicación y Población *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">¿Dónde se desarrolló y con quién (empresa, población, comunidad)?</p>
+                  <textarea id="exp_contexto_poblacion" rows="3" required class="input-field" placeholder="Describa el lugar, la entidad o comunidad donde se realizó..."></textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.1.b) Justificación del Contexto *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">¿Cuáles eran las condiciones del contexto y por qué se realizó en esta población?</p>
+                  <textarea id="exp_contexto_condiciones" rows="3" required class="input-field" placeholder="Describa las condiciones iniciales y la justificación..."></textarea>
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.2 Pregunta Problematizadora *</label>
-              <p class="text-xs text-slate-500 mb-1.5">Formule la pregunta que orienta la reflexión y resultados (Ej: ¿Cómo aporta esta experiencia a la solución de un problema real?)</p>
-              <textarea id="exp_pregunta" rows="2" required class="input-field" placeholder="Formule la pregunta orientadora..."></textarea>
+
+            <!-- 2.2 PREGUNTA PROBLEMATIZADORA -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.2</span>
+                <span>Pregunta Problematizadora</span>
+              </h4>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Pregunta Orientadora *</label>
+                <p class="text-xs text-slate-500 mb-1.5">Formule la pregunta central que orienta la reflexión y los resultados derivados (Ej: ¿Cómo aporta esta experiencia a la solución de un problema real del entorno?)</p>
+                <textarea id="exp_pregunta" rows="3" required class="input-field" placeholder="Formule la pregunta problematizadora..."></textarea>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.3 Objetivo de la Experiencia Significativa *</label>
-              <p class="text-xs text-slate-500 mb-1.5">Indique el objetivo principal (Ej: Analizar los aprendizajes derivados de..., identificar aportes de...)</p>
-              <textarea id="exp_objetivo" rows="2" required class="input-field" placeholder="Objetivo general de la experiencia..."></textarea>
+
+            <!-- 2.3 OBJETIVO -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.3</span>
+                <span>Objetivo de la Experiencia Significativa</span>
+              </h4>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Objetivo General *</label>
+                <p class="text-xs text-slate-500 mb-1.5">Indique el objetivo general alcanzado (Ej: Analizar los aprendizajes derivados de..., identificar los aportes de...)</p>
+                <textarea id="exp_objetivo" rows="3" required class="input-field" placeholder="Describa el objetivo general..."></textarea>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.4 Descripción de la Experiencia *</label>
-              <p class="text-xs text-slate-500 mb-1.5">Describa actividades realizadas, metodología utilizada y actores involucrados.</p>
-              <textarea id="exp_descripcion" rows="4" required class="input-field" placeholder="Detalle paso a paso el desarrollo de la experiencia..."></textarea>
+
+            <!-- 2.4 DESCRIPCIÓN DE LA EXPERIENCIA -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.4</span>
+                <span>Descripción de la Experiencia</span>
+              </h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.4.a) Actividades y Fases *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">Describa paso a paso las actividades y etapas desarrolladas en la experiencia.</p>
+                  <textarea id="exp_descripcion_fases" rows="4" required class="input-field" placeholder="Detalle las fases o pasos ejecutados..."></textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.4.b) Metodología y Actores Involucrados *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">Describa la metodología utilizada y el rol de docentes, estudiantes y comunidad/empresa.</p>
+                  <textarea id="exp_descripcion_metodologia" rows="4" required class="input-field" placeholder="Describa la metodología y los participantes..."></textarea>
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.5 Análisis y Reflexión Crítica *</label>
-              <p class="text-xs text-slate-500 mb-1.5">Responda: ¿Qué funcionó bien?, ¿qué dificultades se presentaron? y ¿qué aprendizajes se generaron?</p>
-              <textarea id="exp_analisis" rows="4" required class="input-field" placeholder="Análisis reflexivo sobre los logros y dificultades..."></textarea>
+
+            <!-- 2.5 ANÁLISIS Y REFLEXIÓN CRÍTICA (SUB-PREGUNTAS INDEPENDIENTES) -->
+            <div class="bg-white p-5 rounded-lg border-2 border-brand-orange/30 shadow-sm">
+              <h4 class="text-xs font-bold text-brand-orange uppercase mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.5</span>
+                <span>Análisis y Reflexión Crítica</span>
+              </h4>
+              <div class="space-y-4">
+                <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
+                  <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                    <span>2.5.a) ¿Qué funcionó bien al implementar la experiencia? *</span>
+                  </label>
+                  <p class="text-xs text-slate-500 mb-2">Describa los aspectos positivos, fortalezas y factores de éxito logrados.</p>
+                  <textarea id="exp_analisis_logros" rows="4" required class="input-field bg-white" placeholder="Responda aquí los aspectos positivos que funcionaron bien..."></textarea>
+                </div>
+
+                <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
+                  <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                    <span>2.5.b) ¿Qué dificultades o limitaciones se presentaron? *</span>
+                  </label>
+                  <p class="text-xs text-slate-500 mb-2">Describa los obstáculos, retos o limitaciones encontradas y cómo se gestionaron.</p>
+                  <textarea id="exp_analisis_dificultades" rows="4" required class="input-field bg-white" placeholder="Responda aquí las dificultades o limitaciones encontradas..."></textarea>
+                </div>
+
+                <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
+                  <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-graduation-cap text-blue-600"></i>
+                    <span>2.5.c) ¿Qué aprendizajes se generaron? *</span>
+                  </label>
+                  <p class="text-xs text-slate-500 mb-2">Describa los aprendizajes significativos generados para docentes y estudiantes.</p>
+                  <textarea id="exp_analisis_aprendizajes" rows="4" required class="input-field bg-white" placeholder="Responda aquí los aprendizajes pedagógicos y profesionales generados..."></textarea>
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.6 Resultados y Aportes *</label>
-              <p class="text-xs text-slate-500 mb-1.5">Describa aportes en al menos 2 ámbitos (Educativos, sociales, organizacionales, tecnológicos o investigativos).</p>
-              <textarea id="exp_resultados" rows="3" required class="input-field" placeholder="Describa los resultados tangibles u obtenidos..."></textarea>
+
+            <!-- 2.6 RESULTADOS Y APORTES -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.6</span>
+                <span>Resultados y Aportes</span>
+              </h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.6.a) Aportes Educativos e Investigativos *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">Resultados tangibles en el ámbito pedagógico, currículo o producción académica.</p>
+                  <textarea id="exp_resultados_educativos" rows="3" required class="input-field" placeholder="Describa los aportes educativos e investigativos..."></textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.6.b) Aportes Sociales, Organizacionales o Tecnológicos *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">Resultados tangibles en la empresa, comunidad o desarrollo técnico.</p>
+                  <textarea id="exp_resultados_sociales" rows="3" required class="input-field" placeholder="Describa los aportes sociales u organizacionales..."></textarea>
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.7 Proyección *</label>
-              <p class="text-xs text-slate-500 mb-1.5">Indique brevemente cómo esta experiencia puede replicarse en otro escenario y mejorarse.</p>
-              <textarea id="exp_proyeccion" rows="2" required class="input-field" placeholder="Plan de replicabilidad y mejora continua..."></textarea>
+
+            <!-- 2.7 PROYECCIÓN -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-3 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.7</span>
+                <span>Proyección</span>
+              </h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.7.a) Plan de Mejora *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">¿De qué manera puede mejorarse esta experiencia en futuras aplicaciones?</p>
+                  <textarea id="exp_proyeccion_mejora" rows="3" required class="input-field" placeholder="Indique las oportunidades de mejora..."></textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">2.7.b) Replicabilidad *</label>
+                  <p class="text-xs text-slate-500 mb-1.5">¿De qué manera puede replicarse en otros escenarios académicos u organizacionales?</p>
+                  <textarea id="exp_proyeccion_replicabilidad" rows="3" required class="input-field" placeholder="Indique las posibilidades de réplica..."></textarea>
+                </div>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Observaciones Adicionales</label>
-              <textarea id="exp_observaciones" rows="2" class="input-field" placeholder="Observaciones complementarias si aplica..."></textarea>
+
+            <!-- OBSERVACIONES ADICIONALES -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-brand-orange"></i>
+                <span>Observaciones Adicionales</span>
+              </h4>
+              <textarea id="exp_observaciones" rows="3" class="input-field" placeholder="Registre cualquier observación o comentario complementario..."></textarea>
             </div>
+          </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.8 Referencias Bibliográficas (Sistema APA 6ª Edición)</label>
               <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) sexta edición para las citas de referencia de la experiencia.</p>
@@ -1091,7 +1207,7 @@
       document.getElementById('progress-bar').style.width = `${pct}%`;
     }
 
-    function generateRadicado(prefix) {
+        function generateRadicado(prefix) {
       const year = new Date().getFullYear();
       const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
       return `${prefix}-${year}-${rand}`;
@@ -1139,31 +1255,42 @@
 
       const payload = {
         radicado: radicado,
-        nombre_experiencia: document.getElementById('exp_nombre').value,
-        programa_academico: document.getElementById('exp_programa').value,
-        espacio_academico: document.getElementById('exp_espacio').value,
-        nivel_formacion: document.getElementById('exp_nivel').value,
-        fecha_presentacion: document.getElementById('exp_fecha').value,
-        periodo_academico: document.getElementById('exp_periodo').value,
-        docentes_responsables: document.getElementById('exp_docentes').value,
-        cedula_docente: document.getElementById('exp_cedula').value,
-        correo_docente: document.getElementById('exp_correo').value,
-        num_estudiantes: parseInt(document.getElementById('exp_estudiantes').value) || 1,
-        modalidad: document.getElementById('exp_modalidad').value,
-        lugar_contexto: document.getElementById('exp_lugar').value,
-        lineas_investigacion_programa: document.getElementById('exp_lineas_prog').value,
-        lineas_investigacion_institucional: document.getElementById('exp_lineas_inst').value,
+        nombre_experiencia: getVal('exp_nombre'),
+        programa_academico: getVal('exp_programa'),
+        espacio_academico: getVal('exp_espacio'),
+        nivel_formacion: getVal('exp_nivel'),
+        fecha_presentacion: getVal('exp_fecha'),
+        periodo_academico: getVal('exp_periodo'),
+        docentes_responsables: getVal('exp_docentes'),
+        cedula_docente: getVal('exp_cedula'),
+        correo_docente: getVal('exp_correo'),
+        num_estudiantes: parseInt(getVal('exp_estudiantes')) || 1,
+        modalidad: getVal('exp_modalidad'),
+        lugar_contexto: getVal('exp_lugar'),
+        lineas_investigacion_programa: getVal('exp_lineas_prog'),
+        lineas_investigacion_institucional: getVal('exp_lineas_inst'),
         espacio_divulgacion_asc: Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value),
-        espacio_divulgacion_otro: document.getElementById('exp_asc_otro').value,
-        contexto_experiencia: document.getElementById('exp_contexto').value,
-        pregunta_problematizadora: document.getElementById('exp_pregunta').value,
-        objetivo_experiencia: document.getElementById('exp_objetivo').value,
-        descripcion_experiencia: document.getElementById('exp_descripcion').value,
-        analisis_reflexion: document.getElementById('exp_analisis').value,
-        resultados_aportes: document.getElementById('exp_resultados').value,
-        proyeccion: document.getElementById('exp_proyeccion').value,
-        observaciones: document.getElementById('exp_observaciones').value,
-        referencias_apa: document.getElementById('exp_referencias').value
+        espacio_divulgacion_otro: getVal('exp_asc_otro'),
+        contexto_poblacion: getVal('exp_contexto_poblacion'),
+        contexto_condiciones: getVal('exp_contexto_condiciones'),
+        pregunta_problematizadora: getVal('exp_pregunta'),
+        objetivo_experiencia: getVal('exp_objetivo'),
+        descripcion_fases: getVal('exp_descripcion_fases'),
+        descripcion_metodologia: getVal('exp_descripcion_metodologia'),
+        analisis_logros: getVal('exp_analisis_logros'),
+        analisis_dificultades: getVal('exp_analisis_dificultades'),
+        analisis_aprendizajes: getVal('exp_analisis_aprendizajes'),
+        resultados_educativos: getVal('exp_resultados_educativos'),
+        resultados_sociales: getVal('exp_resultados_sociales'),
+        proyeccion_mejora: getVal('exp_proyeccion_mejora'),
+        proyeccion_replicabilidad: getVal('exp_proyeccion_replicabilidad'),
+        observaciones: getVal('exp_observaciones'),
+        contexto_experiencia: `Ubicación/Población: ${getVal('exp_contexto_poblacion')}\nCondiciones/Justificación: ${getVal('exp_contexto_condiciones')}`,
+        descripcion_experiencia: `Actividades/Fases: ${getVal('exp_descripcion_fases')}\nMetodología/Actores: ${getVal('exp_descripcion_metodologia')}`,
+        analisis_reflexion: `¿Qué funcionó bien?: ${getVal('exp_analisis_logros')}\n¿Qué dificultades hubo?: ${getVal('exp_analisis_dificultades')}\n¿Qué aprendizajes se generaron?: ${getVal('exp_analisis_aprendizajes')}`,
+        resultados_aportes: `Aportes Educativos/Investigativos: ${getVal('exp_resultados_educativos')}\nAportes Sociales/Organizacionales: ${getVal('exp_resultados_sociales')}`,
+        proyeccion: `Plan de Mejora: ${getVal('exp_proyeccion_mejora')}\nReplicabilidad: ${getVal('exp_proyeccion_replicabilidad')}`,
+        referencias_apa: getVal('exp_referencias')
       };
 
       if (supabaseClient) {
@@ -1291,15 +1418,26 @@
     }
 
     function createSubheadingParagraph(text) {
-      const { Paragraph, TextRun } = docx;
+      const { Paragraph, TextRun, AlignmentType } = docx;
       return new Paragraph({
         spacing: { before: 160, after: 60 },
+        alignment: AlignmentType.JUSTIFY,
         children: [
           new TextRun({ text: text, bold: true, size: 20, color: "1E293B", font: "Arial" })
         ]
       });
     }
 
+    function createSubItemHeader(titleText) {
+      const { Paragraph, TextRun, AlignmentType } = docx;
+      return new Paragraph({
+        spacing: { before: 120, after: 40 },
+        alignment: AlignmentType.JUSTIFY,
+        children: [
+          new TextRun({ text: titleText, bold: true, size: 19, color: "0F172A", font: "Arial" })
+        ]
+      });
+    }
     function createQuestionPromptParagraph(text) {
       const { Paragraph, TextRun, AlignmentType } = docx;
       return new Paragraph({
@@ -1383,31 +1521,42 @@
       const radicado = radicadoOverride || generateRadicado('EXP');
       const payload = {
         radicado: radicado,
-        nombre_experiencia: document.getElementById('exp_nombre').value,
-        programa_academico: document.getElementById('exp_programa').value,
-        espacio_academico: document.getElementById('exp_espacio').value,
-        nivel_formacion: document.getElementById('exp_nivel').value,
-        fecha_presentacion: document.getElementById('exp_fecha').value,
-        periodo_academico: document.getElementById('exp_periodo').value,
-        docentes_responsables: document.getElementById('exp_docentes').value,
-        cedula_docente: document.getElementById('exp_cedula').value,
-        correo_docente: document.getElementById('exp_correo').value,
-        num_estudiantes: document.getElementById('exp_estudiantes').value,
-        modalidad: document.getElementById('exp_modalidad').value,
-        lugar_contexto: document.getElementById('exp_lugar').value,
-        lineas_investigacion_programa: document.getElementById('exp_lineas_prog').value,
-        lineas_investigacion_institucional: document.getElementById('exp_lineas_inst').value,
+        nombre_experiencia: getVal('exp_nombre'),
+        programa_academico: getVal('exp_programa'),
+        espacio_academico: getVal('exp_espacio'),
+        nivel_formacion: getVal('exp_nivel'),
+        fecha_presentacion: getVal('exp_fecha'),
+        periodo_academico: getVal('exp_periodo'),
+        docentes_responsables: getVal('exp_docentes'),
+        cedula_docente: getVal('exp_cedula'),
+        correo_docente: getVal('exp_correo'),
+        num_estudiantes: getVal('exp_estudiantes'),
+        modalidad: getVal('exp_modalidad'),
+        lugar_contexto: getVal('exp_lugar'),
+        lineas_investigacion_programa: getVal('exp_lineas_prog'),
+        lineas_investigacion_institucional: getVal('exp_lineas_inst'),
         espacio_divulgacion_asc: Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value),
-        espacio_divulgacion_otro: document.getElementById('exp_asc_otro') ? document.getElementById('exp_asc_otro').value : '',
-        contexto_experiencia: document.getElementById('exp_contexto').value,
-        pregunta_problematizadora: document.getElementById('exp_pregunta').value,
-        objetivo_experiencia: document.getElementById('exp_objetivo').value,
-        descripcion_experiencia: document.getElementById('exp_descripcion').value,
-        analisis_reflexion: document.getElementById('exp_analisis').value,
-        resultados_aportes: document.getElementById('exp_resultados').value,
-        proyeccion: document.getElementById('exp_proyeccion').value,
-        observaciones: document.getElementById('exp_observaciones').value,
-        referencias_apa: document.getElementById('exp_referencias').value
+        espacio_divulgacion_otro: getVal('exp_asc_otro'),
+        contexto_poblacion: getVal('exp_contexto_poblacion'),
+        contexto_condiciones: getVal('exp_contexto_condiciones'),
+        pregunta_problematizadora: getVal('exp_pregunta'),
+        objetivo_experiencia: getVal('exp_objetivo'),
+        descripcion_fases: getVal('exp_descripcion_fases'),
+        descripcion_metodologia: getVal('exp_descripcion_metodologia'),
+        analisis_logros: getVal('exp_analisis_logros'),
+        analisis_dificultades: getVal('exp_analisis_dificultades'),
+        analisis_aprendizajes: getVal('exp_analisis_aprendizajes'),
+        resultados_educativos: getVal('exp_resultados_educativos'),
+        resultados_sociales: getVal('exp_resultados_sociales'),
+        proyeccion_mejora: getVal('exp_proyeccion_mejora'),
+        proyeccion_replicabilidad: getVal('exp_proyeccion_replicabilidad'),
+        observaciones: getVal('exp_observaciones'),
+        contexto_experiencia: `Ubicación/Población: ${getVal('exp_contexto_poblacion')}\nCondiciones/Justificación: ${getVal('exp_contexto_condiciones')}`,
+        descripcion_experiencia: `Actividades/Fases: ${getVal('exp_descripcion_fases')}\nMetodología/Actores: ${getVal('exp_descripcion_metodologia')}`,
+        analisis_reflexion: `¿Qué funcionó bien?: ${getVal('exp_analisis_logros')}\n¿Qué dificultades hubo?: ${getVal('exp_analisis_dificultades')}\n¿Qué aprendizajes se generaron?: ${getVal('exp_analisis_aprendizajes')}`,
+        resultados_aportes: `Aportes Educativos/Investigativos: ${getVal('exp_resultados_educativos')}\nAportes Sociales/Organizacionales: ${getVal('exp_resultados_sociales')}`,
+        proyeccion: `Plan de Mejora: ${getVal('exp_proyeccion_mejora')}\nReplicabilidad: ${getVal('exp_proyeccion_replicabilidad')}`,
+        referencias_apa: getVal('exp_referencias')
       };
       generateExperienciaDocxFromData(radicado, payload);
     }
@@ -1492,29 +1641,47 @@
         createHeadingParagraph("1. Información General de la Experiencia"),
         createDocxTable(tableRows),
         createHeadingParagraph("2. Desarrollo de la Experiencia Significativa"),
-        createSubheadingParagraph("2.1 Contexto de la Experiencia:"),
-        createQuestionPromptParagraph("Pregunta orientadora: ¿Dónde se desarrolló?, ¿con quién (empresa, población, comunidad)?, condiciones del contexto y ¿por qué se realizó en esta población?"),
-        ...createContentBlock(p.contexto_experiencia),
-        createSubheadingParagraph("2.2 Pregunta Problematizadora:"),
-        createQuestionPromptParagraph("Pregunta orientadora: Formule la pregunta que orienta la reflexión y resultados (Ej: ¿Cómo aporta esta experiencia a la solución de un problema real del entorno?)"),
+        createSubheadingParagraph("2.1 Contexto de la Experiencia"),
+        createSubItemHeader("2.1.a) Ubicación y Población:"),
+        ...createContentBlock(p.contexto_poblacion),
+        createSubItemHeader("2.1.b) Condiciones y Justificación del Contexto:"),
+        ...createContentBlock(p.contexto_condiciones),
+
+        createSubheadingParagraph("2.2 Pregunta Problematizadora"),
+        createSubItemHeader("Pregunta orientadora que guía la experiencia:"),
         ...createContentBlock(p.pregunta_problematizadora),
-        createSubheadingParagraph("2.3 Objetivo de la Experiencia Significativa:"),
-        createQuestionPromptParagraph("Pregunta orientadora: Indique el objetivo general de la experiencia significativa (Ej: Analizar los aprendizajes derivados de..., identificar los aportes de...)"),
+
+        createSubheadingParagraph("2.3 Objetivo de la Experiencia Significativa"),
+        createSubItemHeader("Objetivo General:"),
         ...createContentBlock(p.objetivo_experiencia),
-        createSubheadingParagraph("2.4 Descripción de la Experiencia:"),
-        createQuestionPromptParagraph("Pregunta orientadora: Describa las actividades realizadas, metodología utilizada, etapas desarrolladas y los actores involucrados."),
-        ...createContentBlock(p.descripcion_experiencia),
-        createSubheadingParagraph("2.5 Análisis y Reflexión Crítica:"),
-        createQuestionPromptParagraph("Pregunta orientadora: Responda: ¿Qué funcionó bien?, ¿qué dificultades se presentaron durante el proceso? y ¿qué aprendizajes significativos se generaron?"),
-        ...createContentBlock(p.analisis_reflexion),
-        createSubheadingParagraph("2.6 Resultados y Aportes:"),
-        createQuestionPromptParagraph("Pregunta orientadora: Describa los aportes y resultados obtenidos en al menos dos ámbitos (Educativos, sociales, organizacionales, tecnológicos o investigativos)."),
-        ...createContentBlock(p.resultados_aportes),
-        createSubheadingParagraph("2.7 Proyección:"),
-        createQuestionPromptParagraph("Pregunta orientadora: Indique brevemente cómo esta experiencia puede mejorarse y replicarse en otro escenario académico u organizacional."),
-        ...createContentBlock(p.proyeccion),
-        createSubheadingParagraph("Observaciones Adicionales:"),
-        createQuestionPromptParagraph("Pregunta orientadora: Registre cualquier observación complementaria relevante que no haya sido abordada anteriormente."),
+
+        createSubheadingParagraph("2.4 Descripción de la Experiencia"),
+        createSubItemHeader("2.4.a) Actividades y Fases Realizadas:"),
+        ...createContentBlock(p.descripcion_fases),
+        createSubItemHeader("2.4.b) Metodología y Actores Involucrados:"),
+        ...createContentBlock(p.descripcion_metodologia),
+
+        createSubheadingParagraph("2.5 Análisis y Reflexión Crítica"),
+        createSubItemHeader("2.5.a) ¿Qué funcionó bien al implementar la experiencia?"),
+        ...createContentBlock(p.analisis_logros),
+        createSubItemHeader("2.5.b) ¿Qué dificultades o limitaciones se presentaron?"),
+        ...createContentBlock(p.analisis_dificultades),
+        createSubItemHeader("2.5.c) ¿Qué aprendizajes se generaron?"),
+        ...createContentBlock(p.analisis_aprendizajes),
+
+        createSubheadingParagraph("2.6 Resultados y Aportes"),
+        createSubItemHeader("2.6.a) Aportes Educativos e Investigativos:"),
+        ...createContentBlock(p.resultados_educativos),
+        createSubItemHeader("2.6.b) Aportes Sociales, Organizacionales o Tecnológicos:"),
+        ...createContentBlock(p.resultados_sociales),
+
+        createSubheadingParagraph("2.7 Proyección"),
+        createSubItemHeader("2.7.a) Oportunidades y Plan de Mejora:"),
+        ...createContentBlock(p.proyeccion_mejora),
+        createSubItemHeader("2.7.b) Replicabilidad en otros escenarios:"),
+        ...createContentBlock(p.proyeccion_replicabilidad),
+
+        createSubheadingParagraph("Observaciones Adicionales"),
         ...createContentBlock(p.observaciones),
         createHeadingParagraph("2.8 Referencias Bibliográficas (Sistema APA 6ª Edición)"),
         ...createApaParagraphs(p.referencias_apa)
