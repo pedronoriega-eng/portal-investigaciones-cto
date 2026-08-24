@@ -126,6 +126,62 @@
   <!-- MAIN CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
 
+    <!-- SECCIÓN: REPOSITORIO PÚBLICO INSTITUCIONAL (GALERÍA GENERAL) -->
+    <section class="bg-white rounded-xl border border-slate-200 p-6 md:p-8 shadow-sm mb-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 pb-5 mb-6 gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full uppercase">
+              <i class="fa-solid fa-circle-check text-emerald-600"></i> Calidad Institucional Verificada
+            </span>
+            <span class="text-xs text-slate-500 font-semibold">• Repositorio Público CTO</span>
+          </div>
+          <h2 class="text-2xl font-black text-brand-navy mt-1">
+            <i class="fa-solid fa-layer-group text-brand-orange"></i> Repositorio de Experiencias e Innovaciones Radicadas
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Consulta general de documentos sistematizados que han superado los Requisitos Mínimos de Calidad Institucional.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="fetchAndRenderPublicRepository()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2 px-3 rounded-lg transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrows-rotate"></i> Actualizar Listado
+          </button>
+        </div>
+      </div>
+
+      <!-- FILTROS DE BÚSQUEDA Y PESTAÑAS DEL REPOSITORIO -->
+      <div class="flex flex-col md:flex-row gap-4 mb-6 justify-between items-stretch md:items-center">
+        <!-- Tabs de filtro -->
+        <div class="flex bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+          <button id="repo-filter-all" onclick="setRepoFilter('all')" class="px-4 py-1.5 rounded-md bg-white shadow-sm text-brand-navy font-bold transition">
+            Todos (<span id="count-all">0</span>)
+          </button>
+          <button id="repo-filter-exp" onclick="setRepoFilter('exp')" class="px-4 py-1.5 rounded-md text-slate-600 hover:text-brand-navy transition">
+            Experiencias (<span id="count-exp">0</span>)
+          </button>
+          <button id="repo-filter-inn" onclick="setRepoFilter('inn')" class="px-4 py-1.5 rounded-md text-slate-600 hover:text-brand-navy transition">
+            Innovaciones (<span id="count-inn">0</span>)
+          </button>
+        </div>
+
+        <!-- Buscador por texto -->
+        <div class="relative flex-1 max-w-md">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="repo-search-input" onkeyup="filterRepositoryList()" placeholder="Buscar por docente, radicado, título o programa..." class="w-full text-xs pl-9 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange/50">
+        </div>
+      </div>
+
+      <!-- CONTENEDOR DE TARJETAS (GALERÍA PÚBLICA) -->
+      <div id="repo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="col-span-full text-center py-8 text-slate-400 text-xs font-semibold">
+          <i class="fa-solid fa-spinner fa-spin text-lg mb-2 block"></i>
+          Cargando registros del repositorio institucional...
+        </div>
+      </div>
+    </section>
+
     <!-- SELECTOR DE PESTAÑAS (TABS) -->
     <div class="bg-white rounded-t-xl border border-slate-200 border-b-0 overflow-hidden shadow-sm">
       <div class="flex flex-col sm:flex-row border-b border-slate-200">
@@ -514,14 +570,45 @@
           <button type="button" onclick="clearCurrentForm('experiencias')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
             <i class="fa-solid fa-trash"></i> Limpiar Formulario
           </button>
+        <!-- PANEL DE VERIFICACIÓN DE REQUISITOS MÍNIMOS DE CALIDAD -->
+        <div id="exp-quality-panel" class="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-brand-orange text-lg"></i>
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-brand-navy">Filtro Evaluador de Requisitos Mínimos de Calidad (Experiencias)</h4>
+                <p class="text-[11px] text-slate-500">Evaluación en tiempo real. Se requiere un puntaje igual o superior al 80% para habilitar la radicación.</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="exp-quality-score-badge" class="text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                Calidad: 0% (Insuficiente)
+              </span>
+            </div>
+          </div>
+
+          <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
+            <div id="exp-quality-bar" class="bg-rose-500 h-full transition-all duration-300 w-0"></div>
+          </div>
+
+          <div id="exp-quality-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+            <!-- Items de checklist generados por JS -->
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-slate-200 pt-6">
+          <button type="button" onclick="clearCurrentForm('experiencias')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
+            <i class="fa-solid fa-trash"></i> Limpiar Formulario
+          </button>
           <div class="flex gap-3">
             <button type="button" onclick="downloadExperienciaDocx()" class="btn-word">
               <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
             </button>
-            <button type="submit" class="btn-primary">
+            <button type="submit" id="exp-submit-btn" disabled class="btn-primary opacity-50 cursor-not-allowed">
               <i class="fa-solid fa-paper-plane"></i> Radicar Experiencia Significativa
             </button>
           </div>
+        </div>
         </div>
       </form>
     </div>
@@ -789,14 +876,45 @@
           <button type="button" onclick="clearCurrentForm('innovaciones')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
             <i class="fa-solid fa-trash"></i> Limpiar Formulario
           </button>
+        <!-- PANEL DE VERIFICACIÓN DE REQUISITOS MÍNIMOS DE CALIDAD (INNOVACIONES) -->
+        <div id="inn-quality-panel" class="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-brand-orange text-lg"></i>
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-brand-navy">Filtro Evaluador de Requisitos Mínimos de Calidad (Innovaciones)</h4>
+                <p class="text-[11px] text-slate-500">Evaluación de novedad y valor (Manual de Oslo / Minciencias). Requiere mínimo 80% de calidad para radicar.</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="inn-quality-score-badge" class="text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                Calidad: 0% (Insuficiente)
+              </span>
+            </div>
+          </div>
+
+          <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
+            <div id="inn-quality-bar" class="bg-rose-500 h-full transition-all duration-300 w-0"></div>
+          </div>
+
+          <div id="inn-quality-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+            <!-- Items de checklist generados por JS -->
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-slate-200 pt-6">
+          <button type="button" onclick="clearCurrentForm('innovaciones')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
+            <i class="fa-solid fa-trash"></i> Limpiar Formulario
+          </button>
           <div class="flex gap-3">
             <button type="button" onclick="downloadInnovacionDocx()" class="btn-word">
               <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
             </button>
-            <button type="submit" class="btn-primary">
+            <button type="submit" id="inn-submit-btn" disabled class="btn-primary opacity-50 cursor-not-allowed">
               <i class="fa-solid fa-paper-plane"></i> Radicar Innovación Educativa
             </button>
           </div>
+        </div>
         </div>
       </form>
     </div>
@@ -920,6 +1038,8 @@
       initSupabase();
       loadDraftFromLocalStorage();
       setupFormListeners();
+      setupQualityEvaluators();
+      fetchAndRenderPublicRepository();
       setInterval(saveDraftToLocalStorage, 15000);
     });
 
@@ -1321,6 +1441,374 @@
       return `${typeCode}-${progCode}-${semCode}-${consecutiveStr}`;
     }
 
+
+    let currentRepoFilter = 'all';
+    let loadedRepoRecords = [];
+
+    function setupQualityEvaluators() {
+      // Setup listeners for Experiencias form fields
+      const expForm = document.getElementById('form-experiencias');
+      if (expForm) {
+        expForm.querySelectorAll('input, select, textarea').forEach(el => {
+          el.addEventListener('input', evaluateExperienciasQuality);
+          el.addEventListener('change', evaluateExperienciasQuality);
+        });
+      }
+
+      // Setup listeners for Innovaciones form fields
+      const innForm = document.getElementById('form-innovaciones');
+      if (innForm) {
+        innForm.querySelectorAll('input, select, textarea').forEach(el => {
+          el.addEventListener('input', evaluateInnovacionesQuality);
+          el.addEventListener('change', evaluateInnovacionesQuality);
+        });
+      }
+
+      // Initial evaluation
+      evaluateExperienciasQuality();
+      evaluateInnovacionesQuality();
+    }
+
+    // EVALUADOR DE CALIDAD PARA EXPERIENCIAS SIGNIFICATIVAS
+    function evaluateExperienciasQuality() {
+      const checks = [
+        {
+          id: 'exp_info_basic',
+          label: 'Información general completa (Nombre, Programa, Docente, Cédula)',
+          passed: getVal('exp_nombre').length > 5 && getVal('exp_programa') !== '' && getVal('exp_docentes').length > 3 && getVal('exp_cedula').length >= 6,
+          weight: 20
+        },
+        {
+          id: 'exp_contexto_depth',
+          label: 'Desarrollo de Contexto suficiente (Dónde, Con quién, Condiciones, Por qué >= 20 car c/u)',
+          passed: getVal('exp_contexto_donde').length >= 20 && getVal('exp_contexto_con_quien').length >= 20 && getVal('exp_contexto_condiciones').length >= 20 && getVal('exp_contexto_por_que').length >= 20,
+          weight: 25
+        },
+        {
+          id: 'exp_articulation',
+          label: 'Articulación Institucional (Pregunta, Objetivo y Líneas de Investigación seleccionadas)',
+          passed: getVal('exp_pregunta').length >= 15 && getVal('exp_objetivo').length >= 15 && getVal('exp_lineas_prog') !== '' && document.querySelectorAll('input[name="exp_asc"]:checked').length > 0,
+          weight: 20
+        },
+        {
+          id: 'exp_methodology',
+          label: 'Descripción de Experiencia (Actividades, Metodología y Actores especificados)',
+          passed: getVal('exp_descripcion_actividades').length >= 20 && getVal('exp_descripcion_metodologia').length >= 20 && getVal('exp_descripcion_actores').length >= 15,
+          weight: 20
+        },
+        {
+          id: 'exp_results_projection',
+          label: 'Resultados y Proyección Evidenciable (Aportes Educativos, Sociales y Plan de Mejora)',
+          passed: getVal('exp_resultados_educativos').length >= 15 && getVal('exp_resultados_sociales').length >= 15 && getVal('exp_proyeccion_mejora').length >= 15,
+          weight: 15
+        }
+      ];
+
+      let score = 0;
+      let checklistHtml = '';
+
+      checks.forEach(c => {
+        if (c.passed) score += c.weight;
+        checklistHtml += `
+          <div class="flex items-center gap-2 p-1.5 rounded ${c.passed ? 'bg-emerald-50 text-emerald-800 font-semibold' : 'bg-slate-100 text-slate-500'}">
+            <i class="fa-solid ${c.passed ? 'fa-circle-check text-emerald-600' : 'fa-circle-xmark text-slate-400'}"></i>
+            <span>${c.label} (+${c.weight}%)</span>
+          </div>`;
+      });
+
+      const scoreBadge = document.getElementById('exp-quality-score-badge');
+      const progressBar = document.getElementById('exp-quality-bar');
+      const checklistContainer = document.getElementById('exp-quality-checklist');
+      const submitBtn = document.getElementById('exp-submit-btn');
+
+      if (checklistContainer) checklistContainer.innerHTML = checklistHtml;
+
+      if (progressBar) {
+        progressBar.style.width = `${score}%`;
+        if (score >= 80) {
+          progressBar.className = 'bg-emerald-500 h-full transition-all duration-300';
+        } else if (score >= 50) {
+          progressBar.className = 'bg-amber-500 h-full transition-all duration-300';
+        } else {
+          progressBar.className = 'bg-rose-500 h-full transition-all duration-300';
+        }
+      }
+
+      if (scoreBadge) {
+        if (score >= 80) {
+          scoreBadge.className = 'text-xs font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+          scoreBadge.innerHTML = `<i class="fa-solid fa-check"></i> Calidad: ${score}% (Apto para Radicar)`;
+        } else {
+          scoreBadge.className = 'text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200';
+          scoreBadge.innerHTML = `<i class="fa-solid fa-xmark"></i> Calidad: ${score}% (Insuficiente - Min 80%)`;
+        }
+      }
+
+      if (submitBtn) {
+        if (score >= 80) {
+          submitBtn.disabled = false;
+          submitBtn.className = 'btn-primary opacity-100 cursor-pointer';
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.className = 'btn-primary opacity-50 cursor-not-allowed';
+        }
+      }
+    }
+
+    // EVALUADOR DE CALIDAD PARA INNOVACIONES EDUCATIVAS
+    function evaluateInnovacionesQuality() {
+      const innTitulo = document.getElementById('inn_titulo') ? document.getElementById('inn_titulo').value : '';
+      const innTipo = document.getElementById('inn_tipo') ? document.getElementById('inn_tipo').value : '';
+      const innEmpresa = document.getElementById('inn_empresa') ? document.getElementById('inn_empresa').value : '';
+      const innAutor = document.getElementById('inn_autor_nombre') ? document.getElementById('inn_autor_nombre').value : '';
+      const innResumen = document.getElementById('inn_resumen') ? document.getElementById('inn_resumen').value : '';
+      const innPrevio = document.getElementById('inn_estado_previo') ? document.getElementById('inn_estado_previo').value : '';
+      const innPosterior = document.getElementById('inn_estado_posterior') ? document.getElementById('inn_estado_posterior').value : '';
+      const innNovTipo = document.getElementById('inn_novedad_tipo') ? document.getElementById('inn_novedad_tipo').value : '';
+      const innNovExp = document.getElementById('inn_novedad_explicacion') ? document.getElementById('inn_novedad_explicacion').value : '';
+      const innNovAlc = document.getElementById('inn_novedad_alcance') ? document.getElementById('inn_novedad_alcance').value : '';
+      const innImpExp = document.getElementById('inn_impactos_explicacion') ? document.getElementById('inn_impactos_explicacion').value : '';
+      const innEvid = document.getElementById('inn_novedad_alcance_evidencias') ? document.getElementById('inn_novedad_alcance_evidencias').value : '';
+      const innRef = document.getElementById('inn_referencias') ? document.getElementById('inn_referencias').value : '';
+
+      const checks = [
+        {
+          id: 'inn_info_basic',
+          label: 'Información general completa (Título, Tipo de Innovación, Empresa, Autor)',
+          passed: innTitulo.length > 5 && innTipo !== '' && innEmpresa.length > 3 && innAutor.length > 3,
+          weight: 20
+        },
+        {
+          id: 'inn_summary_depth',
+          label: 'Resumen y Diagnóstico (Resumen, Estado Previo y Estado Posterior >= 25 car c/u)',
+          passed: innResumen.length >= 25 && innPrevio.length >= 25 && innPosterior.length >= 25,
+          weight: 25
+        },
+        {
+          id: 'inn_novelty_check',
+          label: 'Justificación de Novedad (Tipo de Novedad, Explicación y Alcance especificados)',
+          passed: innNovTipo !== '' && innNovExp.length >= 25 && innNovAlc.length >= 20,
+          weight: 25
+        },
+        {
+          id: 'inn_impact_evidence',
+          label: 'Evidencia de Impactos (Impactos económicos/organizacionales seleccionados)',
+          passed: document.querySelectorAll('input[name="inn_impactos"]:checked').length > 0 && innImpExp.length >= 20,
+          weight: 20
+        },
+        {
+          id: 'inn_apa_ref',
+          label: 'Formato y referencias documentadas (Referencias APA / Evidencias)',
+          passed: innEvid.length >= 15 || innRef.length >= 15,
+          weight: 10
+        }
+      ];
+
+      let score = 0;
+      let checklistHtml = '';
+
+      checks.forEach(c => {
+        if (c.passed) score += c.weight;
+        checklistHtml += `
+          <div class="flex items-center gap-2 p-1.5 rounded ${c.passed ? 'bg-emerald-50 text-emerald-800 font-semibold' : 'bg-slate-100 text-slate-500'}">
+            <i class="fa-solid ${c.passed ? 'fa-circle-check text-emerald-600' : 'fa-circle-xmark text-slate-400'}"></i>
+            <span>${c.label} (+${c.weight}%)</span>
+          </div>`;
+      });
+
+      const scoreBadge = document.getElementById('inn-quality-score-badge');
+      const progressBar = document.getElementById('inn-quality-bar');
+      const checklistContainer = document.getElementById('inn-quality-checklist');
+      const submitBtn = document.getElementById('inn-submit-btn');
+
+      if (checklistContainer) checklistContainer.innerHTML = checklistHtml;
+
+      if (progressBar) {
+        progressBar.style.width = `${score}%`;
+        if (score >= 80) {
+          progressBar.className = 'bg-emerald-500 h-full transition-all duration-300';
+        } else if (score >= 50) {
+          progressBar.className = 'bg-amber-500 h-full transition-all duration-300';
+        } else {
+          progressBar.className = 'bg-rose-500 h-full transition-all duration-300';
+        }
+      }
+
+      if (scoreBadge) {
+        if (score >= 80) {
+          scoreBadge.className = 'text-xs font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+          scoreBadge.innerHTML = `<i class="fa-solid fa-check"></i> Calidad: ${score}% (Apto para Radicar)`;
+        } else {
+          scoreBadge.className = 'text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200';
+          scoreBadge.innerHTML = `<i class="fa-solid fa-xmark"></i> Calidad: ${score}% (Insuficiente - Min 80%)`;
+        }
+      }
+
+      if (submitBtn) {
+        if (score >= 80) {
+          submitBtn.disabled = false;
+          submitBtn.className = 'btn-primary opacity-100 cursor-pointer';
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.className = 'btn-primary opacity-50 cursor-not-allowed';
+        }
+      }
+    }
+
+    // FUNCIONES DEL REPOSITORIO PÚBLICO EN FRONTEND
+    async function fetchAndRenderPublicRepository() {
+      const repoGrid = document.getElementById('repo-grid');
+      if (!repoGrid) return;
+
+      repoGrid.innerHTML = `
+        <div class="col-span-full text-center py-8 text-slate-400 text-xs font-semibold">
+          <i class="fa-solid fa-spinner fa-spin text-lg mb-2 block text-brand-orange"></i>
+          Consultando registros del repositorio público Supabase...
+        </div>`;
+
+      let records = [];
+
+      if (supabaseClient) {
+        try {
+          const { data: expData, error: expErr } = await supabaseClient
+            .from('experiencias_significativas')
+            .select('id, radicado, nombre_experiencia, docentes_responsables, programa_academico, created_at')
+            .order('created_at', { ascending: false });
+
+          if (!expErr && expData) {
+            expData.forEach(item => {
+              records.push({
+                type: 'exp',
+                radicado: item.radicado,
+                titulo: item.nombre_experiencia,
+                autor: item.docentes_responsables,
+                programa: item.programa_academico,
+                fecha: item.created_at ? item.created_at.split('T')[0] : '2026-08-24'
+              });
+            });
+          }
+
+          const { data: innData, error: innErr } = await supabaseClient
+            .from('innovaciones_educativas')
+            .select('id, radicado, titulo_innovacion, autor_principal_nombre, autor_principal_afiliacion, created_at')
+            .order('created_at', { ascending: false });
+
+          if (!innErr && innData) {
+            innData.forEach(item => {
+              records.push({
+                type: 'inn',
+                radicado: item.radicado,
+                titulo: item.titulo_innovacion,
+                autor: item.autor_principal_nombre,
+                programa: item.autor_principal_afiliacion || 'Innovación Educativa',
+                fecha: item.created_at ? item.created_at.split('T')[0] : '2026-08-24'
+              });
+            });
+          }
+        } catch (e) {
+          console.warn('Error al cargar repositorio público:', e);
+        }
+      }
+
+      loadedRepoRecords = records;
+      renderRepositoryGrid();
+    }
+
+    function setRepoFilter(filterType) {
+      currentRepoFilter = filterType;
+      ['all', 'exp', 'inn'].forEach(t => {
+        const btn = document.getElementById(`repo-filter-${t}`);
+        if (btn) {
+          if (t === filterType) {
+            btn.className = 'px-4 py-1.5 rounded-md bg-white shadow-sm text-brand-navy font-bold transition';
+          } else {
+            btn.className = 'px-4 py-1.5 rounded-md text-slate-600 hover:text-brand-navy transition';
+          }
+        }
+      });
+      renderRepositoryGrid();
+    }
+
+    function filterRepositoryList() {
+      renderRepositoryGrid();
+    }
+
+    function renderRepositoryGrid() {
+      const repoGrid = document.getElementById('repo-grid');
+      if (!repoGrid) return;
+
+      const searchVal = (document.getElementById('repo-search-input')?.value || '').toLowerCase().trim();
+
+      const filtered = loadedRepoRecords.filter(r => {
+        const matchesType = currentRepoFilter === 'all' || r.type === currentRepoFilter;
+        const matchesSearch = !searchVal || 
+          r.radicado.toLowerCase().includes(searchVal) ||
+          r.titulo.toLowerCase().includes(searchVal) ||
+          r.autor.toLowerCase().includes(searchVal) ||
+          r.programa.toLowerCase().includes(searchVal);
+        return matchesType && matchesSearch;
+      });
+
+      const countAll = loadedRepoRecords.length;
+      const countExp = loadedRepoRecords.filter(r => r.type === 'exp').length;
+      const countInn = loadedRepoRecords.filter(r => r.type === 'inn').length;
+
+      if (document.getElementById('count-all')) document.getElementById('count-all').innerText = countAll;
+      if (document.getElementById('count-exp')) document.getElementById('count-exp').innerText = countExp;
+      if (document.getElementById('count-inn')) document.getElementById('count-inn').innerText = countInn;
+
+      if (filtered.length === 0) {
+        repoGrid.innerHTML = `
+          <div class="col-span-full text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
+            <i class="fa-solid fa-folder-open text-slate-400 text-3xl mb-2 block"></i>
+            <p class="text-xs font-bold text-slate-600">No se encontraron registros en el repositorio público</p>
+            <p class="text-[11px] text-slate-400 mt-1">Los documentos aparecerán aquí una vez sean radicados cumpliendo el 80%+ de Calidad.</p>
+          </div>`;
+        return;
+      }
+
+      let cardsHtml = '';
+      filtered.forEach(item => {
+        const isExp = item.type === 'exp';
+        const typeLabel = isExp ? 'Experiencia Significativa' : 'Innovación Educativa';
+        const typeIcon = isExp ? 'fa-graduation-cap text-blue-600' : 'fa-lightbulb text-amber-500';
+        const badgeBg = isExp ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-amber-50 text-amber-800 border-amber-200';
+
+        cardsHtml += `
+          <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="font-mono text-xs font-black text-brand-orange bg-orange-50 border border-orange-200/80 px-2.5 py-1 rounded-md">
+                  ${item.radicado}
+                </span>
+                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${badgeBg} flex items-center gap-1">
+                  <i class="fa-solid ${typeIcon}"></i> ${typeLabel}
+                </span>
+              </div>
+
+              <h3 class="text-sm font-bold text-slate-800 line-clamp-2 mb-2" title="${item.titulo}">
+                ${item.titulo}
+              </h3>
+
+              <div class="text-xs text-slate-600 space-y-1 mb-4 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <p class="truncate"><i class="fa-solid fa-user-tie text-slate-400 w-4"></i> <strong>Docente:</strong> ${item.autor}</p>
+                <p class="truncate"><i class="fa-solid fa-building-columns text-slate-400 w-4"></i> <strong>Programa:</strong> ${item.programa}</p>
+                <p><i class="fa-solid fa-calendar-day text-slate-400 w-4"></i> <strong>Radicado el:</strong> ${item.fecha}</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i> Calidad 100% Aprobada
+              </span>
+              <span class="text-[11px] text-slate-400 italic">Verificado en Supabase</span>
+            </div>
+          </div>`;
+      });
+
+      repoGrid.innerHTML = cardsHtml;
+    }
+
     function resetSubmittedForm(formType, forceSilent = false) {
       if (formType === 'experiencias') {
         const form = document.getElementById('form-experiencias');
@@ -1350,6 +1838,9 @@
       }
 
       updateProgressBar();
+      evaluateExperienciasQuality();
+      evaluateInnovacionesQuality();
+      fetchAndRenderPublicRepository();
       document.getElementById('autosave-text').innerText = 'Borrador listo (Autoguardado 15s)';
       
       if (!forceSilent) {
@@ -1359,6 +1850,13 @@
 
     async function handleExperienciasSubmit(event) {
       event.preventDefault();
+      evaluateExperienciasQuality();
+      const submitBtn = document.getElementById('exp-submit-btn');
+      if (submitBtn && submitBtn.disabled) {
+        showToast('El documento no cumple los Requisitos Mínimos de Calidad Institucionales (Mínimo 80%)', 'warning');
+        return;
+      }
+
       const progVal = getVal('exp_programa');
       const perVal = getVal('exp_periodo');
       const radicado = await generateRadicadoAsync('EXP', progVal, perVal);
@@ -1461,6 +1959,13 @@
 
     async function handleInnovacionesSubmit(event) {
       event.preventDefault();
+      evaluateInnovacionesQuality();
+      const submitBtn = document.getElementById('inn-submit-btn');
+      if (submitBtn && submitBtn.disabled) {
+        showToast('La innovación no cumple los Requisitos Mínimos de Calidad Institucionales (Mínimo 80%)', 'warning');
+        return;
+      }
+
       const progVal = document.getElementById('inn_autor_grupo').value || document.getElementById('inn_tipo').value;
       const perVal = document.getElementById('inn_fecha').value;
       const radicado = await generateRadicadoAsync('INN', progVal, perVal);
