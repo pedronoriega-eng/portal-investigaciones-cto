@@ -2246,7 +2246,7 @@
 
 
     async function downloadOfficialPdf(radicadoCode) {
-      showToast('Generando Documento PDF Oficial Completo (Identico a Word)...', 'info');
+      showToast('Generando Documento PDF Oficial Tamaño Carta (Ajustado sin recortes)...', 'info');
 
       let record = null;
       let isExp = radicadoCode.startsWith('EXP');
@@ -2352,15 +2352,18 @@
         return;
       }
 
-      // Build container
+      // Build Letter size container (720px width matches 7.5 in printable area at 96dpi)
       const container = document.createElement('div');
       container.id = 'full-pdf-render-container';
-      container.style.padding = '35px';
+      container.style.width = '720px';
+      container.style.margin = '0 auto';
+      container.style.padding = '20px';
+      container.style.boxSizing = 'border-box';
       container.style.fontFamily = "'Inter', sans-serif";
       container.style.color = '#0f172a';
       container.style.backgroundColor = '#ffffff';
-      container.style.fontSize = '11px';
-      container.style.lineHeight = '1.5';
+      container.style.fontSize = '10.5px';
+      container.style.lineHeight = '1.45';
 
       let innerHtml = '';
 
@@ -2383,139 +2386,169 @@
         const ascList = Array.isArray(record.espacio_divulgacion_asc) ? record.espacio_divulgacion_asc.join(', ') : (record.espacio_divulgacion_asc || 'Ninguno');
 
         innerHtml = `
-          <div style="border-bottom: 2px solid #e67817; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; border-bottom: 2px solid #e67817; padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
             <div>
-              <h1 style="color: #1e293b; font-size: 15px; font-weight: 800; margin: 0; text-transform: uppercase;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h1>
-              <p style="color: #e67817; font-size: 11px; font-weight: 700; margin: 2px 0 0 0;">MODELO PEDAGÓGICO: FORMACIÓN EN CONTEXTOS DE APLICACIÓN</p>
-              <p style="color: #64748b; font-size: 9px; margin: 0;">Anexo 1 - Sistematización de Experiencias Significativas (SIAC / I+D+i)</p>
+              <h1 style="color: #1e293b; font-size: 14px; font-weight: 800; margin: 0; text-transform: uppercase;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h1>
+              <p style="color: #e67817; font-size: 10px; font-weight: 700; margin: 2px 0 0 0;">MODELO PEDAGÓGICO: FORMACIÓN EN CONTEXTOS DE APLICACIÓN</p>
+              <p style="color: #64748b; font-size: 8.5px; margin: 0;">Anexo 1 - Sistematización de Experiencias Significativas (SIAC / I+D+i)</p>
             </div>
             <div style="text-align: right;">
-              <div style="background-color: #fef3e7; border: 1px solid #e67817; color: #e67817; font-family: monospace; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 4px;">
+              <div style="background-color: #fef3e7; border: 1px solid #e67817; color: #e67817; font-family: monospace; font-weight: 800; font-size: 12px; padding: 4px 8px; border-radius: 4px;">
                 ${record.radicado}
               </div>
-              <span style="font-size: 8.5px; color: #059669; font-weight: 700; display: block; margin-top: 3px;">✔ REQUISITOS DE CALIDAD 100% APROBADOS</span>
+              <span style="font-size: 8px; color: #059669; font-weight: 700; display: block; margin-top: 2px;">✔ REQUISITOS DE CALIDAD 100% APROBADOS</span>
             </div>
           </div>
 
-          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 0 0 12px 0; text-transform: uppercase;">
-            1. INFORMACIÓN GENERAL DE LA EXPERIENCIA SIGNIFICATIVA
-          </h2>
-
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 0 0 2px 0;">1.1 Nombre de la Experiencia Significativa:</p>
-            <p style="font-size: 12px; font-weight: 800; color: #0f172a; margin: 0; background-color: #f8fafc; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px; text-align: justify;">
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 12px;">
+            <h2 style="font-size: 12px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 5px 8px; border-left: 4px solid #e67817; margin: 0 0 8px 0; text-transform: uppercase;">
+              1. INFORMACIÓN GENERAL DE LA EXPERIENCIA SIGNIFICATIVA
+            </h2>
+            <p style="font-size: 9.5px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 0 0 2px 0;">1.1 Nombre de la Experiencia Significativa:</p>
+            <p style="font-size: 11px; font-weight: 800; color: #0f172a; margin: 0; background-color: #f8fafc; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: justify;">
               ${record.nombre_experiencia || 'Experiencia sin título'}
             </p>
           </div>
 
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5px; border: 1px solid #cbd5e1;">
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Programa Académico:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.programa_academico || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Espacio Académico:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.espacio_academico || 'N/A'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Nivel Formación:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.nivel_formacion || 'N/A'}</td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Docente(s) Responsable(s):</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.docentes_responsables || 'N/A'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Cédula Docente:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.cedula_docente || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Correo Electrónico:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.correo_docente || 'N/A'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">N.º Estudiantes:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.num_estudiantes || 1}</td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Modalidad:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.modalidad || 'N/A'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Fecha / Periodo:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.fecha_presentacion || '2026-08-24'} (${record.periodo_academico || '2026-1'})</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Lugar / Contexto:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.lugar_contexto || 'N/A'}</td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Líneas de Investigación:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">Programa: ${record.lineas_investigacion_programa || 'N/A'} | Inst: ${record.lineas_investigacion_institucional || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Divulgación ASC:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${ascList} ${record.espacio_divulgacion_otro ? '(' + record.espacio_divulgacion_otro + ')' : ''}</td>
-            </tr>
-          </table>
-
-          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 15px 0 12px 0; text-transform: uppercase;">
-            2. DESARROLLO DE LA EXPERIENCIA SIGNIFICATIVA
-          </h2>
-
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.1 Contexto de la Experiencia:</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">a) ¿Dónde se desarrolló?:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cDonde}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">b) ¿Con quién (empresa, población, comunidad)?:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cQuien}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">c) Condiciones generales del contexto (población, delimitación temporal, espacial, modalidad):</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cCond}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">d) ¿Por qué se realizó la experiencia significativa en esta población?:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cPorQue}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 14px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 9.5px; border: 1px solid #cbd5e1;">
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Programa Académico:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${record.programa_academico || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Espacio Académico:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.espacio_academico || 'N/A'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Nivel Formación:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.nivel_formacion || 'N/A'}</td>
+              </tr>
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Docente(s) Responsable(s):</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.docentes_responsables || 'N/A'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Cédula Docente:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.cedula_docente || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Correo Electrónico:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.correo_docente || 'N/A'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">N.º Estudiantes:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.num_estudiantes || 1}</td>
+              </tr>
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Modalidad:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.modalidad || 'N/A'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Fecha / Periodo:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.fecha_presentacion || '2026-08-24'} (${record.periodo_academico || '2026-1'})</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Lugar / Contexto:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${record.lugar_contexto || 'N/A'}</td>
+              </tr>
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Líneas de Investigación:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">Programa: ${record.lineas_investigacion_programa || 'N/A'} | Inst: ${record.lineas_investigacion_institucional || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Divulgación ASC:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${ascList} ${record.espacio_divulgacion_otro ? '(' + record.espacio_divulgacion_otro + ')' : ''}</td>
+              </tr>
+            </table>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.2 Pregunta Problematizadora:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${record.pregunta_problematizadora || 'N/A'}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <h2 style="font-size: 12px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 5px 8px; border-left: 4px solid #e67817; margin: 0 0 8px 0; text-transform: uppercase;">
+              2. DESARROLLO DE LA EXPERIENCIA SIGNIFICATIVA
+            </h2>
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.1 Contexto de la Experiencia:</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.3 Objetivo de la Experiencia Significativa:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${record.objetivo_experiencia || 'N/A'}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">a) ¿Dónde se desarrolló?:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${cDonde}</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.4 Descripción de la Experiencia:</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.a) Actividades realizadas:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${dAct}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.b) Metodología utilizada:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${dMet}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.c) Actores involucrados:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${dActores}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">b) ¿Con quién (empresa, población, comunidad)?:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${cQuien}</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.5 Análisis y Reflexión Crítica:</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué funcionó bien al implementar la experiencia?:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${aLog}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué dificultades o limitaciones se presentaron?:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${aDif}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué aprendizajes se generaron para docentes y estudiantes?:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${aApr}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">c) Condiciones generales del contexto (población, delimitación temporal, espacial, modalidad):</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${cCond}</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.6 Resultados y Aportes:</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.6.a) Aportes Educativos e Investigativos:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${rEdu}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.6.b) Aportes Sociales, Organizacionales o Tecnológicos:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${rSoc}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">d) ¿Por qué se realizó la experiencia significativa en esta población?:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${cPorQue}</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.7 Proyección:</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.7.a) Oportunidades y Plan de Mejora:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${pMej}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.7.b) Replicabilidad en otros escenarios:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${pRep}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.2 Pregunta Problematizadora:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${record.pregunta_problematizadora || 'N/A'}</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.8 Referencias Bibliográficas (Sistema APA 6.ª Edición):</p>
-            <div style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;">
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.3 Objetivo de la Experiencia Significativa:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${record.objetivo_experiencia || 'N/A'}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.4 Descripción de la Experiencia:</p>
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.a) Actividades realizadas:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${dAct}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.b) Metodología utilizada:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${dMet}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.c) Actores involucrados:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${dActores}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.5 Análisis y Reflexión Crítica:</p>
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué funcionó bien al implementar la experiencia?:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${aLog}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué dificultades o limitaciones se presentaron?:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${aDif}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué aprendizajes se generaron para docentes y estudiantes?:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${aApr}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.6 Resultados y Aportes:</p>
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.6.a) Aportes Educativos e Investigativos:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${rEdu}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.6.b) Aportes Sociales, Organizacionales o Tecnológicos:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${rSoc}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 8px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.7 Proyección:</p>
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.7.a) Oportunidades y Plan de Mejora:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${pMej}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.7.b) Replicabilidad en otros escenarios:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${pRep}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 12px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">2.8 Referencias Bibliográficas (Sistema APA 6.ª Edición):</p>
+            <div style="font-size: 9.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
               ${formatApaReferences(record.referencias_apa)}
             </div>
           </div>
@@ -2533,121 +2566,126 @@
         const iImpExp = record.impactos_explicacion_evidencias || 'No especificado';
 
         innerHtml = `
-          <div style="border-bottom: 2px solid #e67817; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; border-bottom: 2px solid #e67817; padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
             <div>
-              <h1 style="color: #1e293b; font-size: 15px; font-weight: 800; margin: 0; text-transform: uppercase;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h1>
-              <p style="color: #e67817; font-size: 11px; font-weight: 700; margin: 2px 0 0 0;">DIRECCIÓN DE INVESTIGACIONES — SISTEMA SIAC / I+D+i</p>
-              <p style="color: #64748b; font-size: 9px; margin: 0;">Guía Orientadora de Registro de Innovación en procesos, procedimientos y servicios</p>
+              <h1 style="color: #1e293b; font-size: 14px; font-weight: 800; margin: 0; text-transform: uppercase;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h1>
+              <p style="color: #e67817; font-size: 10px; font-weight: 700; margin: 2px 0 0 0;">DIRECCIÓN DE INVESTIGACIONES — SISTEMA SIAC / I+D+i</p>
+              <p style="color: #64748b; font-size: 8.5px; margin: 0;">Guía Orientadora de Registro de Innovación en procesos, procedimientos y servicios</p>
             </div>
             <div style="text-align: right;">
-              <div style="background-color: #fef3e7; border: 1px solid #e67817; color: #e67817; font-family: monospace; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 4px;">
+              <div style="background-color: #fef3e7; border: 1px solid #e67817; color: #e67817; font-family: monospace; font-weight: 800; font-size: 12px; padding: 4px 8px; border-radius: 4px;">
                 ${record.radicado}
               </div>
-              <span style="font-size: 8.5px; color: #059669; font-weight: 700; display: block; margin-top: 3px;">✔ REQUISITOS DE CALIDAD 100% APROBADOS</span>
+              <span style="font-size: 8px; color: #059669; font-weight: 700; display: block; margin-top: 2px;">✔ REQUISITOS DE CALIDAD 100% APROBADOS</span>
             </div>
           </div>
 
-          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 0 0 12px 0; text-transform: uppercase;">
-            1. INFORMACIÓN GENERAL DE LA INNOVACIÓN
-          </h2>
-
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 0 0 2px 0;">Título de la Innovación:</p>
-            <p style="font-size: 12px; font-weight: 800; color: #0f172a; margin: 0; background-color: #f8fafc; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px; text-align: justify;">
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 12px;">
+            <h2 style="font-size: 12px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 5px 8px; border-left: 4px solid #e67817; margin: 0 0 8px 0; text-transform: uppercase;">
+              1. INFORMACIÓN GENERAL DE LA INNOVACIÓN
+            </h2>
+            <p style="font-size: 9.5px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 0 0 2px 0;">Título de la Innovación:</p>
+            <p style="font-size: 11px; font-weight: 800; color: #0f172a; margin: 0; background-color: #f8fafc; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: justify;">
               ${record.titulo_innovacion || 'Innovación sin título'}
             </p>
           </div>
 
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5px; border: 1px solid #cbd5e1;">
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Tipo de Innovación:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.tipo_innovacion || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Fecha de Creación:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.fecha_creacion || '2026-08-24'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Nombre Empresa:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.nombre_empresa || 'N/A'}</td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Sector Empresa:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.sector_empresa || 'N/A'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">NIT Empresa:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.nit_empresa || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Proyecto Asociado:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.proyecto_investigacion_titulo || 'N/A'} (Convocatoria: ${record.proyecto_investigacion_convocatoria || 'N/A'})</td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Origen CTeI / Estrategia:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.origen_estrategia_ctei || 'N/A'} — ${record.nombre_estrategia_ctei || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Financiadora / Protección:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">Financia: ${record.institucion_financiadora || 'N/A'} | Disponibilidad: ${record.disponibilidad || 'Pública'} | Protección: ${record.tipo_proteccion || 'Derecho de Autor'}</td>
-            </tr>
-          </table>
-
-          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 15px 0 12px 0; text-transform: uppercase;">
-            2. AUTOR PRINCIPAL Y AFILIACIÓN INSTITUCIONAL
-          </h2>
-
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5px; border: 1px solid #cbd5e1;">
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Autor Principal:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_nombre || 'N/A'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Cédula Autor:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_cedula || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Correo Autor:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_correo || 'N/A'}</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Afiliación / Rol:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_afiliacion || 'N/A'}</td>
-            </tr>
-            <tr style="background-color: #f8fafc;">
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Programa / Facultad:</td>
-              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.autor_principal_grupo_facultad || 'N/A'}</td>
-            </tr>
-          </table>
-
-          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 15px 0 12px 0; text-transform: uppercase;">
-            3. DESARROLLO Y CONTENIDO DE LA INNOVACIÓN
-          </h2>
-
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.1 Resumen de la Innovación:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iResumen}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 14px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 9.5px; border: 1px solid #cbd5e1;">
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Tipo de Innovación:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${record.tipo_innovacion || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Fecha de Creación:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.fecha_creacion || '2026-08-24'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Nombre Empresa:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.nombre_empresa || 'N/A'}</td>
+              </tr>
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Sector Empresa:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.sector_empresa || 'N/A'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">NIT Empresa:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.nit_empresa || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Proyecto Asociado:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${record.proyecto_investigacion_titulo || 'N/A'} (Convocatoria: ${record.proyecto_investigacion_convocatoria || 'N/A'})</td>
+              </tr>
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Origen CTeI / Estrategia:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${record.origen_estrategia_ctei || 'N/A'} — ${record.nombre_estrategia_ctei || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Financiadora / Protección:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">Financia: ${record.institucion_financiadora || 'N/A'} | Disponibilidad: ${record.disponibilidad || 'Pública'} | Protección: ${record.tipo_proteccion || 'Derecho de Autor'}</td>
+              </tr>
+            </table>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.2 Estado Previo / Problemática:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iPrevio}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 14px;">
+            <h2 style="font-size: 12px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 5px 8px; border-left: 4px solid #e67817; margin: 0 0 8px 0; text-transform: uppercase;">
+              2. AUTOR PRINCIPAL Y AFILIACIÓN INSTITUCIONAL
+            </h2>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: 9.5px; border: 1px solid #cbd5e1;">
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Autor Principal:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.autor_principal_nombre || 'N/A'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Cédula Autor:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.autor_principal_cedula || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Correo Autor:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.autor_principal_correo || 'N/A'}</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Afiliación / Rol:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;">${record.autor_principal_afiliacion || 'N/A'}</td>
+              </tr>
+              <tr style="background-color: #f8fafc;">
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1; font-weight: 700;">Programa / Facultad:</td>
+                <td style="padding: 4px 6px; border: 1px solid #cbd5e1;" colspan="3">${record.autor_principal_grupo_facultad || 'N/A'}</td>
+              </tr>
+            </table>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.3 Estado Posterior / Solución Alcanzada:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iPosterior}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <h2 style="font-size: 12px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 5px 8px; border-left: 4px solid #e67817; margin: 0 0 8px 0; text-transform: uppercase;">
+              3. DESARROLLO Y CONTENIDO DE LA INNOVACIÓN
+            </h2>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.4 Novedad y Diferenciación (Manual de Oslo):</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Grado de Novedad: ${iNovTipo}</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iNovExp}</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Alcance y Evidencias:</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iNovAlc} — ${iNovEvi}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">3.1 Resumen de la Innovación:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${iResumen}</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.5 Impactos Evidenciados:</p>
-            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Impactos seleccionados: ${iImpList}</p>
-            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iImpExp}</p>
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">3.2 Estado Previo / Problemática:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${iPrevio}</p>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.6 Referencias Bibliográficas (Sistema APA 6.ª Edición):</p>
-            <div style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;">
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">3.3 Estado Posterior / Solución Alcanzada:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${iPosterior}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">3.4 Novedad y Diferenciación (Manual de Oslo):</p>
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Grado de Novedad: ${iNovTipo}</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${iNovExp}</p>
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Alcance y Evidencias:</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${iNovAlc} — ${iNovEvi}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">3.5 Impactos Evidenciados:</p>
+            <p style="font-size: 9.5px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Impactos seleccionados: ${iImpList}</p>
+            <p style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px;">${iImpExp}</p>
+          </div>
+
+          <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 12px;">
+            <p style="font-size: 10px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">3.6 Referencias Bibliográficas (Sistema APA 6.ª Edición):</p>
+            <div style="font-size: 9.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
               ${formatApaReferences(record.referencias_apa)}
             </div>
           </div>
@@ -2655,26 +2693,28 @@
       }
 
       container.innerHTML = innerHtml + `
-        <div style="margin-top: 25px; border-top: 1px solid #cbd5e1; padding-top: 12px; text-align: justify; font-size: 8.5px; color: #64748b;">
-          <p style="margin: 0 0 4px 0;"><strong>CERTIFICADO DE NO MODIFICABILIDAD Y VERIFICACIÓN EN SUPABASE:</strong> El presente documento es una representación fiel, completa e inalterable del formulario institucional registrado bajo el radicado oficial <strong>${record.radicado}</strong>. Ha superado la validación automática de Requisitos Mínimos de Calidad Institucionales (Score >= 80%).</p>
+        <div class="pdf-block" style="page-break-inside: avoid; break-inside: avoid; margin-top: 20px; border-top: 1px solid #cbd5e1; padding-top: 10px; text-align: justify; font-size: 8.5px; color: #64748b;">
+          <p style="margin: 0 0 3px 0;"><strong>CERTIFICADO DE NO MODIFICABILIDAD Y VERIFICACIÓN EN SUPABASE:</strong> El presente documento es una representación fiel, completa e inalterable del formulario institucional registrado bajo el radicado oficial <strong>${record.radicado}</strong>. Ha superado la validación automática de Requisitos Mínimos de Calidad Institucionales (Score >= 80%). Formato oficial ajustado a tamaño CARTA (Letter).</p>
           <p style="margin: 0;">Corporación Tecnológica del Oriente — Bucaramanga — www.tecnologicadeloriente.edu.co</p>
         </div>
       `;
 
       document.body.appendChild(container);
 
+      // Letter size (8.5 x 11 in) with intelligent CSS pagebreak rules preventing line slicing
       const opt = {
-        margin:       [0.4, 0.4, 0.4, 0.4],
-        filename:     `Radicado_${record.radicado}_Oficial_CTO.pdf`,
+        margin:       [0.3, 0.35, 0.35, 0.35],
+        filename:     `Radicado_${record.radicado}_Oficial_Carta_CTO.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.pdf-block', 'tr', 'h1', 'h2', 'h3', 'p', 'table', 'div'] }
       };
 
       try {
         if (window.html2pdf) {
           await window.html2pdf().set(opt).from(container).save();
-          showToast(`PDF Oficial Completo ${record.radicado} descargado con éxito`, 'success');
+          showToast(`PDF Tamaño Carta Oficial ${record.radicado} descargado sin recortes`, 'success');
         } else {
           window.print();
         }
