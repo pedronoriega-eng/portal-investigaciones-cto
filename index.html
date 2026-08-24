@@ -326,8 +326,8 @@
                     <i class="fa-solid fa-location-dot text-brand-orange"></i>
                     <span>2.1.a) ¿Dónde se desarrolló la experiencia? *</span>
                   </label>
-                  <p class="text-xs text-slate-500 mb-2">Indique la institución, sede, aula, laboratorio o entidad específica.</p>
-                  <textarea id="exp_contexto_donde" rows="3" required class="input-field bg-white" placeholder="Ej: Se desarrolló en la Corporación Tecnológica del Oriente, Sede A..."></textarea>
+                  <p class="text-xs text-slate-500 mb-2">Indique la institución, sede, aula, laboratorio, empresa o entidad específica.</p>
+                  <textarea id="exp_contexto_donde" rows="3" required class="input-field bg-white" placeholder="Ej: Se desarrolló en la Corporación Tecnológica del Oriente, Sede A, Bucaramanga..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
@@ -335,26 +335,35 @@
                     <i class="fa-solid fa-users text-brand-orange"></i>
                     <span>2.1.b) ¿Con quién se desarrolló (empresa, población, comunidad, etc.)? *</span>
                   </label>
-                  <p class="text-xs text-slate-500 mb-2">Describa los participantes directos (estudiantes de X semestre, empresa aliada, grupo comunitario).</p>
-                  <textarea id="exp_contexto_con_quien" rows="3" required class="input-field bg-white" placeholder="Ej: Con 30 estudiantes de 5º semestre y 3 microempresas metalmecánicas aliadas..."></textarea>
+                  <p class="text-xs text-slate-500 mb-2">Describa los participantes directos (estudiantes de X semestre, empresa aliada, grupo comunitario, etc.).</p>
+                  <textarea id="exp_contexto_con_quien" rows="3" required class="input-field bg-white" placeholder="Ej: Con 30 estudiantes de 5º semestre de Ingeniería Industrial y 3 microempresas aliadas..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
                     <i class="fa-solid fa-sliders text-brand-orange"></i>
-                    <span>2.1.c) ¿Cuáles eran las condiciones generales del contexto? *</span>
+                    <span>2.1.c) ¿Cuáles eran las condiciones generales del contexto (tipo de población, delimitación temporal y delimitación espacial)? *</span>
                   </label>
-                  <p class="text-xs text-slate-500 mb-2">Especifique: Tipo de población, delimitación temporal (periodo), delimitación espacial y modalidad (remota - presencial - dual).</p>
-                  <textarea id="exp_contexto_condiciones_generales" rows="3" required class="input-field bg-white" placeholder="Ej: Población adulta joven, periodo 2026-1, Bucaramanga, modalidad presencial con apoyo de plataforma virtual..."></textarea>
+                  <p class="text-xs text-slate-500 mb-2">Describa las características de la población, el periodo académico/tiempo y la ubicación geográfica.</p>
+                  <textarea id="exp_contexto_condiciones_generales" rows="3" required class="input-field bg-white" placeholder="Ej: Población universitaria adulta joven, periodo 2026-1, delimitación espacial en la ciudad de Bucaramanga..."></textarea>
+                </div>
+
+                <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
+                  <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-laptop-house text-brand-orange"></i>
+                    <span>2.1.d) ¿En qué modalidad se desarrolló la experiencia (remota, presencial o dual)? *</span>
+                  </label>
+                  <p class="text-xs text-slate-500 mb-2">Especifique la modalidad de formación y el uso de entornos virtuales o presenciales.</p>
+                  <textarea id="exp_contexto_modalidad" rows="3" required class="input-field bg-white" placeholder="Ej: Modalidad presencial con apoyo de aulas virtuales en plataforma Moodle..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
                     <i class="fa-solid fa-circle-question text-brand-orange"></i>
-                    <span>2.1.d) ¿Por qué se realizó la experiencia significativa en esta población? *</span>
+                    <span>2.1.e) ¿Por qué se realizó la experiencia significativa en esta población? *</span>
                   </label>
-                  <p class="text-xs text-slate-500 mb-2">Justifique la necesidad o problemática detectada en este grupo o comunidad.</p>
-                  <textarea id="exp_contexto_por_que" rows="3" required class="input-field bg-white" placeholder="Ej: Se realizó debido a la necesidad de fortalecer las competencias prácticas en analítica de datos..."></textarea>
+                  <p class="text-xs text-slate-500 mb-2">Justifique la necesidad, oportunidad o problemática detectada en este grupo o comunidad.</p>
+                  <textarea id="exp_contexto_por_que" rows="3" required class="input-field bg-white" placeholder="Ej: Se realizó debido a la necesidad detectada de fortalecer competencias analíticas prácticas..."></textarea>
                 </div>
               </div>
             </div>
@@ -1305,6 +1314,7 @@
         contexto_donde: getVal('exp_contexto_donde'),
         contexto_con_quien: getVal('exp_contexto_con_quien'),
         contexto_condiciones_generales: getVal('exp_contexto_condiciones_generales'),
+        contexto_modalidad: getVal('exp_contexto_modalidad'),
         contexto_por_que: getVal('exp_contexto_por_que'),
         pregunta_problematizadora: getVal('exp_pregunta'),
         objetivo_experiencia: getVal('exp_objetivo'),
@@ -1573,6 +1583,7 @@
         contexto_donde: getVal('exp_contexto_donde'),
         contexto_con_quien: getVal('exp_contexto_con_quien'),
         contexto_condiciones_generales: getVal('exp_contexto_condiciones_generales'),
+        contexto_modalidad: getVal('exp_contexto_modalidad'),
         contexto_por_que: getVal('exp_contexto_por_que'),
         pregunta_problematizadora: getVal('exp_pregunta'),
         objetivo_experiencia: getVal('exp_objetivo'),
@@ -1681,9 +1692,11 @@
         ...createContentBlock(p.contexto_donde),
         createSubItemHeader("2.1.b) ¿Con quién se desarrolló (empresa, población, comunidad, etc.)?"),
         ...createContentBlock(p.contexto_con_quien),
-        createSubItemHeader("2.1.c) ¿Cuáles eran las condiciones generales del contexto (tipo de población, delimitación temporal, espacial, modalidad)?"),
+        createSubItemHeader("2.1.c) ¿Cuáles eran las condiciones generales del contexto (tipo de población, delimitación temporal y delimitación espacial)?"),
         ...createContentBlock(p.contexto_condiciones_generales),
-        createSubItemHeader("2.1.d) ¿Por qué se realizó la experiencia significativa en esta población?"),
+        createSubItemHeader("2.1.d) ¿En qué modalidad se desarrolló la experiencia (remota - presencial - dual)?"),
+        ...createContentBlock(p.contexto_modalidad),
+        createSubItemHeader("2.1.e) ¿Por qué se realizó la experiencia significativa en esta población?"),
         ...createContentBlock(p.contexto_por_que),
 
         createSubheadingParagraph("2.2 Pregunta Problematizadora"),
