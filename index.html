@@ -1351,6 +1351,77 @@
       }));
     }
 
+    function downloadExperienciaDocx(radicadoOverride = null) {
+      const radicado = radicadoOverride || generateRadicado('EXP');
+      const payload = {
+        radicado: radicado,
+        nombre_experiencia: document.getElementById('exp_nombre').value,
+        programa_academico: document.getElementById('exp_programa').value,
+        espacio_academico: document.getElementById('exp_espacio').value,
+        nivel_formacion: document.getElementById('exp_nivel').value,
+        fecha_presentacion: document.getElementById('exp_fecha').value,
+        periodo_academico: document.getElementById('exp_periodo').value,
+        docentes_responsables: document.getElementById('exp_docentes').value,
+        cedula_docente: document.getElementById('exp_cedula').value,
+        correo_docente: document.getElementById('exp_correo').value,
+        num_estudiantes: document.getElementById('exp_estudiantes').value,
+        modalidad: document.getElementById('exp_modalidad').value,
+        lugar_contexto: document.getElementById('exp_lugar').value,
+        lineas_investigacion_programa: document.getElementById('exp_lineas_prog').value,
+        lineas_investigacion_institucional: document.getElementById('exp_lineas_inst').value,
+        espacio_divulgacion_asc: Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value),
+        espacio_divulgacion_otro: document.getElementById('exp_asc_otro') ? document.getElementById('exp_asc_otro').value : '',
+        contexto_experiencia: document.getElementById('exp_contexto').value,
+        pregunta_problematizadora: document.getElementById('exp_pregunta').value,
+        objetivo_experiencia: document.getElementById('exp_objetivo').value,
+        descripcion_experiencia: document.getElementById('exp_descripcion').value,
+        analisis_reflexion: document.getElementById('exp_analisis').value,
+        resultados_aportes: document.getElementById('exp_resultados').value,
+        proyeccion: document.getElementById('exp_proyeccion').value,
+        observaciones: document.getElementById('exp_observaciones').value,
+        referencias_apa: document.getElementById('exp_referencias').value
+      };
+      generateExperienciaDocxFromData(radicado, payload);
+    }
+
+    function downloadInnovacionDocx(radicadoOverride = null) {
+      const radicado = radicadoOverride || generateRadicado('INN');
+      const payload = {
+        radicado: radicado,
+        titulo_innovacion: document.getElementById('inn_titulo').value,
+        tipo_innovacion: document.getElementById('inn_tipo').value,
+        fecha_creacion: document.getElementById('inn_fecha').value,
+        nombre_empresa: document.getElementById('inn_empresa').value,
+        sector_empresa: document.getElementById('inn_sector').value,
+        nit_empresa: document.getElementById('inn_nit').value,
+        proyecto_investigacion_titulo: document.getElementById('inn_proyecto_titulo').value,
+        proyecto_investigacion_convocatoria: document.getElementById('inn_convocatoria').value,
+        origen_estrategia_ctei: document.getElementById('inn_origen_ctei').value,
+        nombre_estrategia_ctei: document.getElementById('inn_nombre_estrategia').value,
+        institucion_financiadora: document.getElementById('inn_financiadora').value,
+        disponibilidad: document.getElementById('inn_disponibilidad').value,
+        tipo_proteccion: document.getElementById('inn_proteccion').value,
+        autor_principal_nombre: document.getElementById('inn_autor_nombre').value,
+        autor_principal_cedula: document.getElementById('inn_autor_cedula').value,
+        autor_principal_correo: document.getElementById('inn_autor_correo').value,
+        autor_principal_afiliacion: document.getElementById('inn_autor_afiliacion').value,
+        autor_principal_grupo_facultad: document.getElementById('inn_autor_grupo').value,
+        coautores_json: getCoautoresData(),
+        resumen_innovacion: document.getElementById('inn_resumen').value,
+        estado_previo_problematica: document.getElementById('inn_estado_previo').value,
+        estado_posterior_solucion: document.getElementById('inn_estado_posterior').value,
+        novedad_tipo: document.getElementById('inn_novedad_tipo').value,
+        novedad_explicacion: document.getElementById('inn_novedad_explicacion').value,
+        novedad_alcance: document.getElementById('inn_novedad_alcance').value,
+        novedad_alcance_evidencias: document.getElementById('inn_novedad_alcance_evidencias').value,
+        impactos_economicos_list: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
+        impactos_otros_explicacion: document.getElementById('inn_impactos_otros') ? document.getElementById('inn_impactos_otros').value : '',
+        impactos_explicacion_evidencias: document.getElementById('inn_impactos_explicacion').value,
+        referencias_apa: document.getElementById('inn_referencias').value
+      };
+      generateInnovacionDocxFromData(radicado, payload);
+    }
+
     async function generateExperienciaDocxFromData(radicado, p) {
       const { Document, Packer, Paragraph, TextRun, Header, Footer, ImageRun, AlignmentType, Inches } = docx;
 
