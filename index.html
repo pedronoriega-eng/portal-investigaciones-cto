@@ -2311,7 +2311,7 @@
             proyeccion_mejora: getVal('exp_proyeccion_mejora') || 'N/A',
             proyeccion_replicabilidad: getVal('exp_proyeccion_replicabilidad') || 'N/A',
             observaciones: getVal('exp_observaciones'),
-            referencias_apa: getVal('exp_referencias') || 'Sin referencias bibliográficas registradas.'
+            referencias_apa: getVal('exp_referencias') || ''
           };
         } else {
           record = {
@@ -2344,7 +2344,7 @@
             novedad_alcance_evidencias: (document.getElementById('inn_novedad_alcance_evidencias') ? document.getElementById('inn_novedad_alcance_evidencias').value : '') || 'N/A',
             impactos_economicos_list: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
             impactos_explicacion_evidencias: (document.getElementById('inn_impactos_explicacion') ? document.getElementById('inn_impactos_explicacion').value : '') || 'N/A',
-            referencias_apa: (document.getElementById('inn_referencias') ? document.getElementById('inn_referencias').value : '') || 'Sin referencias bibliográficas registradas.'
+            referencias_apa: (document.getElementById('inn_referencias') ? document.getElementById('inn_referencias').value : '') || ''
           };
         }
       }
@@ -2458,12 +2458,10 @@
         docContent.push({ text: '2.7.b) Replicabilidad en otros escenarios:', style: 'questionLabel' });
         docContent.push({ text: record.proyeccion_replicabilidad || 'N/A', style: 'answerBox' });
 
-        docContent.push({ text: '2.8 Referencias Bibliográficas (Sistema APA 7.ª Edición):', style: 'subSectionTitle' });
-        const refLines = (record.referencias_apa || '').split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-        if (refLines.length === 0) {
-          docContent.push({ text: 'Sin referencias bibliográficas registradas.', style: 'answerBox' });
-        } else {
-          refLines.forEach(ref => {
+        const refLinesExp = (record.referencias_apa || '').split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0 && !l.toLowerCase().includes('sin referencias'));
+        if (refLinesExp.length > 0) {
+          docContent.push({ text: '2.8 Referencias Bibliográficas (Sistema APA 7.ª Edición):', style: 'subSectionTitle' });
+          refLinesExp.forEach(ref => {
             docContent.push({ text: ref, style: 'apaReference' });
           });
         }
@@ -2524,12 +2522,10 @@
         docContent.push({ text: 'Impactos seleccionados: ' + iImpList, style: 'questionLabel' });
         docContent.push({ text: record.impactos_explicacion_evidencias || 'N/A', style: 'answerBox' });
 
-        docContent.push({ text: '3.6 Referencias Bibliográficas (Sistema APA 7.ª Edición):', style: 'subSectionTitle' });
-        const refLines = (record.referencias_apa || '').split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-        if (refLines.length === 0) {
-          docContent.push({ text: 'Sin referencias bibliográficas registradas.', style: 'answerBox' });
-        } else {
-          refLines.forEach(ref => {
+        const refLinesInn = (record.referencias_apa || '').split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0 && !l.toLowerCase().includes('sin referencias'));
+        if (refLinesInn.length > 0) {
+          docContent.push({ text: '3.6 Referencias Bibliográficas (Sistema APA 7.ª Edición):', style: 'subSectionTitle' });
+          refLinesInn.forEach(ref => {
             docContent.push({ text: ref, style: 'apaReference' });
           });
         }
