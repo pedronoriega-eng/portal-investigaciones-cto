@@ -451,14 +451,22 @@
 
             <!-- 2.6 RESULTADOS Y APORTES -->
             <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-              <h4 class="text-xs font-bold text-slate-800 uppercase mb-2 flex items-center gap-2 border-b border-slate-100 pb-2">
+              <h4 class="text-xs font-bold text-slate-800 uppercase mb-1 flex items-center gap-2 border-b border-slate-100 pb-2">
                 <span class="w-6 h-6 bg-brand-orange text-white rounded-full inline-flex items-center justify-center text-xs">2.6</span>
                 <span>Resultados y Aportes</span>
               </h4>
-              <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
-                <label class="block text-xs font-bold text-slate-800 mb-1">Principales Resultados o Aportes *</label>
-                <p class="text-xs text-slate-500 mb-2">Describa los principales resultados o aportes de la experiencia, en al menos dos de los siguientes ámbitos: (Educativos, sociales, organizacionales, tecnológicos, investigativos)</p>
-                <textarea id="exp_resultados" rows="4" required class="input-field bg-white" placeholder="Describa los resultados o aportes en al menos dos ámbitos..."></textarea>
+              <p class="text-xs text-slate-600 mb-4 italic">Describa los principales resultados o aportes de la experiencia, en al menos dos de los siguientes ámbitos:</p>
+              <div class="space-y-4">
+                <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
+                  <label class="block text-xs font-bold text-slate-800 mb-1">2.6.a) Aportes Educativos e Investigativos *</label>
+                  <p class="text-xs text-slate-500 mb-2">Resultados tangibles en el ámbito pedagógico, curricular, académico o investigativo.</p>
+                  <textarea id="exp_resultados_educativos" rows="3" required class="input-field bg-white" placeholder="Describa los aportes educativos e investigativos..."></textarea>
+                </div>
+                <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
+                  <label class="block text-xs font-bold text-slate-800 mb-1">2.6.b) Aportes Sociales, Organizacionales o Tecnológicos *</label>
+                  <p class="text-xs text-slate-500 mb-2">Resultados tangibles en la empresa, comunidad, organización o desarrollo técnico.</p>
+                  <textarea id="exp_resultados_sociales" rows="3" required class="input-field bg-white" placeholder="Describa los aportes sociales, organizacionales o tecnológicos..."></textarea>
+                </div>
               </div>
             </div>
 
@@ -471,14 +479,14 @@
               <p class="text-xs text-slate-600 mb-4 italic">Indique brevemente cómo esta experiencia puede Replicarse en otro escenario y Mejorarse:</p>
               <div class="space-y-4">
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
-                  <label class="block text-xs font-bold text-slate-800 mb-1">¿Cómo esta experiencia puede Replicarse en otro escenario? *</label>
-                  <p class="text-xs text-slate-500 mb-2">Indique las posibilidades de réplica en otras asignaturas, programas o instituciones.</p>
-                  <textarea id="exp_proyeccion_replicarse" rows="3" required class="input-field bg-white" placeholder="Indique la replicabilidad en otro escenario..."></textarea>
+                  <label class="block text-xs font-bold text-slate-800 mb-1">2.7.a) Oportunidades y Plan de Mejora *</label>
+                  <p class="text-xs text-slate-500 mb-2">Indique las oportunidades y acciones concretas para mejorar la experiencia en futuras versiones.</p>
+                  <textarea id="exp_proyeccion_mejora" rows="3" required class="input-field bg-white" placeholder="Indique el plan de mejora..."></textarea>
                 </div>
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
-                  <label class="block text-xs font-bold text-slate-800 mb-1">¿Cómo esta experiencia puede Mejorarse? *</label>
-                  <p class="text-xs text-slate-500 mb-2">Indique las oportunidades y acciones para mejorar la experiencia en futuras versiones.</p>
-                  <textarea id="exp_proyeccion_mejorarse" rows="3" required class="input-field bg-white" placeholder="Indique las oportunidades de mejora..."></textarea>
+                  <label class="block text-xs font-bold text-slate-800 mb-1">2.7.b) Replicabilidad en otros escenarios *</label>
+                  <p class="text-xs text-slate-500 mb-2">Indique cómo la experiencia puede adaptarse y aplicarse en otros programas, asignaturas o instituciones.</p>
+                  <textarea id="exp_proyeccion_replicabilidad" rows="3" required class="input-field bg-white" placeholder="Indique la replicabilidad..."></textarea>
                 </div>
               </div>
             </div>
@@ -1060,8 +1068,10 @@
           objetivo: document.getElementById('exp_objetivo').value,
           descripcion: document.getElementById('exp_descripcion').value,
           analisis: document.getElementById('exp_analisis').value,
-          resultados: document.getElementById('exp_resultados').value,
-          proyeccion: document.getElementById('exp_proyeccion').value,
+          resultados_educativos: document.getElementById('exp_resultados_educativos') ? document.getElementById('exp_resultados_educativos').value : '',
+          resultados_sociales: document.getElementById('exp_resultados_sociales') ? document.getElementById('exp_resultados_sociales').value : '',
+          proyeccion_mejora: document.getElementById('exp_proyeccion_mejora') ? document.getElementById('exp_proyeccion_mejora').value : '',
+          proyeccion_replicabilidad: document.getElementById('exp_proyeccion_replicabilidad') ? document.getElementById('exp_proyeccion_replicabilidad').value : '',
           observaciones: document.getElementById('exp_observaciones').value,
           referencias: document.getElementById('exp_referencias').value
         },
@@ -1135,8 +1145,10 @@
           if (e.objetivo) document.getElementById('exp_objetivo').value = e.objetivo;
           if (e.descripcion) document.getElementById('exp_descripcion').value = e.descripcion;
           if (e.analisis) document.getElementById('exp_analisis').value = e.analisis;
-          if (e.resultados) document.getElementById('exp_resultados').value = e.resultados;
-          if (e.proyeccion) document.getElementById('exp_proyeccion').value = e.proyeccion;
+          if (e.resultados_educativos && document.getElementById('exp_resultados_educativos')) document.getElementById('exp_resultados_educativos').value = e.resultados_educativos;
+          if (e.resultados_sociales && document.getElementById('exp_resultados_sociales')) document.getElementById('exp_resultados_sociales').value = e.resultados_sociales;
+          if (e.proyeccion_mejora && document.getElementById('exp_proyeccion_mejora')) document.getElementById('exp_proyeccion_mejora').value = e.proyeccion_mejora;
+          if (e.proyeccion_replicabilidad && document.getElementById('exp_proyeccion_replicabilidad')) document.getElementById('exp_proyeccion_replicabilidad').value = e.proyeccion_replicabilidad;
           if (e.observaciones) document.getElementById('exp_observaciones').value = e.observaciones;
           if (e.referencias) document.getElementById('exp_referencias').value = e.referencias;
 
@@ -1314,9 +1326,10 @@
         analisis_logros: getVal('exp_analisis_logros'),
         analisis_dificultades: getVal('exp_analisis_dificultades'),
         analisis_aprendizajes: getVal('exp_analisis_aprendizajes'),
-        resultados: getVal('exp_resultados'),
-        proyeccion_replicarse: getVal('exp_proyeccion_replicarse'),
-        proyeccion_mejorarse: getVal('exp_proyeccion_mejorarse'),
+        resultados_educativos: getVal('exp_resultados_educativos'),
+        resultados_sociales: getVal('exp_resultados_sociales'),
+        proyeccion_mejora: getVal('exp_proyeccion_mejora'),
+        proyeccion_replicabilidad: getVal('exp_proyeccion_replicabilidad'),
         observaciones: getVal('exp_observaciones'),
         contexto_experiencia: `Ubicación/Población: ${getVal('exp_contexto_poblacion')}\nCondiciones/Justificación: ${getVal('exp_contexto_condiciones')}`,
         descripcion_experiencia: `Actividades/Fases: ${getVal('exp_descripcion_fases')}\nMetodología/Actores: ${getVal('exp_descripcion_metodologia')}`,
@@ -1582,9 +1595,10 @@
         analisis_logros: getVal('exp_analisis_logros'),
         analisis_dificultades: getVal('exp_analisis_dificultades'),
         analisis_aprendizajes: getVal('exp_analisis_aprendizajes'),
-        resultados: getVal('exp_resultados'),
-        proyeccion_replicarse: getVal('exp_proyeccion_replicarse'),
-        proyeccion_mejorarse: getVal('exp_proyeccion_mejorarse'),
+        resultados_educativos: getVal('exp_resultados_educativos'),
+        resultados_sociales: getVal('exp_resultados_sociales'),
+        proyeccion_mejora: getVal('exp_proyeccion_mejora'),
+        proyeccion_replicabilidad: getVal('exp_proyeccion_replicabilidad'),
         observaciones: getVal('exp_observaciones'),
         contexto_experiencia: `Ubicación/Población: ${getVal('exp_contexto_poblacion')}\nCondiciones/Justificación: ${getVal('exp_contexto_condiciones')}`,
         descripcion_experiencia: `Actividades/Fases: ${getVal('exp_descripcion_fases')}\nMetodología/Actores: ${getVal('exp_descripcion_metodologia')}`,
@@ -1676,47 +1690,52 @@
         createHeadingParagraph("1. Información General de la Experiencia"),
         createDocxTable(tableRows),
         createHeadingParagraph("2. Desarrollo de la Experiencia Significativa"),
-        createSubheadingParagraph("2.1 Contexto de la Experiencia"),
-        createSubItemHeader("2.1.a) ¿Dónde se desarrolló la experiencia?"),
+        createSubheadingParagraph("2.1 Contexto de La Experiencia"),
+        createQuestionPromptParagraph("Describa brevemente el contexto donde se desarrolló la experiencia respondiendo a las siguientes preguntas:"),
+        createSubItemHeader("¿Dónde se desarrolló?"),
         ...createContentBlock(p.contexto_donde),
-        createSubItemHeader("2.1.b) ¿Con quién se desarrolló (empresa, población, comunidad, etc.)?"),
+        createSubItemHeader("¿Con quién (empresa, población, comunidad, etc.)?"),
         ...createContentBlock(p.contexto_con_quien),
-        createSubItemHeader("2.1.c) ¿Cuáles eran las condiciones generales del contexto (tipo de población, delimitación temporal y delimitación espacial)?"),
-        ...createContentBlock(p.contexto_condiciones_generales),
-        createSubItemHeader("2.1.d) ¿En qué modalidad se desarrolló la experiencia (remota - presencial - dual)?"),
-        ...createContentBlock(p.contexto_modalidad),
-        createSubItemHeader("2.1.e) ¿Por qué se realizó la experiencia significativa en esta población?"),
+        createSubItemHeader("¿Condiciones generales del contexto (tipo de población, delimitación temporal, delimitación espacial, modalidad (remota-presencial-dual))?"),
+        ...createContentBlock(p.contexto_condiciones),
+        createSubItemHeader("¿Por qué se realizó la experiencia significativa en esta población?"),
         ...createContentBlock(p.contexto_por_que),
 
         createSubheadingParagraph("2.2 Pregunta Problematizadora"),
-        createSubItemHeader("Pregunta orientadora que guía la experiencia:"),
+        createQuestionPromptParagraph("Formule y registre la pregunta que orienta la reflexión y resultados de la experiencia:"),
         ...createContentBlock(p.pregunta_problematizadora),
 
-        createSubheadingParagraph("2.3 Objetivo de la Experiencia Significativa"),
-        createSubItemHeader("Objetivo General:"),
+        createSubheadingParagraph("2.3 Objetivo de la Experiencia Significativas"),
+        createQuestionPromptParagraph("Indique el objetivo principal de esta experiencia significativa:"),
         ...createContentBlock(p.objetivo_experiencia),
 
         createSubheadingParagraph("2.4 Descripción de la Experiencia"),
-        createSubItemHeader("2.4.a) Actividades y Fases Realizadas:"),
-        ...createContentBlock(p.descripcion_fases),
-        createSubItemHeader("2.4.b) Metodología y Actores Involucrados:"),
+        createQuestionPromptParagraph("Describa de manera concreta cómo se desarrolló la experiencia incluyendo como mínimo los siguientes aspectos:"),
+        createSubItemHeader("2.4.a) Actividades realizadas:"),
+        ...createContentBlock(p.descripcion_actividades),
+        createSubItemHeader("2.4.b) Metodología utilizada:"),
         ...createContentBlock(p.descripcion_metodologia),
+        createSubItemHeader("2.4.c) Actores involucrados:"),
+        ...createContentBlock(p.descripcion_actores),
 
         createSubheadingParagraph("2.5 Análisis y Reflexión Crítica"),
-        createSubItemHeader("2.5.a) ¿Qué funcionó bien al implementar la experiencia?"),
+        createQuestionPromptParagraph("Reflexione sobre la experiencia desarrollada, respondiendo como mínimo a las siguientes preguntas:"),
+        createSubItemHeader("¿Qué funcionó bien al implementar la experiencia?"),
         ...createContentBlock(p.analisis_logros),
-        createSubItemHeader("2.5.b) ¿Qué dificultades o limitaciones se presentaron al implementar la experiencia?"),
+        createSubItemHeader("¿Qué dificultades o limitaciones se presentaron al implementar la experiencia?"),
         ...createContentBlock(p.analisis_dificultades),
-        createSubItemHeader("2.5.c) ¿Qué aprendizajes se generaron para docentes y estudiantes con la implementación de la experiencia?"),
+        createSubItemHeader("¿Qué aprendizajes se generaron para docentes y estudiantes con la implementación de la experiencia?"),
         ...createContentBlock(p.analisis_aprendizajes),
 
         createSubheadingParagraph("2.6 Resultados y Aportes"),
+        createQuestionPromptParagraph("Describa los principales resultados o aportes de la experiencia, en al menos dos de los siguientes ámbitos: (Educativos, sociales, organizacionales, tecnológicos, investigativos)"),
         createSubItemHeader("2.6.a) Aportes Educativos e Investigativos:"),
         ...createContentBlock(p.resultados_educativos),
         createSubItemHeader("2.6.b) Aportes Sociales, Organizacionales o Tecnológicos:"),
         ...createContentBlock(p.resultados_sociales),
 
         createSubheadingParagraph("2.7 Proyección"),
+        createQuestionPromptParagraph("Indique brevemente cómo esta experiencia puede Replicarse en otro escenario y Mejorarse:"),
         createSubItemHeader("2.7.a) Oportunidades y Plan de Mejora:"),
         ...createContentBlock(p.proyeccion_mejora),
         createSubItemHeader("2.7.b) Replicabilidad en otros escenarios:"),
