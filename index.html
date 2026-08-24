@@ -562,9 +562,9 @@
             </div>
           </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.8 Referencias Bibliográficas (Sistema APA 6ª Edición)</label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.8 Referencias Bibliográficas (Sistema APA 7ª Edición)</label>
               <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) sexta edición para las citas de referencia de la experiencia.</p>
-              <textarea id="exp_referencias" rows="3" class="input-field" placeholder="Ingrese las referencias bibliográficas y de fundamentación pedagógica en formato APA 6ª edición..."></textarea>
+              <textarea id="exp_referencias" rows="3" class="input-field" placeholder="Ingrese las referencias bibliográficas y de fundamentación pedagógica en formato APA 7ª edición..."></textarea>
             </div>
           </div>
         </div>
@@ -865,12 +865,12 @@
           <!-- SECCION 2.4 REFERENCIAS BIBLIOGRAFICAS APA 6ª EDICION -->
           <div class="mb-8">
             <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
-              2.4 Referencias Bibliográficas (Sistema APA 6ª Edición)
+              2.4 Referencias Bibliográficas (Sistema APA 7ª Edición)
             </h3>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Citas y Referencias Bibliográficas (Normas APA 6ª Edición) *</label>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Citas y Referencias Bibliográficas (Normas APA 7ª Edición) *</label>
               <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) sexta edición para las citas de referencia de la innovación.</p>
-              <textarea id="inn_referencias" rows="4" required class="input-field" placeholder="Ingrese el listado formal de referencias en formato APA 6ª edición (Ej: Autor, A. A. (Año). Título de la obra. Ciudad: Editorial / Revista, vol(nro), pp)..."></textarea>
+              <textarea id="inn_referencias" rows="4" required class="input-field" placeholder="Ingrese el listado formal de referencias en formato APA 7ª edición (Ej: Autor, A. A. (Año). Título de la obra. Ciudad: Editorial / Revista, vol(nro), pp)..."></textarea>
             </div>
           </div>
         </div>
@@ -1980,7 +1980,8 @@
             analisis_reflexion: payload.analisis_reflexion,
             resultados_aportes: payload.resultados_aportes,
             proyeccion: payload.proyeccion,
-            observaciones: payload.observaciones
+            observaciones: payload.observaciones,
+            referencias_apa: payload.referencias_apa
           };
 
           const { data, error } = await supabaseClient
@@ -2084,7 +2085,8 @@
             novedad_alcance: payload.novedad_alcance,
             novedad_alcance_evidencias: payload.novedad_alcance_evidencias,
             impactos_economicos_list: payload.impactos_economicos_list,
-            impactos_explicacion_evidencias: payload.impactos_explicacion_evidencias
+            impactos_explicacion_evidencias: payload.impactos_explicacion_evidencias,
+            referencias_apa: payload.referencias_apa
           };
 
           const { data, error } = await supabaseClient
@@ -2237,7 +2239,7 @@
         })];
       }
       return lines.map(ref => new Paragraph({
-        indent: { left: 720, hanging: 720 }, // 0.5 pulgada (1.27 cm) Sangría Francesa oficial APA 6ª edición
+        indent: { left: 720, hanging: 720 }, // 0.5 pulgada (1.27 cm) Sangría Francesa oficial APA 7ª edición
         spacing: { after: 120 },
         alignment: "both",
         children: [
@@ -2456,7 +2458,7 @@
         docContent.push({ text: '2.7.b) Replicabilidad en otros escenarios:', style: 'questionLabel' });
         docContent.push({ text: record.proyeccion_replicabilidad || 'N/A', style: 'answerBox' });
 
-        docContent.push({ text: '2.8 Referencias Bibliográficas (Sistema APA 6.ª Edición):', style: 'subSectionTitle' });
+        docContent.push({ text: '2.8 Referencias Bibliográficas (Sistema APA 7.ª Edición):', style: 'subSectionTitle' });
         const refLines = (record.referencias_apa || '').split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
         if (refLines.length === 0) {
           docContent.push({ text: 'Sin referencias bibliográficas registradas.', style: 'answerBox' });
@@ -2522,7 +2524,7 @@
         docContent.push({ text: 'Impactos seleccionados: ' + iImpList, style: 'questionLabel' });
         docContent.push({ text: record.impactos_explicacion_evidencias || 'N/A', style: 'answerBox' });
 
-        docContent.push({ text: '3.6 Referencias Bibliográficas (Sistema APA 6.ª Edición):', style: 'subSectionTitle' });
+        docContent.push({ text: '3.6 Referencias Bibliográficas (Sistema APA 7.ª Edición):', style: 'subSectionTitle' });
         const refLines = (record.referencias_apa || '').split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
         if (refLines.length === 0) {
           docContent.push({ text: 'Sin referencias bibliográficas registradas.', style: 'answerBox' });
@@ -2771,7 +2773,7 @@
 
         createSubheadingParagraph("Observaciones Adicionales"),
         ...createContentBlock(p.observaciones),
-        createHeadingParagraph("2.8 Referencias Bibliográficas (Sistema APA 6ª Edición)"),
+        createHeadingParagraph("2.8 Referencias Bibliográficas (Sistema APA 7ª Edición)"),
         ...createApaParagraphs(p.referencias_apa)
       ];
 
@@ -2876,7 +2878,7 @@
         ...createContentBlock(`Tipo de Novedad: ${p.novedad_tipo || 'N/A'}\nExplicación de Novedad: ${p.novedad_explicacion || 'N/A'}\nAlcance Territorial: ${p.novedad_alcance || 'N/A'}\nEvidencias de Alcance: ${p.novedad_alcance_evidencias || 'N/A'}`),
         createSubheadingParagraph("Impactos Evidenciados en la Organización:"),
         ...createContentBlock(`Impactos Seleccionados: ${impactosList}\n\nExplicación con Evidencias Tangibles:\n${p.impactos_explicacion_evidencias || 'N/A'}`),
-        createHeadingParagraph("4. Referencias Bibliográficas (Sistema APA 6ª Edición)"),
+        createHeadingParagraph("4. Referencias Bibliográficas (Sistema APA 7ª Edición)"),
         ...createApaParagraphs(p.referencias_apa)
       ];
 
