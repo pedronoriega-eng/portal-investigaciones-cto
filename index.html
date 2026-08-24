@@ -800,6 +800,32 @@
       showToast('Configuración de Supabase conectada con éxito', 'success');
     }
 
+    function toggleOtroAscInput(checkbox) {
+      const container = document.getElementById('exp_asc_otro_container');
+      const input = document.getElementById('exp_asc_otro');
+      if (!container || !input) return;
+      if (checkbox.checked) {
+        container.classList.remove('hidden');
+        input.focus();
+      } else {
+        container.classList.add('hidden');
+        input.value = '';
+      }
+    }
+
+    function toggleOtrosImpactosInput(checkbox) {
+      const container = document.getElementById('inn_impactos_otros_container');
+      const input = document.getElementById('inn_impactos_otros');
+      if (!container || !input) return;
+      if (checkbox.checked) {
+        container.classList.remove('hidden');
+        input.focus();
+      } else {
+        container.classList.add('hidden');
+        input.value = '';
+      }
+    }
+
     function switchTab(tab) {
       activeTab = tab;
       const btnExp = document.getElementById('tab-btn-experiencias');
@@ -1078,6 +1104,8 @@
         if (form) form.reset();
         const coautoresContainer = document.getElementById('coautores-container');
         if (coautoresContainer) coautoresContainer.innerHTML = '';
+        const otrosContainer = document.getElementById('inn_impactos_otros_container');
+        if (otrosContainer) otrosContainer.classList.add('hidden');
       }
 
       try {
