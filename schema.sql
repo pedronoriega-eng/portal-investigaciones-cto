@@ -43,7 +43,8 @@ CREATE TABLE IF NOT EXISTS public.experiencias_significativas (
     resultados_aportes TEXT NOT NULL,
     proyeccion TEXT NOT NULL,
     observaciones TEXT,
-    referencias_apa TEXT
+    referencias_apa TEXT,
+    evidencias_adjuntas JSONB DEFAULT '[]'::jsonb
 );
 
 -- ==============================================================================
@@ -89,7 +90,8 @@ CREATE TABLE IF NOT EXISTS public.innovaciones_educativas (
     impactos_economicos_list TEXT[],
     impactos_explicacion_evidencias TEXT NOT NULL,
     impactos_otros_explicacion TEXT,
-    referencias_apa TEXT
+    referencias_apa TEXT,
+    evidencias_adjuntas JSONB DEFAULT '[]'::jsonb
 );
 
 -- ==============================================================================
