@@ -174,7 +174,7 @@
       </div>
 
       <!-- CONTENEDOR DE TARJETAS (GALERÍA PÚBLICA) -->
-      <div id="repo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div id="repo-grid" class="space-y-4 w-full">
         <div class="col-span-full text-center py-8 text-slate-400 text-xs font-semibold">
           <i class="fa-solid fa-spinner fa-spin text-lg mb-2 block"></i>
           Cargando registros del repositorio institucional...
@@ -193,7 +193,7 @@
         <button id="tab-btn-innovaciones" onclick="switchTab('innovaciones')" 
                 class="inactive-tab flex-1 py-4 px-6 text-center text-sm font-semibold flex items-center justify-center gap-2 transition">
           <i class="fa-solid fa-lightbulb"></i>
-          2. Registro de Innovaciones Educativas (Guía)
+          2. Registro de Innovación en procesos, procedimientos y servicios
         </button>
       </div>
     </div>
@@ -618,7 +618,7 @@
       <form id="form-innovaciones" onsubmit="handleInnovacionesSubmit(event)">
         <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
           <div>
-            <h2 class="text-xl font-bold text-brand-navy">2. Formato de Registro de Innovaciones Educativas y Organizacionales</h2>
+            <h2 class="text-xl font-bold text-brand-navy">2. Formato para el Registro de Innovación en procesos, procedimientos y servicios y Organizacionales</h2>
             <p class="text-xs text-slate-500">Guía Orientadora para el Registro Institucional de Productos, Procesos y Gestión CTEI</p>
           </div>
           <div class="flex gap-2">
@@ -1672,7 +1672,7 @@
         try {
           const { data: expData, error: expErr } = await supabaseClient
             .from('experiencias_significativas')
-            .select('id, radicado, nombre_experiencia, docentes_responsables, programa_academico, created_at')
+            .select('id, radicado, nombre_experiencia, docentes_responsables, programa_academico, lineas_investigacion_programa, lineas_investigacion_institucional, created_at')
             .order('created_at', { ascending: false });
 
           if (!expErr && expData) {
@@ -1683,6 +1683,7 @@
                 titulo: item.nombre_experiencia,
                 autor: item.docentes_responsables,
                 programa: item.programa_academico,
+                linea: item.lineas_investigacion_programa || item.lineas_investigacion_institucional || 'Línea Institucional CTO',
                 fecha: item.created_at ? item.created_at.split('T')[0] : '2026-08-24'
               });
             });
@@ -1690,7 +1691,7 @@
 
           const { data: innData, error: innErr } = await supabaseClient
             .from('innovaciones_educativas')
-            .select('id, radicado, titulo_innovacion, autor_principal_nombre, autor_principal_afiliacion, created_at')
+            .select('id, radicado, titulo_innovacion, autor_principal_nombre, autor_principal_grupo_facultad, nombre_estrategia_ctei, origen_estrategia_ctei, created_at')
             .order('created_at', { ascending: false });
 
           if (!innErr && innData) {
@@ -1700,7 +1701,8 @@
                 radicado: item.radicado,
                 titulo: item.titulo_innovacion,
                 autor: item.autor_principal_nombre,
-                programa: item.autor_principal_afiliacion || 'Innovación Educativa',
+                programa: item.autor_principal_grupo_facultad || 'Programa / Facultad CTO',
+                linea: item.nombre_estrategia_ctei || item.origen_estrategia_ctei || 'Estrategia CTeI',
                 fecha: item.created_at ? item.created_at.split('T')[0] : '2026-08-24'
               });
             });
@@ -1770,38 +1772,69 @@
       let cardsHtml = '';
       filtered.forEach(item => {
         const isExp = item.type === 'exp';
-        const typeLabel = isExp ? 'Experiencia Significativa' : 'Innovación Educativa';
+        const typeLabel = isExp ? 'Experiencia Significativa (Anexo 1)' : 'Innovación en procesos, procedimientos y servicios';
         const typeIcon = isExp ? 'fa-graduation-cap text-blue-600' : 'fa-lightbulb text-amber-500';
         const badgeBg = isExp ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-amber-50 text-amber-800 border-amber-200';
 
         cardsHtml += `
-          <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-3">
-                <span class="font-mono text-xs font-black text-brand-orange bg-orange-50 border border-orange-200/80 px-2.5 py-1 rounded-md">
+          <div class="bg-white rounded-xl border border-slate-200 p-5 md:p-6 shadow-sm hover:shadow-md transition w-full">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-mono text-xs font-black text-brand-orange bg-orange-50 border border-orange-200 px-3 py-1 rounded-md">
                   ${item.radicado}
                 </span>
-                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${badgeBg} flex items-center gap-1">
+                <span class="text-xs font-bold px-3 py-1 rounded-full border ${badgeBg} flex items-center gap-1.5">
                   <i class="fa-solid ${typeIcon}"></i> ${typeLabel}
                 </span>
               </div>
-
-              <h3 class="text-sm font-bold text-slate-800 line-clamp-2 mb-2" title="${item.titulo}">
-                ${item.titulo}
-              </h3>
-
-              <div class="text-xs text-slate-600 space-y-1 mb-4 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                <p class="truncate"><i class="fa-solid fa-user-tie text-slate-400 w-4"></i> <strong>Docente:</strong> ${item.autor}</p>
-                <p class="truncate"><i class="fa-solid fa-building-columns text-slate-400 w-4"></i> <strong>Programa:</strong> ${item.programa}</p>
-                <p><i class="fa-solid fa-calendar-day text-slate-400 w-4"></i> <strong>Radicado el:</strong> ${item.fecha}</p>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
+                  <i class="fa-solid fa-circle-check text-emerald-600"></i> Calidad 100% Aprobada
+                </span>
               </div>
             </div>
 
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-              <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
-                <i class="fa-solid fa-circle-check text-emerald-600"></i> Calidad 100% Aprobada
-              </span>
-              <span class="text-[11px] text-slate-400 italic">Verificado en Supabase</span>
+            <!-- TÍTULO COMPLETO SIN CORTE O TRUNCAMIENTO -->
+            <div class="mb-4">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Nombre del Proyecto / Innovación:</span>
+              <h3 class="text-base md:text-lg font-extrabold text-brand-navy leading-snug">
+                ${item.titulo}
+              </h3>
+            </div>
+
+            <!-- FICHA TÉCNICA A TODO EL ANCHO DE PANTALLA -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-700">
+              <div>
+                <span class="text-[11px] text-slate-400 font-bold uppercase block mb-0.5">
+                  <i class="fa-solid fa-user-tie text-brand-orange"></i> Docente / Autor Responsable:
+                </span>
+                <span class="font-bold text-slate-800 text-xs md:text-sm block break-words">
+                  ${item.autor}
+                </span>
+              </div>
+
+              <div>
+                <span class="text-[11px] text-slate-400 font-bold uppercase block mb-0.5">
+                  <i class="fa-solid fa-building-columns text-brand-orange"></i> Programa Académico / Facultad:
+                </span>
+                <span class="font-bold text-slate-800 text-xs md:text-sm block break-words">
+                  ${item.programa}
+                </span>
+              </div>
+
+              <div>
+                <span class="text-[11px] text-slate-400 font-bold uppercase block mb-0.5">
+                  <i class="fa-solid fa-diagram-project text-brand-orange"></i> Línea de Investigación / Estrategia:
+                </span>
+                <span class="font-bold text-slate-800 text-xs block break-words">
+                  ${item.linea}
+                </span>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-3 flex items-center justify-between text-xs text-slate-500">
+              <span><i class="fa-solid fa-calendar-day text-slate-400"></i> <strong>Fecha de Radicación:</strong> ${item.fecha}</span>
+              <span class="italic text-[11px] text-slate-400"><i class="fa-solid fa-database"></i> Registro oficial en Supabase</span>
             </div>
           </div>`;
       });
