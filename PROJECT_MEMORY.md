@@ -77,9 +77,9 @@ Para garantizar trazabilidad 100% homogénea sin errores tipográficos, los form
 - **Autoguardado en LocalStorage:** Cada 15 segundos guarda el borrador (`teo_portal_investigacion_draft`) para evitar pérdida de datos si se cierra la pestaña.
 - **Limpieza Automática tras Radicación:** Al radicar exitosamente en Supabase y generar el recibo/descarga, el formulario y su borrador en `localStorage` se limpian automáticamente (quedando al 0%) para permitir el siguiente diligenciamiento inmediato.
 - **Exportación Nativa a Microsoft Word (.docx) con Encabezado y Pie Institucional Oficial:** Extraído directamente de la plantilla oficial `Formato investigación.docx`:
-  - **Encabezado Institucional Oficial (`header_institucional.png` / `HEADER_B64`):** Banner superior institucional completo.
+  - **Encabezado Institucional Oficial (`header_institucional.png` / `HEADER_B64`):** Banner superior institucional completo (Único e irrepetible, sin superposiciones MSO).
   - **Pie de Página Institucional Oficial (`footer_institucional.png` / `FOOTER_B64`):** Banner inferior con información de Bucaramanga y Mineducación.
-  - **Formato Visual:** Título principal centrado en mayúsculas, barra horizontal naranja institucional continua (`border-bottom: 3.5pt solid #e67817`), subtítulo de `Radicado No` centrado y marcado MSO compatible con Microsoft Word.
+  - **Formato Visual Impreso y Word:** Título principal centrado en mayúsculas, barra horizontal naranja institucional continua (`border-bottom: 3.5pt solid #e67817`), subtítulo de `Radicado No` centrado. Unificación de etiquetas de imagen para prevenir la duplicación triple al abrir en Microsoft Word.
 
 ### B. `schema.sql` (Script de Migración SQL)
 - Definición de tablas `experiencias_significativas` y `innovaciones_educativas`.

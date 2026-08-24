@@ -1210,27 +1210,9 @@
           <style>
             @page Section1 {
               size: 8.5in 11.0in;
-              margin: 0.4in 0.5in 0.4in 0.5in;
-              mso-header-margin: 0.1in;
-              mso-footer-margin: 0.1in;
-              mso-header: h1;
-              mso-footer: f1;
+              margin: 0.5in 0.5in 0.5in 0.5in;
             }
             div.Section1 { page: Section1; }
-            
-            p.MsoHeader, div.MsoHeader {
-              margin: 0in;
-              margin-bottom: 0.0001pt;
-              mso-pagination: widow-orphan;
-              text-align: center;
-            }
-            p.MsoFooter, div.MsoFooter {
-              margin: 0in;
-              margin-bottom: 0.0001pt;
-              mso-pagination: widow-orphan;
-              text-align: center;
-            }
-
             body { font-family: 'Arial', sans-serif; font-size: 10.5pt; color: #1e293b; line-height: 1.4; }
             
             .header-image-container {
@@ -1248,7 +1230,7 @@
 
             .footer-image-container {
               text-align: center;
-              margin-top: 24pt;
+              margin-top: 25pt;
               width: 100%;
             }
             .footer-image-container img {
@@ -1345,14 +1327,7 @@
         </head>
         <body>
           <div class="Section1">
-            <!-- MSO HEADER -->
-            <div style="mso-element:header" id="h1">
-              <p class="MsoHeader">
-                <img src="data:image/png;base64,${HEADER_B64}" style="width:7.5in; height:auto;" alt="Encabezado Institucional CTO">
-              </p>
-            </div>
-
-            <!-- ENCABEZADO INSTITUCIONAL OFICIAL VISIBLE DESDE 'Formato investigación.docx' -->
+            <!-- UNICO ENCABEZADO INSTITUCIONAL (ORIGINAL Formato investigación.docx) -->
             <div class="header-image-container">
               <img src="data:image/png;base64,${HEADER_B64}" alt="Encabezado Institucional CTO">
             </div>
@@ -1367,16 +1342,9 @@
             <!-- CONTENIDO PRINCIPAL -->
             ${bodyHtml}
 
-            <!-- PIE DE PAGINA INSTITUCIONAL OFICIAL VISIBLE DESDE 'Formato investigación.docx' -->
+            <!-- UNICO PIE DE PAGINA INSTITUCIONAL (ORIGINAL Formato investigación.docx) -->
             <div class="footer-image-container">
               <img src="data:image/png;base64,${FOOTER_B64}" alt="Pie de Página Institucional CTO">
-            </div>
-
-            <!-- MSO FOOTER -->
-            <div style="mso-element:footer" id="f1">
-              <p class="MsoFooter">
-                <img src="data:image/png;base64,${FOOTER_B64}" style="width:7.5in; height:auto;" alt="Pie de Página Institucional CTO">
-              </p>
             </div>
           </div>
         </body>
