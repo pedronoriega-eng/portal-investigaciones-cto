@@ -42,7 +42,8 @@ CREATE TABLE IF NOT EXISTS public.experiencias_significativas (
     analisis_reflexion TEXT NOT NULL,
     resultados_aportes TEXT NOT NULL,
     proyeccion TEXT NOT NULL,
-    observaciones TEXT
+    observaciones TEXT,
+    referencias_apa TEXT
 );
 
 -- ==============================================================================
@@ -86,7 +87,9 @@ CREATE TABLE IF NOT EXISTS public.innovaciones_educativas (
     novedad_alcance TEXT NOT NULL,
     novedad_alcance_evidencias TEXT NOT NULL,
     impactos_economicos_list TEXT[],
-    impactos_explicacion_evidencias TEXT NOT NULL
+    impactos_explicacion_evidencias TEXT NOT NULL,
+    impactos_otros_explicacion TEXT,
+    referencias_apa TEXT
 );
 
 -- ==============================================================================

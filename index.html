@@ -345,6 +345,11 @@
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Observaciones Adicionales</label>
               <textarea id="exp_observaciones" rows="2" class="input-field" placeholder="Observaciones complementarias si aplica..."></textarea>
             </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.8 Referencias Bibliográficas (Sistema APA 6ª Edición)</label>
+              <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) sexta edición para las citas de referencia de la experiencia.</p>
+              <textarea id="exp_referencias" rows="3" class="input-field" placeholder="Ingrese las referencias bibliográficas y de fundamentación pedagógica en formato APA 6ª edición..."></textarea>
+            </div>
           </div>
         </div>
 
@@ -595,11 +600,30 @@
                   <input type="checkbox" name="inn_impactos" value="Mejora en cumplimiento de regulaciones y normas" class="rounded text-brand-orange focus:ring-brand-orange">
                   <span>Mejora en cumplimiento de regulaciones y normas</span>
                 </label>
+                <label class="flex items-center gap-2 cursor-pointer col-span-1 md:col-span-2">
+                  <input type="checkbox" name="inn_impactos" value="Otros" id="inn_impactos_otros_chk" onchange="toggleOtrosImpactosInput(this)" class="rounded text-brand-orange focus:ring-brand-orange">
+                  <span class="font-bold text-brand-orange">q) Otros. (¿cuáles?):</span>
+                </label>
+              </div>
+              <div id="inn_impactos_otros_container" class="mt-2.5 hidden">
+                <input type="text" id="inn_impactos_otros" class="input-field text-xs" placeholder="Describa de forma detallada la opción de otros impactos evidenciados en la organización...">
               </div>
               <div class="mt-4">
                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Explicación de Impactos con Evidencias Tangibles *</label>
                 <textarea id="inn_impactos_explicacion" rows="3" required class="input-field" placeholder="Describa los indicadores, datos e informes que respaldan los impactos..."></textarea>
               </div>
+            </div>
+          </div>
+
+          <!-- SECCION 2.4 REFERENCIAS BIBLIOGRAFICAS APA 6ª EDICION -->
+          <div class="mb-8">
+            <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
+              2.4 Referencias Bibliográficas (Sistema APA 6ª Edición)
+            </h3>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Citas y Referencias Bibliográficas (Normas APA 6ª Edición) *</label>
+              <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) sexta edición para las citas de referencia de la innovación.</p>
+              <textarea id="inn_referencias" rows="4" required class="input-field" placeholder="Ingrese el listado formal de referencias en formato APA 6ª edición (Ej: Autor, A. A. (Año). Título de la obra. Ciudad: Editorial / Revista, vol(nro), pp)..."></textarea>
             </div>
           </div>
         </div>
@@ -863,7 +887,8 @@
           analisis: document.getElementById('exp_analisis').value,
           resultados: document.getElementById('exp_resultados').value,
           proyeccion: document.getElementById('exp_proyeccion').value,
-          observaciones: document.getElementById('exp_observaciones').value
+          observaciones: document.getElementById('exp_observaciones').value,
+          referencias: document.getElementById('exp_referencias').value
         },
         innovaciones: {
           titulo: document.getElementById('inn_titulo').value,
@@ -893,7 +918,9 @@
           novedad_alcance: document.getElementById('inn_novedad_alcance').value,
           novedad_alcance_evidencias: document.getElementById('inn_novedad_alcance_evidencias').value,
           impactos: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
-          impactos_explicacion: document.getElementById('inn_impactos_explicacion').value
+          impactos_otros: document.getElementById('inn_impactos_otros') ? document.getElementById('inn_impactos_otros').value : '',
+          impactos_explicacion: document.getElementById('inn_impactos_explicacion').value,
+          referencias: document.getElementById('inn_referencias').value
         }
       };
 
@@ -936,6 +963,7 @@
           if (e.resultados) document.getElementById('exp_resultados').value = e.resultados;
           if (e.proyeccion) document.getElementById('exp_proyeccion').value = e.proyeccion;
           if (e.observaciones) document.getElementById('exp_observaciones').value = e.observaciones;
+          if (e.referencias) document.getElementById('exp_referencias').value = e.referencias;
 
           if (e.asc && Array.isArray(e.asc)) {
             document.querySelectorAll('input[name="exp_asc"]').forEach(chk => {
@@ -972,10 +1000,15 @@
           if (i.novedad_alcance) document.getElementById('inn_novedad_alcance').value = i.novedad_alcance;
           if (i.novedad_alcance_evidencias) document.getElementById('inn_novedad_alcance_evidencias').value = i.novedad_alcance_evidencias;
           if (i.impactos_explicacion) document.getElementById('inn_impactos_explicacion').value = i.impactos_explicacion;
+          if (i.impactos_otros && document.getElementById('inn_impactos_otros')) document.getElementById('inn_impactos_otros').value = i.impactos_otros;
+          if (i.referencias) document.getElementById('inn_referencias').value = i.referencias;
 
           if (i.impactos && Array.isArray(i.impactos)) {
             document.querySelectorAll('input[name="inn_impactos"]').forEach(chk => {
               chk.checked = i.impactos.includes(chk.value);
+              if (chk.value === 'Otros' && chk.checked) {
+                toggleOtrosImpactosInput(chk);
+              }
             });
           }
 
@@ -1099,7 +1132,8 @@
         analisis_reflexion: document.getElementById('exp_analisis').value,
         resultados_aportes: document.getElementById('exp_resultados').value,
         proyeccion: document.getElementById('exp_proyeccion').value,
-        observaciones: document.getElementById('exp_observaciones').value
+        observaciones: document.getElementById('exp_observaciones').value,
+        referencias_apa: document.getElementById('exp_referencias').value
       };
 
       if (supabaseClient) {
@@ -1159,7 +1193,9 @@
         novedad_alcance: document.getElementById('inn_novedad_alcance').value,
         novedad_alcance_evidencias: document.getElementById('inn_novedad_alcance_evidencias').value,
         impactos_economicos_list: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
-        impactos_explicacion_evidencias: document.getElementById('inn_impactos_explicacion').value
+        impactos_otros_explicacion: document.getElementById('inn_impactos_otros') ? document.getElementById('inn_impactos_otros').value : '',
+        impactos_explicacion_evidencias: document.getElementById('inn_impactos_explicacion').value,
+        referencias_apa: document.getElementById('inn_referencias').value
       };
 
       if (supabaseClient) {
@@ -1192,59 +1228,54 @@
     function generateWordDocument(docTitle, mainTitle, radicado, bodyHtml, filename) {
       const currentDate = new Date().toLocaleDateString('es-CO');
       const fullDocHtml = `
-        <html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' 
-              xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' 
-              xmlns='http://www.w3.org/TR/REC-html40'>
+        <html xmlns:v="urn:schemas-microsoft-microsoft-com:vml"
+              xmlns:o="urn:schemas-microsoft-microsoft-com:office:office"
+              xmlns:w="urn:schemas-microsoft-microsoft-com:office:word"
+              xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+              xmlns="http://www.w3.org/TR/REC-html40">
         <head>
-          <meta charset='utf-8'>
+          <meta http-equiv=Content-Type content="text/html; charset=utf-8">
           <title>${docTitle}</title>
-          <!--[if gte mso 9]>
-          <xml>
-            <w:WordDocument>
-              <w:View>Print</w:View>
-              <w:Zoom>100</w:Zoom>
-              <w:DoNotOptimizeForBrowser/>
-            </w:WordDocument>
-          </xml>
-          <![endif]-->
+          <!--[if gte mso 9]><xml>
+           <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>100</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+           </w:WordDocument>
+          </xml><![endif]-->
           <style>
+            p.MsoHeader, li.MsoHeader, div.MsoHeader {
+              margin: 0in;
+              margin-bottom: .0001pt;
+              mso-pagination: widow-orphan;
+              text-align: center;
+              font-size: 10.0pt;
+              font-family: "Arial", sans-serif;
+            }
+            p.MsoFooter, li.MsoFooter, div.MsoFooter {
+              margin: 0in;
+              margin-bottom: .0001pt;
+              mso-pagination: widow-orphan;
+              text-align: center;
+              font-size: 10.0pt;
+              font-family: "Arial", sans-serif;
+            }
             @page Section1 {
               size: 8.5in 11.0in;
-              margin: 0.5in 0.5in 0.5in 0.5in;
+              margin: 1.0in 0.75in 1.0in 0.75in;
+              mso-header-margin: .2in;
+              mso-footer-margin: .2in;
+              mso-header: h1;
+              mso-footer: f1;
+              mso-paper-source: 0;
             }
             div.Section1 { page: Section1; }
             body { font-family: 'Arial', sans-serif; font-size: 10.5pt; color: #1e293b; line-height: 1.4; }
             
-            .header-image-container {
-              text-align: center;
-              margin-bottom: 12pt;
-              width: 100%;
-            }
-            .header-image-container img {
-              width: 100%;
-              max-width: 7.5in;
-              height: auto;
-              display: block;
-              margin: 0 auto;
-            }
-
-            .footer-image-container {
-              text-align: center;
-              margin-top: 25pt;
-              width: 100%;
-            }
-            .footer-image-container img {
-              width: 100%;
-              max-width: 7.5in;
-              height: auto;
-              display: block;
-              margin: 0 auto;
-            }
-
             /* BLOQUE TITULO Y LINEA NARANJA CONTINUA */
             .title-section {
               text-align: center;
-              margin-top: 6pt;
+              margin-top: 4pt;
               margin-bottom: 14pt;
             }
             .main-doc-title {
@@ -1327,12 +1358,21 @@
         </head>
         <body>
           <div class="Section1">
-            <!-- UNICO ENCABEZADO INSTITUCIONAL (ORIGINAL Formato investigación.docx) -->
-            <div class="header-image-container">
-              <img src="data:image/png;base64,${HEADER_B64}" alt="Encabezado Institucional CTO">
+            <!-- SECCION DE ENCABEZADO NATIVO MS WORD (UBICADO DENTRO DE LA CABECERA DE WORD) -->
+            <div style="mso-element:header" id="h1">
+              <p class="MsoHeader" style="text-align:center;">
+                <img width="680" height="72" src="data:image/png;base64,${HEADER_B64}" alt="Encabezado Institucional CTO">
+              </p>
             </div>
 
-            <!-- TITULO PRINCIPAL Y BARRA NARANJA INSTITUCIONAL -->
+            <!-- SECCION DE PIE DE PAGINA NATIVO MS WORD (UBICADO DENTRO DEL PIE DE WORD) -->
+            <div style="mso-element:footer" id="f1">
+              <p class="MsoFooter" style="text-align:center;">
+                <img width="680" height="115" src="data:image/png;base64,${FOOTER_B64}" alt="Pie de Página Institucional CTO">
+              </p>
+            </div>
+
+            <!-- TITULO PRINCIPAL Y BARRA NARANJA INSTITUCIONAL EN CUERPO DE HOJA -->
             <div class="title-section">
               <div class="main-doc-title">${mainTitle}</div>
               <div class="orange-divider-line"></div>
@@ -1341,11 +1381,6 @@
 
             <!-- CONTENIDO PRINCIPAL -->
             ${bodyHtml}
-
-            <!-- UNICO PIE DE PAGINA INSTITUCIONAL (ORIGINAL Formato investigación.docx) -->
-            <div class="footer-image-container">
-              <img src="data:image/png;base64,${FOOTER_B64}" alt="Pie de Página Institucional CTO">
-            </div>
           </div>
         </body>
         </html>
@@ -1390,7 +1425,8 @@
         analisis_reflexion: document.getElementById('exp_analisis').value,
         resultados_aportes: document.getElementById('exp_resultados').value,
         proyeccion: document.getElementById('exp_proyeccion').value,
-        observaciones: document.getElementById('exp_observaciones').value
+        observaciones: document.getElementById('exp_observaciones').value,
+        referencias_apa: document.getElementById('exp_referencias').value
       };
       generateExperienciaDocxFromData(radicado, payload);
     }
@@ -1442,6 +1478,9 @@
 
         <p><strong>Observaciones Adicionales:</strong></p>
         <div class="field-box">${p.observaciones || 'N/A'}</div>
+
+        <h2>2.8 Referencias Bibliográficas (Sistema APA 6ª Edición)</h2>
+        <div class="field-box">${p.referencias_apa || 'Sin referencias registradas.'}</div>
       `;
 
       generateWordDocument('Experiencia Significativa - CTO', mainTitle, radicado, bodyHtml, `Experiencia_Significativa_${radicado}.doc`);
@@ -1478,7 +1517,9 @@
         novedad_alcance: document.getElementById('inn_novedad_alcance').value,
         novedad_alcance_evidencias: document.getElementById('inn_novedad_alcance_evidencias').value,
         impactos_economicos_list: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
-        impactos_explicacion_evidencias: document.getElementById('inn_impactos_explicacion').value
+        impactos_otros_explicacion: document.getElementById('inn_impactos_otros') ? document.getElementById('inn_impactos_otros').value : '',
+        impactos_explicacion_evidencias: document.getElementById('inn_impactos_explicacion').value,
+        referencias_apa: document.getElementById('inn_referencias').value
       };
       generateInnovacionDocxFromData(radicado, payload);
     }
@@ -1500,9 +1541,12 @@
         `;
       }
 
-      const impactosList = (p.impactos_economicos_list && p.impactos_economicos_list.length > 0) 
+      let impactosList = (p.impactos_economicos_list && p.impactos_economicos_list.length > 0) 
         ? p.impactos_economicos_list.join(', ') 
         : 'Ninguno';
+      if (p.impactos_otros_explicacion && p.impactos_otros_explicacion.trim() !== '') {
+        impactosList += `<br><strong>q) Otros. (¿cuáles?):</strong> ${p.impactos_otros_explicacion}`;
+      }
 
       const bodyHtml = `
         <h2>1. Información General de la Innovación</h2>
@@ -1549,6 +1593,9 @@
           <strong>Impactos Seleccionados:</strong> ${impactosList}<br><br>
           <strong>Explicación con Evidencias Tangibles:</strong><br>${p.impactos_explicacion_evidencias || 'N/A'}
         </div>
+
+        <h2>4. Referencias Bibliográficas (Sistema APA 6ª Edición)</h2>
+        <div class="field-box">${p.referencias_apa || 'Sin referencias registradas.'}</div>
       `;
 
       generateWordDocument('Registro de Innovaciones - CTO', mainTitle, radicado, bodyHtml, `Registro_Innovacion_${radicado}.doc`);

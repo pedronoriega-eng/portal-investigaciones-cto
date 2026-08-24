@@ -76,14 +76,18 @@ Para garantizar trazabilidad 100% homogénea sin errores tipográficos, los form
 - **Formulario 2 (Guía Orientadora - Innovaciones Educativas):** Captura de 24 campos institucionales + dinámico de coautores + radicado `INN-2026-XXXX`.
 - **Autoguardado en LocalStorage:** Cada 15 segundos guarda el borrador (`teo_portal_investigacion_draft`) para evitar pérdida de datos si se cierra la pestaña.
 - **Limpieza Automática tras Radicación:** Al radicar exitosamente en Supabase y generar el recibo/descarga, el formulario y su borrador en `localStorage` se limpian automáticamente (quedando al 0%) para permitir el siguiente diligenciamiento inmediato.
-- **Exportación Nativa a Microsoft Word (.docx) con Encabezado y Pie Institucional Oficial:** Extraído directamente de la plantilla oficial `Formato investigación.docx`:
-  - **Encabezado Institucional Oficial (`header_institucional.png` / `HEADER_B64`):** Banner superior institucional completo (Único e irrepetible, sin superposiciones MSO).
-  - **Pie de Página Institucional Oficial (`footer_institucional.png` / `FOOTER_B64`):** Banner inferior con información de Bucaramanga y Mineducación.
-  - **Formato Visual Impreso y Word:** Título principal centrado en mayúsculas, barra horizontal naranja institucional continua (`border-bottom: 3.5pt solid #e67817`), subtítulo de `Radicado No` centrado. Unificación de etiquetas de imagen para prevenir la duplicación triple al abrir en Microsoft Word.
+- **Exportación Nativa a Microsoft Word (.docx) con Encabezado y Pie Institucional Nativo en Secciones Word:** Extraído directamente de la plantilla oficial `Formato investigación.docx`:
+  - **Sección Nativa de Encabezado de Word (`mso-element: header` / `h1`):** Banner superior asignado estrictamente al marco de cabecera de la hoja.
+  - **Sección Nativa de Pie de Página de Word (`mso-element: footer` / `f1`):** Banner inferior asignado estrictamente al marco de pie de la hoja.
+  - **Formato Visual Impreso y Word:** El cuerpo inicia directamente con el título en mayúsculas, barra horizontal naranja institucional continua (`border-bottom: 3.5pt solid #e67817`), subtítulo de `Radicado No` centrado y sin imágenes sueltas pegadas en el cuerpo.
+- **Nuevos Campos Requeridos:**
+  - **Opción `q) Otros. (¿cuáles?):` en Impactos Evidenciados:** Casilla de verificación con campo de texto descriptivo dinámico `inn_impactos_otros`.
+  - **Referencias Bibliográficas (Sistema APA 6ª Edición):** Módulo para ingresar y exportar las referencias en norma APA 6ª edición (`inn_referencias` y `exp_referencias`).
 
 ### B. `schema.sql` (Script de Migración SQL)
 - Definición de tablas `experiencias_significativas` y `innovaciones_educativas`.
 - Claves primarias UUID, tipos de datos array `TEXT[]`, JSONB para coautores `coautores_json`.
+- Nuevas columnas `impactos_otros_explicacion TEXT` y `referencias_apa TEXT`.
 - Índices de rendimiento por `radicado` y `cedula`.
 - Sentencias RLS para activar seguridad en Supabase.
 
