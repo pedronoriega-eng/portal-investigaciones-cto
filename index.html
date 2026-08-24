@@ -1914,15 +1914,6 @@
 
     // FUNCIONES DEL REPOSITORIO PÚBLICO EN FRONTEND
     async function fetchAndRenderPublicRepository() {
-      const repoGrid = document.getElementById('repo-grid');
-      if (!repoGrid) return;
-
-      repoGrid.innerHTML = `
-        <div class="col-span-full text-center py-8 text-slate-400 text-xs font-semibold">
-          <i class="fa-solid fa-spinner fa-spin text-lg mb-2 block text-brand-orange"></i>
-          Consultando registros del repositorio público Supabase...
-        </div>`;
-
       let records = [];
 
       if (supabaseClient) {
