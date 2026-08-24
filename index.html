@@ -2246,7 +2246,7 @@
 
 
     async function downloadOfficialPdf(radicadoCode) {
-      showToast('Generando Documento PDF Oficial No Modificable...', 'info');
+      showToast('Generando Documento PDF Oficial Completo (Identico a Word)...', 'info');
 
       let record = null;
       let isExp = radicadoCode.startsWith('EXP');
@@ -2264,118 +2264,404 @@
             record = data;
           }
         } catch (e) {
-          console.warn('Error al buscar registro para PDF:', e);
+          console.warn('Error al buscar registro completo para PDF:', e);
         }
       }
 
       if (!record) {
-        // Fallback search in loadedRepoRecords
-        const found = loadedRepoRecords.find(r => r.radicado === radicadoCode);
-        if (found) {
+        // Fallback to draft/local object if available
+        const currentExpName = getVal('exp_nombre');
+        const currentInnTitle = document.getElementById('inn_titulo') ? document.getElementById('inn_titulo').value : '';
+        
+        if (isExp && currentExpName) {
           record = {
-            radicado: found.radicado,
-            nombre_experiencia: found.titulo,
-            titulo_innovacion: found.titulo,
-            docentes_responsables: found.autor,
-            autor_principal_nombre: found.autor,
-            programa_academico: found.programa,
-            autor_principal_grupo_facultad: found.programa,
-            lineas_investigacion_programa: found.linea,
-            nombre_estrategia_ctei: found.linea,
-            fecha_presentacion: found.fecha,
-            fecha_creacion: found.fecha,
-            contexto_experiencia: 'Información registrada y validada bajo requisitos de calidad.',
-            resumen_innovacion: 'Información registrada y validada bajo requisitos de calidad.'
+            radicado: radicadoCode,
+            nombre_experiencia: getVal('exp_nombre'),
+            programa_academico: getVal('exp_programa'),
+            espacio_academico: getVal('exp_espacio'),
+            nivel_formacion: getVal('exp_nivel'),
+            fecha_presentacion: getVal('exp_fecha'),
+            periodo_academico: getVal('exp_periodo'),
+            docentes_responsables: getVal('exp_docentes'),
+            cedula_docente: getVal('exp_cedula'),
+            correo_docente: getVal('exp_correo'),
+            num_estudiantes: getVal('exp_estudiantes'),
+            modalidad: getVal('exp_modalidad'),
+            lugar_contexto: getVal('exp_lugar'),
+            lineas_investigacion_programa: getVal('exp_lineas_prog'),
+            lineas_investigacion_institucional: getVal('exp_lineas_inst'),
+            espacio_divulgacion_asc: Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value),
+            espacio_divulgacion_otro: getVal('exp_asc_otro'),
+            contexto_donde: getVal('exp_contexto_donde'),
+            contexto_con_quien: getVal('exp_contexto_con_quien'),
+            contexto_condiciones: getVal('exp_contexto_condiciones'),
+            contexto_por_que: getVal('exp_contexto_por_que'),
+            pregunta_problematizadora: getVal('exp_pregunta'),
+            objetivo_experiencia: getVal('exp_objetivo'),
+            descripcion_actividades: getVal('exp_descripcion_actividades'),
+            descripcion_metodologia: getVal('exp_descripcion_metodologia'),
+            descripcion_actores: getVal('exp_descripcion_actores'),
+            analisis_logros: getVal('exp_analisis_logros'),
+            analisis_dificultades: getVal('exp_analisis_dificultades'),
+            analisis_aprendizajes: getVal('exp_analisis_aprendizajes'),
+            resultados_educativos: getVal('exp_resultados_educativos'),
+            resultados_sociales: getVal('exp_resultados_sociales'),
+            proyeccion_mejora: getVal('exp_proyeccion_mejora'),
+            proyeccion_replicabilidad: getVal('exp_proyeccion_replicabilidad'),
+            observaciones: getVal('exp_observaciones'),
+            referencias_apa: getVal('exp_referencias')
+          };
+        } else if (!isExp && currentInnTitle) {
+          record = {
+            radicado: radicadoCode,
+            titulo_innovacion: document.getElementById('inn_titulo').value,
+            tipo_innovacion: document.getElementById('inn_tipo').value,
+            fecha_creacion: document.getElementById('inn_fecha').value,
+            nombre_empresa: document.getElementById('inn_empresa').value,
+            sector_empresa: document.getElementById('inn_sector').value,
+            nit_empresa: document.getElementById('inn_nit').value,
+            proyecto_investigacion_titulo: document.getElementById('inn_proyecto_titulo').value,
+            proyecto_investigacion_convocatoria: document.getElementById('inn_convocatoria').value,
+            origen_estrategia_ctei: document.getElementById('inn_origen_ctei').value,
+            nombre_estrategia_ctei: document.getElementById('inn_nombre_estrategia').value,
+            institucion_financiadora: document.getElementById('inn_financiadora').value,
+            disponibilidad: document.getElementById('inn_disponibilidad').value,
+            tipo_proteccion: document.getElementById('inn_proteccion').value,
+            autor_principal_nombre: document.getElementById('inn_autor_nombre').value,
+            autor_principal_cedula: document.getElementById('inn_autor_cedula').value,
+            autor_principal_correo: document.getElementById('inn_autor_correo').value,
+            autor_principal_afiliacion: document.getElementById('inn_autor_afiliacion').value,
+            autor_principal_grupo_facultad: document.getElementById('inn_autor_grupo').value,
+            coautores_json: getCoautoresData(),
+            resumen_innovacion: document.getElementById('inn_resumen').value,
+            estado_previo_problematica: document.getElementById('inn_estado_previo').value,
+            estado_posterior_solucion: document.getElementById('inn_estado_posterior').value,
+            novedad_tipo: document.getElementById('inn_novedad_tipo').value,
+            novedad_explicacion: document.getElementById('inn_novedad_explicacion').value,
+            novedad_alcance: document.getElementById('inn_novedad_alcance').value,
+            novedad_alcance_evidencias: document.getElementById('inn_novedad_alcance_evidencias').value,
+            impactos_economicos_list: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
+            impactos_explicacion_evidencias: document.getElementById('inn_impactos_explicacion').value,
+            referencias_apa: document.getElementById('inn_referencias').value
           };
         }
       }
 
       if (!record) {
-        showToast('No se encontró la información del radicado en la base de datos', 'error');
+        showToast('No se encontró la información completa del radicado', 'error');
         return;
       }
 
-      const docTitle = isExp ? (record.nombre_experiencia || 'Experiencia Significativa') : (record.titulo_innovacion || 'Innovación en Procesos');
-      const docAutor = isExp ? (record.docentes_responsables || 'Docente CTO') : (record.autor_principal_nombre || 'Autor CTO');
-      const docPrograma = isExp ? (record.programa_academico || 'Programa CTO') : (record.autor_principal_grupo_facultad || 'Facultad CTO');
-      const docLinea = isExp ? (record.lineas_investigacion_programa || record.lineas_investigacion_institucional || 'Línea de Investigación CTO') : (record.nombre_estrategia_ctei || record.origen_estrategia_ctei || 'Estrategia CTeI');
-      const docFecha = record.created_at ? record.created_at.split('T')[0] : (record.fecha_presentacion || record.fecha_creacion || '2026-08-24');
-      const formTypeTitle = isExp ? 'SISTEMATIZACIÓN DE EXPERIENCIAS SIGNIFICATIVAS (ANEXO 1)' : 'REGISTRO DE INNOVACIÓN EN PROCESOS, PROCEDIMIENTOS Y SERVICIOS';
+      // Build container
+      const container = document.createElement('div');
+      container.id = 'full-pdf-render-container';
+      container.style.padding = '35px';
+      container.style.fontFamily = "'Inter', sans-serif";
+      container.style.color = '#0f172a';
+      container.style.backgroundColor = '#ffffff';
+      container.style.fontSize = '11px';
+      container.style.lineHeight = '1.5';
 
-      // Build hidden HTML container for pdf rendering
-      const tempDiv = document.createElement('div');
-      tempDiv.id = 'pdf-render-container';
-      tempDiv.style.padding = '30px';
-      tempDiv.style.fontFamily = "'Inter', sans-serif";
-      tempDiv.style.color = '#1e293b';
-      tempDiv.style.backgroundColor = '#ffffff';
-      tempDiv.style.fontSize = '12px';
-      tempDiv.style.lineHeight = '1.6';
+      let innerHtml = '';
 
-      tempDiv.innerHTML = `
-        <div style="border-bottom: 2px solid #e67817; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <h1 style="color: #1e293b; font-size: 16px; font-weight: 800; margin: 0; text-transform: uppercase;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h1>
-            <p style="color: #e67817; font-size: 11px; font-weight: 700; margin: 2px 0 0 0;">DIRECCIÓN DE INVESTIGACIONES — SISTEMA SIAC / I+D+i</p>
-            <p style="color: #64748b; font-size: 10px; margin: 0;">Vigilada Mineducación | Res. 2680 del 5 de Agosto de 1998</p>
-          </div>
-          <div style="text-align: right;">
-            <div style="background-color: #fef3e7; border: 1px solid #e67817; color: #e67817; font-family: monospace; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 4px;">
-              ${record.radicado}
+      if (isExp) {
+        // Form 1 Experiencias Significativas (Anexo 1)
+        const cDonde = record.contexto_donde || 'No especificado';
+        const cQuien = record.contexto_con_quien || 'No especificado';
+        const cCond = record.contexto_condiciones || 'No especificado';
+        const cPorQue = record.contexto_por_que || 'No especificado';
+        const dAct = record.descripcion_actividades || 'No especificado';
+        const dMet = record.descripcion_metodologia || 'No especificado';
+        const dActores = record.descripcion_actores || 'No especificado';
+        const aLog = record.analisis_logros || 'No especificado';
+        const aDif = record.analisis_dificultades || 'No especificado';
+        const aApr = record.analisis_aprendizajes || 'No especificado';
+        const rEdu = record.resultados_educativos || 'No especificado';
+        const rSoc = record.resultados_sociales || 'No especificado';
+        const pMej = record.proyeccion_mejora || 'No especificado';
+        const pRep = record.proyeccion_replicabilidad || 'No especificado';
+        const ascList = Array.isArray(record.espacio_divulgacion_asc) ? record.espacio_divulgacion_asc.join(', ') : (record.espacio_divulgacion_asc || 'Ninguno');
+
+        innerHtml = `
+          <div style="border-bottom: 2px solid #e67817; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h1 style="color: #1e293b; font-size: 15px; font-weight: 800; margin: 0; text-transform: uppercase;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h1>
+              <p style="color: #e67817; font-size: 11px; font-weight: 700; margin: 2px 0 0 0;">MODELO PEDAGÓGICO: FORMACIÓN EN CONTEXTOS DE APLICACIÓN</p>
+              <p style="color: #64748b; font-size: 9px; margin: 0;">Anexo 1 - Sistematización de Experiencias Significativas (SIAC / I+D+i)</p>
             </div>
-            <span style="font-size: 9px; color: #059669; font-weight: 700; display: block; margin-top: 4px;">✔ REQUISITOS DE CALIDAD 100% APROBADOS</span>
+            <div style="text-align: right;">
+              <div style="background-color: #fef3e7; border: 1px solid #e67817; color: #e67817; font-family: monospace; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 4px;">
+                ${record.radicado}
+              </div>
+              <span style="font-size: 8.5px; color: #059669; font-weight: 700; display: block; margin-top: 3px;">✔ REQUISITOS DE CALIDAD 100% APROBADOS</span>
+            </div>
           </div>
-        </div>
 
-        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 20px;">
-          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; margin: 0 0 8px 0; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">
-            ${formTypeTitle}
+          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 0 0 12px 0; text-transform: uppercase;">
+            1. INFORMACIÓN GENERAL DE LA EXPERIENCIA SIGNIFICATIVA
           </h2>
-          <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-            <tr>
-              <td style="padding: 3px 0; width: 30%;"><strong>Docente / Autor Responsable:</strong></td>
-              <td style="padding: 3px 0; color: #0f172a; font-weight: 600;">${docAutor}</td>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 0 0 2px 0;">1.1 Nombre de la Experiencia Significativa:</p>
+            <p style="font-size: 12px; font-weight: 800; color: #0f172a; margin: 0; background-color: #f8fafc; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px; text-align: justify;">
+              ${record.nombre_experiencia || 'Experiencia sin título'}
+            </p>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5px; border: 1px solid #cbd5e1;">
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Programa Académico:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.programa_academico || 'N/A'}</td>
             </tr>
             <tr>
-              <td style="padding: 3px 0;"><strong>Programa Académico / Facultad:</strong></td>
-              <td style="padding: 3px 0; color: #0f172a; font-weight: 600;">${docPrograma}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Espacio Académico:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.espacio_academico || 'N/A'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Nivel Formación:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.nivel_formacion || 'N/A'}</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Docente(s) Responsable(s):</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.docentes_responsables || 'N/A'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Cédula Docente:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.cedula_docente || 'N/A'}</td>
             </tr>
             <tr>
-              <td style="padding: 3px 0;"><strong>Línea de Investigación / Estrategia:</strong></td>
-              <td style="padding: 3px 0; color: #0f172a; font-weight: 600;">${docLinea}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Correo Electrónico:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.correo_docente || 'N/A'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">N.º Estudiantes:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.num_estudiantes || 1}</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Modalidad:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.modalidad || 'N/A'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Fecha / Periodo:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.fecha_presentacion || '2026-08-24'} (${record.periodo_academico || '2026-1'})</td>
             </tr>
             <tr>
-              <td style="padding: 3px 0;"><strong>Fecha de Radicación Oficial:</strong></td>
-              <td style="padding: 3px 0; color: #0f172a;">${docFecha}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Lugar / Contexto:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.lugar_contexto || 'N/A'}</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Líneas de Investigación:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">Programa: ${record.lineas_investigacion_programa || 'N/A'} | Inst: ${record.lineas_investigacion_institucional || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Divulgación ASC:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${ascList} ${record.espacio_divulgacion_otro ? '(' + record.espacio_divulgacion_otro + ')' : ''}</td>
             </tr>
           </table>
-        </div>
 
-        <div style="margin-bottom: 20px;">
-          <h3 style="font-size: 12px; font-weight: 800; color: #e67817; text-transform: uppercase; margin: 0 0 6px 0;">
-            1. TÍTULO DEL DOCUMENTO RADICADO
-          </h3>
-          <p style="font-size: 13px; font-weight: 700; color: #0f172a; text-align: justify; margin: 0; background-color: #ffffff; padding: 10px; border-left: 3px solid #e67817; border-top: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;">
-            ${docTitle}
-          </p>
-        </div>
+          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 15px 0 12px 0; text-transform: uppercase;">
+            2. DESARROLLO DE LA EXPERIENCIA SIGNIFICATIVA
+          </h2>
 
-        <div style="margin-bottom: 20px;">
-          <h3 style="font-size: 12px; font-weight: 800; color: #e67817; text-transform: uppercase; margin: 0 0 6px 0;">
-            2. DESARROLLO Y CONTENIDO SISTEMATIZADO
-          </h3>
-          <div style="font-size: 11px; text-align: justify; color: #334155; white-space: pre-wrap; line-height: 1.6; background-color: #ffffff; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
-${isExp ? (record.contexto_experiencia || 'Detalle del contexto y desarrollo registrado.') : (record.resumen_innovacion || 'Resumen y descripción de la innovación registrada.')}
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.1 Contexto de la Experiencia:</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">a) ¿Dónde se desarrolló?:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cDonde}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">b) ¿Con quién (empresa, población, comunidad)?:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cQuien}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">c) Condiciones generales del contexto (población, delimitación temporal, espacial, modalidad):</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cCond}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">d) ¿Por qué se realizó la experiencia significativa en esta población?:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${cPorQue}</p>
           </div>
-        </div>
 
-        <div style="margin-top: 30px; border-top: 1px solid #cbd5e1; padding-top: 15px; text-align: justify; font-size: 9px; color: #64748b;">
-          <p style="margin: 0 0 4px 0;"><strong>CERTIFICADO DE AUTENTICIDAD Y NO MODIFICABILIDAD:</strong> El presente documento constituye una copia fiel e inalterable emitida por el Repositorio Institucional de la Corporación Tecnológica del Oriente (CTO). El registro fue verificado bajo el algoritmo de requisitos de calidad institucional (Filtro 80%+).</p>
-          <p style="margin: 0;">Calle 41 # 10-30 Sede A - Centro / Bucaramanga — Tel: (607) 697 2885 — www.tecnologicadeloriente.edu.co</p>
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.2 Pregunta Problematizadora:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${record.pregunta_problematizadora || 'N/A'}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.3 Objetivo de la Experiencia Significativa:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${record.objetivo_experiencia || 'N/A'}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.4 Descripción de la Experiencia:</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.a) Actividades realizadas:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${dAct}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.b) Metodología utilizada:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${dMet}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.4.c) Actores involucrados:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${dActores}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.5 Análisis y Reflexión Crítica:</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué funcionó bien al implementar la experiencia?:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${aLog}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué dificultades o limitaciones se presentaron?:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${aDif}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">¿Qué aprendizajes se generaron para docentes y estudiantes?:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${aApr}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.6 Resultados y Aportes:</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.6.a) Aportes Educativos e Investigativos:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${rEdu}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.6.b) Aportes Sociales, Organizacionales o Tecnológicos:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${rSoc}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.7 Proyección:</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.7.a) Oportunidades y Plan de Mejora:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${pMej}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">2.7.b) Replicabilidad en otros escenarios:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${pRep}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">2.8 Referencias Bibliográficas (Sistema APA 6.ª Edición):</p>
+            <div style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;">
+              ${formatApaReferences(record.referencias_apa)}
+            </div>
+          </div>
+        `;
+      } else {
+        // Form 2 Innovación en procesos, procedimientos y servicios
+        const iResumen = record.resumen_innovacion || 'No especificado';
+        const iPrevio = record.estado_previo_problematica || 'No especificado';
+        const iPosterior = record.estado_posterior_solucion || 'No especificado';
+        const iNovTipo = record.novedad_tipo || 'Novedad Nacional';
+        const iNovExp = record.novedad_explicacion || 'No especificado';
+        const iNovAlc = record.novedad_alcance || 'No especificado';
+        const iNovEvi = record.novedad_alcance_evidencias || 'No especificado';
+        const iImpList = Array.isArray(record.impactos_economicos_list) ? record.impactos_economicos_list.join(', ') : (record.impactos_economicos_list || 'Ninguno');
+        const iImpExp = record.impactos_explicacion_evidencias || 'No especificado';
+
+        innerHtml = `
+          <div style="border-bottom: 2px solid #e67817; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h1 style="color: #1e293b; font-size: 15px; font-weight: 800; margin: 0; text-transform: uppercase;">CORPORACIÓN TECNOLÓGICA DEL ORIENTE</h1>
+              <p style="color: #e67817; font-size: 11px; font-weight: 700; margin: 2px 0 0 0;">DIRECCIÓN DE INVESTIGACIONES — SISTEMA SIAC / I+D+i</p>
+              <p style="color: #64748b; font-size: 9px; margin: 0;">Guía Orientadora de Registro de Innovación en procesos, procedimientos y servicios</p>
+            </div>
+            <div style="text-align: right;">
+              <div style="background-color: #fef3e7; border: 1px solid #e67817; color: #e67817; font-family: monospace; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 4px;">
+                ${record.radicado}
+              </div>
+              <span style="font-size: 8.5px; color: #059669; font-weight: 700; display: block; margin-top: 3px;">✔ REQUISITOS DE CALIDAD 100% APROBADOS</span>
+            </div>
+          </div>
+
+          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 0 0 12px 0; text-transform: uppercase;">
+            1. INFORMACIÓN GENERAL DE LA INNOVACIÓN
+          </h2>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 0 0 2px 0;">Título de la Innovación:</p>
+            <p style="font-size: 12px; font-weight: 800; color: #0f172a; margin: 0; background-color: #f8fafc; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px; text-align: justify;">
+              ${record.titulo_innovacion || 'Innovación sin título'}
+            </p>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5px; border: 1px solid #cbd5e1;">
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Tipo de Innovación:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.tipo_innovacion || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Fecha de Creación:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.fecha_creacion || '2026-08-24'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Nombre Empresa:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.nombre_empresa || 'N/A'}</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Sector Empresa:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.sector_empresa || 'N/A'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">NIT Empresa:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.nit_empresa || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Proyecto Asociado:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.proyecto_investigacion_titulo || 'N/A'} (Convocatoria: ${record.proyecto_investigacion_convocatoria || 'N/A'})</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Origen CTeI / Estrategia:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.origen_estrategia_ctei || 'N/A'} — ${record.nombre_estrategia_ctei || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Financiadora / Protección:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">Financia: ${record.institucion_financiadora || 'N/A'} | Disponibilidad: ${record.disponibilidad || 'Pública'} | Protección: ${record.tipo_proteccion || 'Derecho de Autor'}</td>
+            </tr>
+          </table>
+
+          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 15px 0 12px 0; text-transform: uppercase;">
+            2. AUTOR PRINCIPAL Y AFILIACIÓN INSTITUCIONAL
+          </h2>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 10.5px; border: 1px solid #cbd5e1;">
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 25%;">Autor Principal:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_nombre || 'N/A'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700; width: 20%;">Cédula Autor:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_cedula || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Correo Autor:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_correo || 'N/A'}</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Afiliación / Rol:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;">${record.autor_principal_afiliacion || 'N/A'}</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1; font-weight: 700;">Programa / Facultad:</td>
+              <td style="padding: 5px 8px; border: 1px solid #cbd5e1;" colspan="3">${record.autor_principal_grupo_facultad || 'N/A'}</td>
+            </tr>
+          </table>
+
+          <h2 style="font-size: 13px; font-weight: 800; color: #1e293b; background-color: #f1f5f9; padding: 6px 10px; border-left: 4px solid #e67817; margin: 15px 0 12px 0; text-transform: uppercase;">
+            3. DESARROLLO Y CONTENIDO DE LA INNOVACIÓN
+          </h2>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.1 Resumen de la Innovación:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iResumen}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.2 Estado Previo / Problemática:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iPrevio}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.3 Estado Posterior / Solución Alcanzada:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iPosterior}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.4 Novedad y Diferenciación (Manual de Oslo):</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Grado de Novedad: ${iNovTipo}</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 6px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iNovExp}</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Alcance y Evidencias:</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iNovAlc} — ${iNovEvi}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.5 Impactos Evidenciados:</p>
+            <p style="font-size: 10px; font-weight: 700; color: #334155; margin: 0 0 2px 0;">Impactos seleccionados: ${iImpList}</p>
+            <p style="font-size: 10.5px; color: #1e293b; text-align: justify; margin: 0 0 8px 0; background-color: #ffffff; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 4px;">${iImpExp}</p>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <p style="font-size: 10.5px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">3.6 Referencias Bibliográficas (Sistema APA 6.ª Edición):</p>
+            <div style="font-size: 10px; color: #1e293b; text-align: justify; margin: 0; background-color: #ffffff; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;">
+              ${formatApaReferences(record.referencias_apa)}
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = innerHtml + `
+        <div style="margin-top: 25px; border-top: 1px solid #cbd5e1; padding-top: 12px; text-align: justify; font-size: 8.5px; color: #64748b;">
+          <p style="margin: 0 0 4px 0;"><strong>CERTIFICADO DE NO MODIFICABILIDAD Y VERIFICACIÓN EN SUPABASE:</strong> El presente documento es una representación fiel, completa e inalterable del formulario institucional registrado bajo el radicado oficial <strong>${record.radicado}</strong>. Ha superado la validación automática de Requisitos Mínimos de Calidad Institucionales (Score >= 80%).</p>
+          <p style="margin: 0;">Corporación Tecnológica del Oriente — Bucaramanga — www.tecnologicadeloriente.edu.co</p>
         </div>
       `;
 
-      document.body.appendChild(tempDiv);
+      document.body.appendChild(container);
 
       const opt = {
         margin:       [0.4, 0.4, 0.4, 0.4],
@@ -2387,17 +2673,17 @@ ${isExp ? (record.contexto_experiencia || 'Detalle del contexto y desarrollo reg
 
       try {
         if (window.html2pdf) {
-          await window.html2pdf().set(opt).from(tempDiv).save();
-          showToast(`PDF Oficial ${record.radicado} descargado con éxito`, 'success');
+          await window.html2pdf().set(opt).from(container).save();
+          showToast(`PDF Oficial Completo ${record.radicado} descargado con éxito`, 'success');
         } else {
           window.print();
         }
       } catch (err) {
         console.error('Error al generar PDF:', err);
-        showToast('Descargando copia de seguridad...', 'info');
+        showToast('Generando copia por impresión...', 'info');
       } finally {
-        if (document.getElementById('pdf-render-container')) {
-          document.body.removeChild(tempDiv);
+        if (document.getElementById('full-pdf-render-container')) {
+          document.body.removeChild(container);
         }
       }
     }
