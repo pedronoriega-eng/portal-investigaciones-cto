@@ -579,61 +579,96 @@
                 <textarea id="exp_observaciones" rows="3" class="input-field bg-white" placeholder="Registre cualquier observación o comentario complementario..."></textarea>
               </div>
             </div>
+          <!-- 2.8 REFERENCIAS BIBLIOGRÁFICAS -->
+          <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm mt-6">
+            <h4 class="text-xs font-bold text-slate-800 uppercase mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-book-bookmark text-brand-orange"></i>
+              <span>2.8 Referencias Bibliográficas (Sistema APA 7.ª Edición)</span>
+            </h4>
+            <p class="text-xs text-slate-500 mb-2 italic">Se requiere la utilización del sistema APA 7.ª edición para las citas de referencia de la experiencia.</p>
+            <textarea id="exp_referencias" rows="3" class="input-field bg-white" placeholder="Ingrese las referencias bibliográficas y de fundamentación pedagógica en formato APA 7.ª edición..."></textarea>
           </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">2.8 Referencias Bibliográficas (Sistema APA 7ª Edición)</label>
-              <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) sexta edición para las citas de referencia de la experiencia.</p>
-              <textarea id="exp_referencias" rows="3" class="input-field" placeholder="Ingrese las referencias bibliográficas y de fundamentación pedagógica en formato APA 7ª edición..."></textarea>
-            </div>
-          </div>
-        </div>
 
-        <div class="flex items-center justify-between border-t border-slate-200 pt-6">
-          <button type="button" onclick="clearCurrentForm('experiencias')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
-            <i class="fa-solid fa-trash"></i> Limpiar Formulario
-          </button>
-        <!-- PANEL DE VERIFICACIÓN DE REQUISITOS MÍNIMOS DE CALIDAD -->
-        <div id="exp-quality-panel" class="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-shield-halved text-brand-orange text-lg"></i>
-              <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-brand-navy">Filtro Evaluador de Requisitos Mínimos de Calidad (Experiencias)</h4>
-                <p class="text-[11px] text-slate-500">Evaluación en tiempo real. Se requiere un puntaje igual o superior al 80% para habilitar la radicación.</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <span id="exp-quality-score-badge" class="text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
-                Calidad: 0% (Insuficiente)
+          <!-- SECCION 2.9 CARGA DE EVIDENCIAS Y DOCUMENTOS DE SOPORTE -->
+          <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm mt-6">
+            <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+              <h4 class="text-xs font-bold text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-paperclip text-amber-600"></i>
+                <span>2.9 Carga de Evidencias y Documentos de Soporte (Cámara de Comercio, RUT, Anexos)</span>
+              </h4>
+              <span class="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                <i class="fa-solid fa-shield-halved"></i> Máx 5 MB por archivo
               </span>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  <i class="fa-solid fa-building text-slate-500"></i> Cámara de Comercio (.pdf, .jpg, .png)
+                </label>
+                <input type="file" id="exp_file_camara" accept=".pdf,.jpg,.jpeg,.png" class="block w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" />
+                <div id="exp_file_camara_preview" class="text-[11px] text-slate-500 mt-1 italic">Ningún archivo seleccionado</div>
+              </div>
+
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  <i class="fa-solid fa-id-card text-slate-500"></i> RUT (.pdf, .jpg, .png)
+                </label>
+                <input type="file" id="exp_file_rut" accept=".pdf,.jpg,.jpeg,.png" class="block w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" />
+                <div id="exp_file_rut_preview" class="text-[11px] text-slate-500 mt-1 italic">Ningún archivo seleccionado</div>
+              </div>
+
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  <i class="fa-solid fa-folder-plus text-slate-500"></i> Otros Anexos / Evidencias
+                </label>
+                <input type="file" id="exp_file_anexos" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" class="block w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" />
+                <div id="exp_file_anexos_preview" class="text-[11px] text-slate-500 mt-1 italic">Ningún archivo seleccionado</div>
+              </div>
+            </div>
           </div>
 
-          <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
-            <div id="exp-quality-bar" class="bg-rose-500 h-full transition-all duration-300 w-0"></div>
+          <!-- PANEL DE VERIFICACIÓN DE REQUISITOS MÍNIMOS DE CALIDAD -->
+          <div id="exp-quality-panel" class="mt-6 mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-brand-orange text-lg"></i>
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-brand-navy">Filtro Evaluador de Requisitos Mínimos de Calidad (Experiencias)</h4>
+                  <p class="text-[11px] text-slate-500">Evaluación en tiempo real. Se requiere un puntaje igual o superior al 80% para habilitar la radicación.</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span id="exp-quality-score-badge" class="text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                  Calidad: 0% (Insuficiente)
+                </span>
+              </div>
+            </div>
+
+            <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
+              <div id="exp-quality-bar" class="bg-rose-500 h-full transition-all duration-300 w-0"></div>
+            </div>
+
+            <div id="exp-quality-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              <!-- Items de checklist generados por JS -->
+            </div>
           </div>
 
-          <div id="exp-quality-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-            <!-- Items de checklist generados por JS -->
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between border-t border-slate-200 pt-6">
-          <button type="button" onclick="clearCurrentForm('experiencias')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
-            <i class="fa-solid fa-trash"></i> Limpiar Formulario
-          </button>
-          <div class="flex gap-3">
-            <button type="button" onclick="downloadExperienciaDocx()" class="btn-word">
-              <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
+          <div class="flex items-center justify-between border-t border-slate-200 pt-6">
+            <button type="button" onclick="clearCurrentForm('experiencias')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-trash"></i> Limpiar Formulario
             </button>
-            <button type="submit" id="exp-submit-btn" disabled class="btn-primary opacity-50 cursor-not-allowed">
-              <i class="fa-solid fa-paper-plane"></i> Radicar Experiencia Significativa
-            </button>
+            <div class="flex gap-3">
+              <button type="button" onclick="downloadExperienciaDocx()" class="btn-word">
+                <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
+              </button>
+              <button type="submit" id="exp-submit-btn" disabled class="btn-primary opacity-50 cursor-not-allowed">
+                <i class="fa-solid fa-paper-plane"></i> Radicar Experiencia Significativa
+              </button>
+            </div>
           </div>
-        </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
 
     <!-- FORMULARIO 2: INNOVACIONES EDUCATIVAS -->
     <div id="tab-content-innovaciones" class="bg-white rounded-b-xl border border-slate-200 p-6 md:p-8 shadow-sm hidden">
@@ -881,65 +916,98 @@
             </div>
           </div>
 
-          <!-- SECCION 2.4 REFERENCIAS BIBLIOGRAFICAS APA 6ª EDICION -->
+          <!-- SECCION 3.6 REFERENCIAS BIBLIOGRÁFICAS -->
           <div class="mb-8">
             <h3 class="text-sm uppercase tracking-wider font-bold text-brand-navy bg-slate-100 p-2.5 rounded-md mb-4 border-l-4 border-brand-orange">
-              2.4 Referencias Bibliográficas (Sistema APA 7ª Edición)
+              3.6 Referencias Bibliográficas (Sistema APA 7.ª Edición)
             </h3>
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Citas y Referencias Bibliográficas (Normas APA 7ª Edición) *</label>
-              <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) sexta edición para las citas de referencia de la innovación.</p>
-              <textarea id="inn_referencias" rows="4" required class="input-field" placeholder="Ingrese el listado formal de referencias en formato APA 7ª edición (Ej: Autor, A. A. (Año). Título de la obra. Ciudad: Editorial / Revista, vol(nro), pp)..."></textarea>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Citas y Referencias Bibliográficas (Normas APA 7.ª Edición) *</label>
+              <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) 7.ª edición para las citas de referencia de la innovación.</p>
+              <textarea id="inn_referencias" rows="4" required class="input-field" placeholder="Ingrese el listado formal de referencias en formato APA 7.ª edición (Ej: Autor, A. A. (Año). Título de la obra. Ciudad: Editorial / Revista, vol(nro), pp)..."></textarea>
             </div>
           </div>
-        </div>
 
-        <div class="flex items-center justify-between border-t border-slate-200 pt-6">
-          <button type="button" onclick="clearCurrentForm('innovaciones')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
-            <i class="fa-solid fa-trash"></i> Limpiar Formulario
-          </button>
-        <!-- PANEL DE VERIFICACIÓN DE REQUISITOS MÍNIMOS DE CALIDAD (INNOVACIONES) -->
-        <div id="inn-quality-panel" class="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-shield-halved text-brand-orange text-lg"></i>
-              <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-brand-navy">Filtro Evaluador de Requisitos Mínimos de Calidad (Innovaciones)</h4>
-                <p class="text-[11px] text-slate-500">Evaluación de novedad y valor (Manual de Oslo / Minciencias). Requiere mínimo 80% de calidad para radicar.</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <span id="inn-quality-score-badge" class="text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
-                Calidad: 0% (Insuficiente)
+          <!-- SECCION 3.7 CARGA DE EVIDENCIAS Y DOCUMENTOS DE SOPORTE -->
+          <div class="border-t border-slate-200 pt-6 mt-8 mb-8">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="text-sm font-black text-slate-800 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-paperclip text-amber-600"></i>
+                3.7 Carga de Evidencias y Documentos de Soporte (Cámara de Comercio, RUT, Anexos)
+              </h4>
+              <span class="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded border border-amber-200">
+                <i class="fa-solid fa-shield-halved"></i> Máx 5 MB por archivo
               </span>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  <i class="fa-solid fa-building text-slate-500"></i> Cámara de Comercio (.pdf, .jpg, .png)
+                </label>
+                <input type="file" id="inn_file_camara" accept=".pdf,.jpg,.jpeg,.png" class="block w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" />
+                <div id="inn_file_camara_preview" class="text-[11px] text-slate-500 mt-1 italic">Ningún archivo seleccionado</div>
+              </div>
+
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  <i class="fa-solid fa-id-card text-slate-500"></i> RUT (.pdf, .jpg, .png)
+                </label>
+                <input type="file" id="inn_file_rut" accept=".pdf,.jpg,.jpeg,.png" class="block w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" />
+                <div id="inn_file_rut_preview" class="text-[11px] text-slate-500 mt-1 italic">Ningún archivo seleccionado</div>
+              </div>
+
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  <i class="fa-solid fa-folder-plus text-slate-500"></i> Otros Anexos / Evidencias
+                </label>
+                <input type="file" id="inn_file_anexos" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" class="block w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" />
+                <div id="inn_file_anexos_preview" class="text-[11px] text-slate-500 mt-1 italic">Ningún archivo seleccionado</div>
+              </div>
+            </div>
           </div>
 
-          <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
-            <div id="inn-quality-bar" class="bg-rose-500 h-full transition-all duration-300 w-0"></div>
+          <!-- PANEL DE VERIFICACIÓN DE REQUISITOS MÍNIMOS DE CALIDAD (INNOVACIONES) -->
+          <div id="inn-quality-panel" class="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-brand-orange text-lg"></i>
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-brand-navy">Filtro Evaluador de Requisitos Mínimos de Calidad (Innovaciones)</h4>
+                  <p class="text-[11px] text-slate-500">Evaluación de novedad y valor (Manual de Oslo / Minciencias). Requiere mínimo 80% de calidad para radicar.</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span id="inn-quality-score-badge" class="text-xs font-black px-3 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                  Calidad: 0% (Insuficiente)
+                </span>
+              </div>
+            </div>
+
+            <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
+              <div id="inn-quality-bar" class="bg-rose-500 h-full transition-all duration-300 w-0"></div>
+            </div>
+
+            <div id="inn-quality-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              <!-- Items de checklist generados por JS -->
+            </div>
           </div>
 
-          <div id="inn-quality-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-            <!-- Items de checklist generados por JS -->
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between border-t border-slate-200 pt-6">
-          <button type="button" onclick="clearCurrentForm('innovaciones')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
-            <i class="fa-solid fa-trash"></i> Limpiar Formulario
-          </button>
-          <div class="flex gap-3">
-            <button type="button" onclick="downloadInnovacionDocx()" class="btn-word">
-              <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
+          <div class="flex items-center justify-between border-t border-slate-200 pt-6">
+            <button type="button" onclick="clearCurrentForm('innovaciones')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-trash"></i> Limpiar Formulario
             </button>
-            <button type="submit" id="inn-submit-btn" disabled class="btn-primary opacity-50 cursor-not-allowed">
-              <i class="fa-solid fa-paper-plane"></i> Radicar Innovación Educativa
-            </button>
+            <div class="flex gap-3">
+              <button type="button" onclick="downloadInnovacionDocx()" class="btn-word">
+                <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
+              </button>
+              <button type="submit" id="inn-submit-btn" disabled class="btn-primary opacity-50 cursor-not-allowed">
+                <i class="fa-solid fa-paper-plane"></i> Radicar Innovación Educativa
+              </button>
+            </div>
           </div>
-        </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
 
   </main>
 
