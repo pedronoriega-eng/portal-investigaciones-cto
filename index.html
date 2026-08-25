@@ -1588,11 +1588,17 @@
         const c1 = document.getElementById('exp_file_camara_preview'); if (c1) c1.innerText = 'Ningún archivo seleccionado';
         const c2 = document.getElementById('exp_file_rut_preview'); if (c2) c2.innerText = 'Ningún archivo seleccionado';
         const c3 = document.getElementById('exp_file_anexos_preview'); if (c3) c3.innerText = 'Ningún archivo seleccionado';
-      if (formType === 'experiencias') {
-        document.getElementById('form-experiencias').reset();
+        const form = document.getElementById('form-experiencias');
+        if (form) form.reset();
       } else {
-        document.getElementById('form-innovaciones').reset();
-        document.getElementById('coautores-container').innerHTML = '';
+        innEvidenciasList = [];
+        const i1 = document.getElementById('inn_file_camara_preview'); if (i1) i1.innerText = 'Ningún archivo seleccionado';
+        const i2 = document.getElementById('inn_file_rut_preview'); if (i2) i2.innerText = 'Ningún archivo seleccionado';
+        const i3 = document.getElementById('inn_file_anexos_preview'); if (i3) i3.innerText = 'Ningún archivo seleccionado';
+        const form = document.getElementById('form-innovaciones');
+        if (form) form.reset();
+        const coautoresContainer = document.getElementById('coautores-container');
+        if (coautoresContainer) coautoresContainer.innerHTML = '';
       }
       saveDraftToLocalStorage();
       showToast('Formulario restablecido', 'info');
@@ -1920,7 +1926,7 @@
         try {
           const { data: expData, error: expErr } = await supabaseClient
             .from('experiencias_significativas')
-            .select('id, radicado, nombre_experiencia, docentes_responsables, programa_academico, lineas_investigacion_programa, lineas_investigacion_institucional, evidencias_adjuntas, created_at')
+            .select('*')
             .order('created_at', { ascending: false });
 
           if (!expErr && expData) {
@@ -1940,7 +1946,7 @@
 
           const { data: innData, error: innErr } = await supabaseClient
             .from('innovaciones_educativas')
-            .select('id, radicado, titulo_innovacion, autor_principal_nombre, autor_principal_grupo_facultad, nombre_estrategia_ctei, origen_estrategia_ctei, evidencias_adjuntas, created_at')
+            .select('*')
             .order('created_at', { ascending: false });
 
           if (!innErr && innData) {
@@ -2112,7 +2118,6 @@
         const c1 = document.getElementById('exp_file_camara_preview'); if (c1) c1.innerText = 'Ningún archivo seleccionado';
         const c2 = document.getElementById('exp_file_rut_preview'); if (c2) c2.innerText = 'Ningún archivo seleccionado';
         const c3 = document.getElementById('exp_file_anexos_preview'); if (c3) c3.innerText = 'Ningún archivo seleccionado';
-      if (formType === 'experiencias') {
         const form = document.getElementById('form-experiencias');
         if (form) form.reset();
       } else if (formType === 'innovaciones') {
@@ -2120,7 +2125,6 @@
         const i1 = document.getElementById('inn_file_camara_preview'); if (i1) i1.innerText = 'Ningún archivo seleccionado';
         const i2 = document.getElementById('inn_file_rut_preview'); if (i2) i2.innerText = 'Ningún archivo seleccionado';
         const i3 = document.getElementById('inn_file_anexos_preview'); if (i3) i3.innerText = 'Ningún archivo seleccionado';
-      } else if (formType === 'innovaciones') {
         const form = document.getElementById('form-innovaciones');
         if (form) form.reset();
         const coautoresContainer = document.getElementById('coautores-container');
@@ -2134,18 +2138,8 @@
         if (raw) {
           const data = JSON.parse(raw);
           if (formType === 'experiencias') {
-        expEvidenciasList = [];
-        const c1 = document.getElementById('exp_file_camara_preview'); if (c1) c1.innerText = 'Ningún archivo seleccionado';
-        const c2 = document.getElementById('exp_file_rut_preview'); if (c2) c2.innerText = 'Ningún archivo seleccionado';
-        const c3 = document.getElementById('exp_file_anexos_preview'); if (c3) c3.innerText = 'Ningún archivo seleccionado';
-      if (formType === 'experiencias') {
             data.experiencias = {};
           } else if (formType === 'innovaciones') {
-        innEvidenciasList = [];
-        const i1 = document.getElementById('inn_file_camara_preview'); if (i1) i1.innerText = 'Ningún archivo seleccionado';
-        const i2 = document.getElementById('inn_file_rut_preview'); if (i2) i2.innerText = 'Ningún archivo seleccionado';
-        const i3 = document.getElementById('inn_file_anexos_preview'); if (i3) i3.innerText = 'Ningún archivo seleccionado';
-      } else if (formType === 'innovaciones') {
             data.innovaciones = {};
           }
           localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
