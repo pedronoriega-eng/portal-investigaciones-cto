@@ -675,7 +675,10 @@
             <button type="button" onclick="clearCurrentForm('experiencias')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
               <i class="fa-solid fa-trash"></i> Limpiar Formulario
             </button>
-            <div class="flex gap-3">
+            <div class="flex gap-3 flex-wrap">
+              <button type="button" onclick="manualSaveDraft()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-4 rounded-md shadow-sm transition flex items-center gap-2 text-xs">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Borrador Temporal
+              </button>
               <button type="button" onclick="downloadExperienciaDocx()" class="btn-word">
                 <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
               </button>
@@ -1015,7 +1018,10 @@
             <button type="button" onclick="clearCurrentForm('innovaciones')" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1">
               <i class="fa-solid fa-trash"></i> Limpiar Formulario
             </button>
-            <div class="flex gap-3">
+            <div class="flex gap-3 flex-wrap">
+              <button type="button" onclick="manualSaveDraft()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 px-4 rounded-md shadow-sm transition flex items-center gap-2 text-xs">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Borrador Temporal
+              </button>
               <button type="button" onclick="downloadInnovacionDocx()" class="btn-word">
                 <i class="fa-solid fa-file-word"></i> Descargar Word (.docx)
               </button>
@@ -3510,6 +3516,21 @@
     let currentRecordEstado = 'borrador';
     let coordAuthenticated = false;
     let coordCurrentFilter = 'all';
+
+    async function manualSaveDraft() {
+      saveDraftToLocalStorage();
+      if (typeof saveDraftToSupabase === 'function') {
+        await saveDraftToSupabase();
+      }
+      const ced = (activeTab === 'experiencias' ? getVal('exp_cedula') : getVal('inn_autor_cedula')) || '';
+      let msg = '💾 ¡Borrador guardado exitosamente en la nube!';
+      if (ced) {
+        msg += ` Quedó vinculado a la C.C. ${ced}. Puede cerrar de forma segura y reanudarlo después.`;
+      } else {
+        msg += ' Sugerencia: Ingrese su número de Cédula en el formulario para reanudarlo fácilmente en cualquier momento.';
+      }
+      showToast(msg, 'success');
+    }
 
     function initSupabaseAuthListener() {
       if (supabaseClient && supabaseClient.auth) {
