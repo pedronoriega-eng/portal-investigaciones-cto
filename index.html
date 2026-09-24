@@ -261,7 +261,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <div class="md:col-span-2">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de la Experiencia Significativa *</label>
-              <input type="text" id="exp_nombre" required class="input-field" placeholder="Ej: Implementación de laboratorio de realidad virtual en biología">
+              <input type="text" id="exp_nombre" data-min="10" data-max="250" required class="input-field" placeholder="Ej: Implementación de laboratorio de realidad virtual en biología">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Programa Académico *</label>
@@ -420,7 +420,7 @@
                     <span>¿Dónde se desarrolló? *</span>
                   </label>
                   <p class="text-xs text-slate-500 mb-2">Indique la institución, sede, aula, laboratorio, empresa o entidad específica.</p>
-                  <textarea id="exp_contexto_donde" rows="3" required class="input-field bg-white" placeholder="Describa el lugar o institución donde se realizó..."></textarea>
+                  <textarea id="exp_contexto_donde" data-min="20" data-max="500" rows="3" required class="input-field bg-white" placeholder="Describa el lugar o institución donde se realizó..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
@@ -429,7 +429,7 @@
                     <span>¿Con quién (empresa, población, comunidad, etc.)? *</span>
                   </label>
                   <p class="text-xs text-slate-500 mb-2">Describa los participantes directos (estudiantes de X semestre, empresa aliada, comunidad).</p>
-                  <textarea id="exp_contexto_con_quien" rows="3" required class="input-field bg-white" placeholder="Describa la población o entidad participante..."></textarea>
+                  <textarea id="exp_contexto_con_quien" data-min="20" data-max="500" rows="3" required class="input-field bg-white" placeholder="Describa la población o entidad participante..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
@@ -438,7 +438,7 @@
                     <span>¿Condiciones generales del contexto (tipo de población, delimitación temporal, delimitación espacial, modalidad (remota-presencial-dual))? *</span>
                   </label>
                   <p class="text-xs text-slate-500 mb-2">Detalle las condiciones de población, periodo de tiempo, espacio geográfico y modalidad de formación.</p>
-                  <textarea id="exp_contexto_condiciones" rows="4" required class="input-field bg-white" placeholder="Describa las condiciones generales del contexto y modalidad..."></textarea>
+                  <textarea id="exp_contexto_condiciones" data-min="20" data-max="600" rows="4" required class="input-field bg-white" placeholder="Describa las condiciones generales del contexto y modalidad..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
@@ -447,7 +447,7 @@
                     <span>¿Por qué se realizó la experiencia significativa en esta población? *</span>
                   </label>
                   <p class="text-xs text-slate-500 mb-2">Justifique la necesidad, oportunidad o problemática abordada en esta población.</p>
-                  <textarea id="exp_contexto_por_que" rows="3" required class="input-field bg-white" placeholder="Justifique el motivo de realizar la experiencia en esta población..."></textarea>
+                  <textarea id="exp_contexto_por_que" data-min="20" data-max="600" rows="3" required class="input-field bg-white" placeholder="Justifique el motivo de realizar la experiencia en esta población..."></textarea>
                 </div>
               </div>
             </div>
@@ -461,7 +461,7 @@
               <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                 <label class="block text-xs font-bold text-slate-800 mb-1">Formulación de la Pregunta Problematizadora *</label>
                 <p class="text-xs text-slate-500 mb-2">Formule y registre la pregunta que orienta la reflexión y resultados de la experiencia: (Ejemplo: ¿Cómo aporta esta experiencia al desarrollo de competencias, solución de un problema o mejora de un proceso?)</p>
-                <textarea id="exp_pregunta" rows="3" required class="input-field bg-white" placeholder="Formule la pregunta problematizadora..."></textarea>
+                <textarea id="exp_pregunta" data-min="15" data-max="400" rows="3" required class="input-field bg-white" placeholder="Formule la pregunta problematizadora..."></textarea>
               </div>
             </div>
 
@@ -474,7 +474,7 @@
               <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                 <label class="block text-xs font-bold text-slate-800 mb-1">Objetivo Principal *</label>
                 <p class="text-xs text-slate-500 mb-2">Indique el objetivo principal de esta experiencia significativa: (Ejemplo: Analizar los aprendizajes derivados de…, identificar aportes de…, reflexionar sobre…)</p>
-                <textarea id="exp_objetivo" rows="3" required class="input-field bg-white" placeholder="Describa el objetivo principal..."></textarea>
+                <textarea id="exp_objetivo" data-min="15" data-max="400" rows="3" required class="input-field bg-white" placeholder="Describa el objetivo principal..."></textarea>
               </div>
             </div>
 
@@ -489,17 +489,17 @@
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1">2.4.a) Actividades realizadas *</label>
                   <p class="text-xs text-slate-500 mb-2">Describa en detalle las actividades y fases ejecutadas.</p>
-                  <textarea id="exp_descripcion_actividades" rows="4" required class="input-field bg-white" placeholder="Describa las actividades realizadas..."></textarea>
+                  <textarea id="exp_descripcion_actividades" data-min="20" data-max="1000" rows="4" required class="input-field bg-white" placeholder="Describa las actividades realizadas..."></textarea>
                 </div>
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1">2.4.b) Metodología utilizada *</label>
                   <p class="text-xs text-slate-500 mb-2">Describa la metodología pedagógica, técnica o investigativa aplicada.</p>
-                  <textarea id="exp_descripcion_metodologia" rows="4" required class="input-field bg-white" placeholder="Describa la metodología utilizada..."></textarea>
+                  <textarea id="exp_descripcion_metodologia" data-min="20" data-max="1000" rows="4" required class="input-field bg-white" placeholder="Describa la metodología utilizada..."></textarea>
                 </div>
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1">2.4.c) Actores involucrados *</label>
                   <p class="text-xs text-slate-500 mb-2">Describa el rol y participación de docentes, estudiantes y entidades o comunidad.</p>
-                  <textarea id="exp_descripcion_actores" rows="3" required class="input-field bg-white" placeholder="Describa los actores involucrados y sus roles..."></textarea>
+                  <textarea id="exp_descripcion_actores" data-min="15" data-max="600" rows="3" required class="input-field bg-white" placeholder="Describa los actores involucrados y sus roles..."></textarea>
                 </div>
               </div>
             </div>
@@ -519,7 +519,7 @@
                     <span>¿Qué funcionó bien al implementar la experiencia? *</span>
                   </label>
                   <p class="text-xs text-slate-500 mb-2">Describa los aspectos positivos, logros y factores de éxito.</p>
-                  <textarea id="exp_analisis_logros" rows="4" required class="input-field bg-white" placeholder="Responda los aspectos positivos..."></textarea>
+                  <textarea id="exp_analisis_logros" data-min="20" data-max="1000" rows="4" required class="input-field bg-white" placeholder="Responda los aspectos positivos..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
@@ -528,7 +528,7 @@
                     <span>¿Qué dificultades o limitaciones se presentaron al implementar la experiencia? *</span>
                   </label>
                   <p class="text-xs text-slate-500 mb-2">Describa los obstáculos, dificultades o limitaciones encontradas.</p>
-                  <textarea id="exp_analisis_dificultades" rows="4" required class="input-field bg-white" placeholder="Responda las dificultades o limitaciones..."></textarea>
+                  <textarea id="exp_analisis_dificultades" data-min="20" data-max="1000" rows="4" required class="input-field bg-white" placeholder="Responda las dificultades o limitaciones..."></textarea>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
@@ -537,7 +537,7 @@
                     <span>¿Qué aprendizajes se generaron para docentes y estudiantes con la implementación de la experiencia? *</span>
                   </label>
                   <p class="text-xs text-slate-500 mb-2">Describa los aprendizajes pedagógicos, profesionales y personales generados.</p>
-                  <textarea id="exp_analisis_aprendizajes" rows="4" required class="input-field bg-white" placeholder="Responda los aprendizajes generados..."></textarea>
+                  <textarea id="exp_analisis_aprendizajes" data-min="20" data-max="1000" rows="4" required class="input-field bg-white" placeholder="Responda los aprendizajes generados..."></textarea>
                 </div>
               </div>
             </div>
@@ -553,12 +553,12 @@
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1">2.6.a) Aportes Educativos e Investigativos *</label>
                   <p class="text-xs text-slate-500 mb-2">Resultados tangibles en el ámbito pedagógico, curricular, académico o investigativo.</p>
-                  <textarea id="exp_resultados_educativos" rows="3" required class="input-field bg-white" placeholder="Describa los aportes educativos e investigativos..."></textarea>
+                  <textarea id="exp_resultados_educativos" data-min="15" data-max="1000" rows="3" required class="input-field bg-white" placeholder="Describa los aportes educativos e investigativos..."></textarea>
                 </div>
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1">2.6.b) Aportes Sociales, Organizacionales o Tecnológicos *</label>
                   <p class="text-xs text-slate-500 mb-2">Resultados tangibles en la empresa, comunidad, organización o desarrollo técnico.</p>
-                  <textarea id="exp_resultados_sociales" rows="3" required class="input-field bg-white" placeholder="Describa los aportes sociales, organizacionales o tecnológicos..."></textarea>
+                  <textarea id="exp_resultados_sociales" data-min="15" data-max="1000" rows="3" required class="input-field bg-white" placeholder="Describa los aportes sociales, organizacionales o tecnológicos..."></textarea>
                 </div>
               </div>
             </div>
@@ -574,12 +574,12 @@
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1">2.7.a) Oportunidades y Plan de Mejora *</label>
                   <p class="text-xs text-slate-500 mb-2">Indique las oportunidades y acciones concretas para mejorar la experiencia en futuras versiones.</p>
-                  <textarea id="exp_proyeccion_mejora" rows="3" required class="input-field bg-white" placeholder="Indique el plan de mejora..."></textarea>
+                  <textarea id="exp_proyeccion_mejora" data-min="15" data-max="800" rows="3" required class="input-field bg-white" placeholder="Indique el plan de mejora..."></textarea>
                 </div>
                 <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
                   <label class="block text-xs font-bold text-slate-800 mb-1">2.7.b) Replicabilidad en otros escenarios *</label>
                   <p class="text-xs text-slate-500 mb-2">Indique cómo la experiencia puede adaptarse y aplicarse en otros programas, asignaturas o instituciones.</p>
-                  <textarea id="exp_proyeccion_replicabilidad" rows="3" required class="input-field bg-white" placeholder="Indique la replicabilidad..."></textarea>
+                  <textarea id="exp_proyeccion_replicabilidad" data-min="15" data-max="800" rows="3" required class="input-field bg-white" placeholder="Indique la replicabilidad..."></textarea>
                 </div>
               </div>
             </div>
@@ -591,7 +591,7 @@
                 <span>Observaciones Adicionales</span>
               </h4>
               <div class="bg-slate-50 p-3.5 rounded-md border border-slate-200">
-                <textarea id="exp_observaciones" rows="3" class="input-field bg-white" placeholder="Registre cualquier observación o comentario complementario..."></textarea>
+                <textarea id="exp_observaciones" data-min="0" data-max="1000" rows="3" class="input-field bg-white" placeholder="Registre cualquier observación o comentario complementario..."></textarea>
               </div>
             </div>
         </div>
@@ -603,7 +603,7 @@
               <span>2.8 Referencias Bibliográficas (Sistema APA 7.ª Edición)</span>
             </h4>
             <p class="text-xs text-slate-500 mb-2 italic">Se requiere la utilización del sistema APA 7.ª edición para las citas de referencia de la experiencia.</p>
-            <textarea id="exp_referencias" rows="3" class="input-field bg-white" placeholder="Ingrese las referencias bibliográficas y de fundamentación pedagógica en formato APA 7.ª edición..."></textarea>
+            <textarea id="exp_referencias" data-min="15" data-max="1500" rows="3" class="input-field bg-white" placeholder="Ingrese las referencias bibliográficas y de fundamentación pedagógica en formato APA 7.ª edición..."></textarea>
           </div>
 
           <!-- SECCION 2.9 CARGA DE EVIDENCIAS Y DOCUMENTOS DE SOPORTE -->
@@ -716,7 +716,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <div class="md:col-span-3">
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Título de la Innovación *</label>
-              <input type="text" id="inn_titulo" required class="input-field" placeholder="Conciso, claro, original e informativo">
+              <input type="text" id="inn_titulo" data-min="10" data-max="250" required class="input-field" placeholder="Conciso, claro, original e informativo">
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipo de Innovación *</label>
@@ -864,16 +864,16 @@
           </h3>
           <div class="space-y-5">
             <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Resumen de la Innovación Efectuada (Máximo 350 palabras) *</label>
-              <textarea id="inn_resumen" rows="4" required class="input-field" placeholder="Describa sintéticamente el objeto, método y resultado de la innovación..."></textarea>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Resumen de la Innovación Efectuada (Norma Minciencias) *</label>
+              <textarea id="inn_resumen" data-min="25" data-max="1500" rows="4" required class="input-field" placeholder="Describa sintéticamente el objeto, método y resultado de la innovación..."></textarea>
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Descripción Previa a la Innovación (Estado del Arte / Problemática Existente) *</label>
-              <textarea id="inn_estado_previo" rows="3" required class="input-field" placeholder="Describa la situación del proceso o producto antes de aplicar la innovación..."></textarea>
+              <textarea id="inn_estado_previo" data-min="25" data-max="1500" rows="3" required class="input-field" placeholder="Describa la situación del proceso o producto antes de aplicar la innovación..."></textarea>
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Descripción Posterior a la Innovación (Resolución de Situaciones Problémicas) *</label>
-              <textarea id="inn_estado_posterior" rows="3" required class="input-field" placeholder="Describa los cambios significativos logrados después de la innovación..."></textarea>
+              <textarea id="inn_estado_posterior" data-min="25" data-max="1500" rows="3" required class="input-field" placeholder="Describa los cambios significativos logrados después de la innovación..."></textarea>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 bg-slate-50 p-4 rounded-lg border border-slate-200">
               <div>
@@ -882,7 +882,7 @@
                   <option value="nuevo">Producto / Proceso Completamente Nuevo</option>
                   <option value="mejorado">Producto / Proceso Significativamente Mejorado</option>
                 </select>
-                <textarea id="inn_novedad_explicacion" rows="3" required class="input-field mt-2" placeholder="Explique de forma clara la razón de la respuesta..."></textarea>
+                <textarea id="inn_novedad_explicacion" data-min="25" data-max="1200" rows="3" required class="input-field mt-2" placeholder="Explique de forma clara la razón de la respuesta..."></textarea>
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alcance Territorial de Novedad *</label>
@@ -891,7 +891,7 @@
                   <option value="No existía a nivel nacional, pero sí en el internacional">No existía a nivel nacional, pero sí en el internacional</option>
                   <option value="No existía dicha innovación ni a nivel nacional ni internacional">No existía ni a nivel nacional ni internacional</option>
                 </select>
-                <textarea id="inn_novedad_alcance_evidencias" rows="3" required class="input-field mt-2" placeholder="Explique con evidencias tangibles y confiables..."></textarea>
+                <textarea id="inn_novedad_alcance_evidencias" data-min="15" data-max="800" rows="3" required class="input-field mt-2" placeholder="Explique con evidencias tangibles y confiables..."></textarea>
               </div>
             </div>
 
@@ -932,7 +932,7 @@
               </div>
               <div class="mt-4">
                 <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Explicación de Impactos con Evidencias Tangibles *</label>
-                <textarea id="inn_impactos_explicacion" rows="3" required class="input-field" placeholder="Describa los indicadores, datos e informes que respaldan los impactos..."></textarea>
+                <textarea id="inn_impactos_explicacion" data-min="20" data-max="1500" rows="3" required class="input-field" placeholder="Describa los indicadores, datos e informes que respaldan los impactos..."></textarea>
               </div>
             </div>
           </div>
@@ -945,7 +945,7 @@
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Citas y Referencias Bibliográficas (Normas APA 7.ª Edición) *</label>
               <p class="text-xs text-slate-500 mb-1.5">Se requiere la utilización del sistema APA (American Psychological Association) 7.ª edición para las citas de referencia de la innovación.</p>
-              <textarea id="inn_referencias" rows="4" required class="input-field" placeholder="Ingrese el listado formal de referencias en formato APA 7.ª edición (Ej: Autor, A. A. (Año). Título de la obra. Ciudad: Editorial / Revista, vol(nro), pp)..."></textarea>
+              <textarea id="inn_referencias" data-min="15" data-max="1500" rows="4" required class="input-field" placeholder="Ingrese el listado formal de referencias en formato APA 7.ª edición (Ej: Autor, A. A. (Año). Título de la obra. Ciudad: Editorial / Revista, vol(nro), pp)..."></textarea>
             </div>
           </div>
 
@@ -1377,6 +1377,56 @@
       }).join('');
     }
 
+    // =========================================================================
+    // SISTEMA DE CONTROL Y VALIDACIÓN DE CARACTERES / PALABRAS (NORMA MINCIENCIAS)
+    // =========================================================================
+    function initMincienciasCounters() {
+      const fields = document.querySelectorAll('input[data-min], textarea[data-min]');
+      fields.forEach(field => {
+        const min = parseInt(field.getAttribute('data-min')) || 0;
+        const max = parseInt(field.getAttribute('data-max')) || 1000;
+        const id = field.id;
+
+        field.setAttribute('maxlength', max);
+
+        let counterContainer = document.getElementById(`counter-container-${id}`);
+        if (!counterContainer) {
+          counterContainer = document.createElement('div');
+          counterContainer.id = `counter-container-${id}`;
+          counterContainer.className = 'flex items-center justify-between mt-1.5 text-[11px] font-medium text-slate-500 border-t border-slate-100 pt-1.5';
+          field.parentNode.appendChild(counterContainer);
+        }
+
+        const updateCounter = () => {
+          const val = field.value || '';
+          const charCount = val.length;
+          const wordCount = val.trim() ? val.trim().split(/\s+/).length : 0;
+
+          let statusHtml = '';
+          if (charCount < min) {
+            const needed = min - charCount;
+            statusHtml = `<span class="text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200"><i class="fa-solid fa-circle-exclamation"></i> ${charCount} / ${max} car. (Faltan ${needed} car. • ${wordCount} pal.)</span>`;
+            field.classList.add('border-rose-300');
+            field.classList.remove('border-emerald-400');
+          } else {
+            statusHtml = `<span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"><i class="fa-solid fa-circle-check text-emerald-600"></i> ${charCount} / ${max} car. (Cumple extensión Minciencias ✓ • ${wordCount} pal.)</span>`;
+            field.classList.remove('border-rose-300');
+            field.classList.add('border-emerald-400');
+          }
+
+          counterContainer.innerHTML = `
+            <span class="text-slate-500 text-[10px]"><i class="fa-solid fa-ruler-combined text-brand-orange"></i> Extensión Minciencias: Mín. ${min} | Máx. ${max} car.</span>
+            ${statusHtml}
+          `;
+        };
+
+        field.addEventListener('input', updateCounter);
+        field.addEventListener('keyup', updateCounter);
+        field.addEventListener('change', updateCounter);
+        updateCounter();
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setupEvidenceFileListeners();
       initSupabase();
@@ -1384,6 +1434,7 @@
       setupFormListeners();
       setupQualityEvaluators();
       fetchAndRenderPublicRepository();
+      initMincienciasCounters();
       setInterval(() => {
         saveDraftToLocalStorage();
         if (typeof saveDraftToSupabase === 'function') {
@@ -1818,6 +1869,7 @@
             i.coautores.forEach(c => addCoautorRow(c));
           }
         }
+        initMincienciasCounters();
       } catch (err) {
         console.error('Error al restaurar borrador:', err);
       }
@@ -1843,6 +1895,7 @@
         if (coautoresContainer) coautoresContainer.innerHTML = '';
       }
       saveDraftToLocalStorage();
+      initMincienciasCounters();
       showToast('Formulario restablecido', 'info');
     }
 
