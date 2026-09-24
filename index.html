@@ -84,13 +84,28 @@
         </div>
       </div>
 
-      <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2 flex-wrap">
         <div id="autosave-badge" class="flex items-center text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
           <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
           <span id="autosave-text">Borrador listo (Autoguardado 15s)</span>
         </div>
 
-        <button onclick="toggleConfigModal()" class="text-xs font-bold text-white bg-brand-orange hover:bg-brand-orangeHover px-3.5 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm transition">
+        <button onclick="toggleAuthModal()" class="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md flex items-center gap-1.5 transition border border-slate-200">
+          <i class="fa-solid fa-user-lock text-brand-orange"></i>
+          <span id="auth-status-label">Ingreso / Cédula</span>
+        </button>
+
+        <button onclick="toggleMyRecordsModal()" class="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md flex items-center gap-1.5 transition border border-slate-200">
+          <i class="fa-solid fa-folder-open text-brand-orange"></i>
+          <span>Mis Registros</span>
+        </button>
+
+        <button onclick="toggleCoordinadorModal()" class="text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm transition">
+          <i class="fa-solid fa-shield-halved text-amber-400"></i>
+          <span>Coordinación</span>
+        </button>
+
+        <button onclick="toggleConfigModal()" class="text-xs font-bold text-white bg-brand-orange hover:bg-brand-orangeHover px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm transition">
           <i class="fa-solid fa-database"></i>
           <span id="supabase-status-label">Supabase Conectado ✅</span>
         </button>
@@ -1363,7 +1378,12 @@
       setupFormListeners();
       setupQualityEvaluators();
       fetchAndRenderPublicRepository();
-      setInterval(saveDraftToLocalStorage, 15000);
+      setInterval(() => {
+        saveDraftToLocalStorage();
+        if (typeof saveDraftToSupabase === 'function') {
+          saveDraftToSupabase();
+        }
+      }, 15000);
     });
 
     function initSupabase() {
@@ -1375,6 +1395,9 @@
         try {
           supabaseClient = window.supabase.createClient(url, key);
           document.getElementById('supabase-status-label').innerText = 'Supabase Conectado ✅';
+          if (typeof initSupabaseAuthListener === 'function') {
+            initSupabaseAuthListener();
+          }
         } catch (e) {
           console.warn('Error al iniciar Supabase client:', e);
         }
@@ -1556,6 +1579,148 @@
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       document.getElementById('autosave-text').innerText = `Guardado automático (${timeStr})`;
       updateProgressBar();
+    }
+
+    async function saveDraftToSupabase() {
+      if (!supabaseClient) return;
+
+      const cedulaExp = getVal('exp_cedula');
+      const cedulaInn = getVal('inn_autor_cedula');
+
+      try {
+        if (activeTab === 'experiencias') {
+          const nombreExp = getVal('exp_nombre');
+          if (!nombreExp && !cedulaExp) return;
+
+          const payload = {
+            nombre_experiencia: getVal('exp_nombre') || 'Borrador sin título',
+            programa_academico: getVal('exp_programa') || '',
+            espacio_academico: getVal('exp_espacio') || '',
+            nivel_formacion: getVal('exp_nivel') || '',
+            fecha_presentacion: getVal('exp_fecha') || null,
+            periodo_academico: getVal('exp_periodo') || '',
+            docentes_responsables: getVal('exp_docentes') || '',
+            cedula_docente: getVal('exp_cedula') || '',
+            correo_docente: getVal('exp_correo') || '',
+            num_estudiantes: parseInt(getVal('exp_estudiantes')) || 1,
+            modalidad: getVal('exp_modalidad') || '',
+            lugar_contexto: getVal('exp_lugar') || '',
+            lineas_investigacion_programa: getVal('exp_lineas_prog') || '',
+            lineas_investigacion_institucional: getVal('exp_lineas_inst') || '',
+            espacio_divulgacion_asc: Array.from(document.querySelectorAll('input[name="exp_asc"]:checked')).map(c => c.value),
+            espacio_divulgacion_otro: getVal('exp_asc_otro') || '',
+            contexto_experiencia: `a) Dónde: ${getVal('exp_contexto_donde')}\nb) Con quién: ${getVal('exp_contexto_con_quien')}\nc) Condiciones: ${getVal('exp_contexto_condiciones')}\nd) Por qué: ${getVal('exp_contexto_por_que')}`,
+            pregunta_problematizadora: getVal('exp_pregunta') || '',
+            objetivo_experiencia: getVal('exp_objetivo') || '',
+            descripcion_experiencia: `a) Actividades: ${getVal('exp_descripcion_actividades')}\nb) Metodología: ${getVal('exp_descripcion_metodologia')}\nc) Actores: ${getVal('exp_descripcion_actores')}`,
+            analisis_reflexion: `a) Logros: ${getVal('exp_analisis_logros')}\nb) Dificultades: ${getVal('exp_analisis_dificultades')}\nc) Aprendizajes: ${getVal('exp_analisis_aprendizajes')}`,
+            resultados_aportes: `a) Educativos: ${getVal('exp_resultados_educativos')}\nb) Sociales: ${getVal('exp_resultados_sociales')}`,
+            proyeccion: `a) Mejora: ${getVal('exp_proyeccion_mejora')}\nb) Replicabilidad: ${getVal('exp_proyeccion_replicabilidad')}`,
+            observaciones: getVal('exp_observaciones') || '',
+            referencias_apa: getVal('exp_referencias') || '',
+            evidencias_adjuntas: expEvidenciasList || [],
+            estado: 'borrador',
+            usuario_id: currentUser ? currentUser.id : null,
+            updated_at: new Date().toISOString()
+          };
+
+          if (currentRecordId && currentRecordTable === 'experiencias_significativas') {
+            await supabaseClient.from('experiencias_significativas').update(payload).eq('id', currentRecordId);
+          } else if (cedulaExp) {
+            const { data } = await supabaseClient.from('experiencias_significativas')
+              .select('id')
+              .eq('cedula_docente', cedulaExp)
+              .eq('estado', 'borrador')
+              .maybeSingle();
+
+            if (data && data.id) {
+              currentRecordId = data.id;
+              currentRecordTable = 'experiencias_significativas';
+              await supabaseClient.from('experiencias_significativas').update(payload).eq('id', data.id);
+            } else {
+              const rad = await generateRadicadoAsync('EXP', payload.programa_academico, payload.periodo_academico);
+              payload.radicado = rad;
+              const { data: inserted } = await supabaseClient.from('experiencias_significativas').insert([payload]).select('id').single();
+              if (inserted) {
+                currentRecordId = inserted.id;
+                currentRecordTable = 'experiencias_significativas';
+              }
+            }
+          }
+        } else {
+          const tituloInn = getVal('inn_titulo');
+          if (!tituloInn && !cedulaInn) return;
+
+          const payload = {
+            titulo_innovacion: getVal('inn_titulo') || 'Borrador sin título',
+            tipo_innovacion: getVal('inn_tipo') || '',
+            fecha_creacion: getVal('inn_fecha') || null,
+            nombre_empresa: getVal('inn_empresa') || '',
+            sector_empresa: getVal('inn_sector') || '',
+            nit_empresa: getVal('inn_nit') || '',
+            proyecto_investigacion_titulo: getVal('inn_proyecto_titulo') || '',
+            proyecto_investigacion_convocatoria: getVal('inn_convocatoria') || '',
+            origen_estrategia_ctei: getVal('inn_origen_ctei') || '',
+            nombre_estrategia_ctei: getVal('inn_nombre_estrategia') || '',
+            institucion_financiadora: getVal('inn_financiadora') || '',
+            disponibilidad: getVal('inn_disponibilidad') || '',
+            tipo_proteccion: getVal('inn_proteccion') || '',
+            autor_principal_nombre: getVal('inn_autor_nombre') || '',
+            autor_principal_cedula: getVal('inn_autor_cedula') || '',
+            autor_principal_correo: getVal('inn_autor_correo') || '',
+            autor_principal_afiliacion: getVal('inn_autor_afiliacion') || '',
+            autor_principal_grupo_facultad: getVal('inn_autor_grupo') || '',
+            coautores_json: getCoautoresData() || [],
+            resumen_innovacion: getVal('inn_resumen') || '',
+            estado_previo_problematica: getVal('inn_estado_previo') || '',
+            estado_posterior_solucion: getVal('inn_estado_posterior') || '',
+            novedad_tipo: getVal('inn_novedad_tipo') || '',
+            novedad_explicacion: getVal('inn_novedad_explicacion') || '',
+            novedad_alcance: getVal('inn_novedad_alcance') || '',
+            novedad_alcance_evidencias: getVal('inn_novedad_alcance_evidencias') || '',
+            impactos_economicos_list: Array.from(document.querySelectorAll('input[name="inn_impactos"]:checked')).map(c => c.value),
+            impactos_otros_explicacion: getVal('inn_impactos_otros') || '',
+            impactos_explicacion_evidencias: getVal('inn_impactos_explicacion') || '',
+            referencias_apa: getVal('inn_referencias') || '',
+            evidencias_adjuntas: innEvidenciasList || [],
+            estado: 'borrador',
+            usuario_id: currentUser ? currentUser.id : null,
+            updated_at: new Date().toISOString()
+          };
+
+          if (currentRecordId && currentRecordTable === 'innovaciones_educativas') {
+            await supabaseClient.from('innovaciones_educativas').update(payload).eq('id', currentRecordId);
+          } else if (cedulaInn) {
+            const { data } = await supabaseClient.from('innovaciones_educativas')
+              .select('id')
+              .eq('autor_principal_cedula', cedulaInn)
+              .eq('estado', 'borrador')
+              .maybeSingle();
+
+            if (data && data.id) {
+              currentRecordId = data.id;
+              currentRecordTable = 'innovaciones_educativas';
+              await supabaseClient.from('innovaciones_educativas').update(payload).eq('id', data.id);
+            } else {
+              const rad = await generateRadicadoAsync('INN', payload.autor_principal_grupo_facultad, payload.fecha_creacion);
+              payload.radicado = rad;
+              const { data: inserted } = await supabaseClient.from('innovaciones_educativas').insert([payload]).select('id').single();
+              if (inserted) {
+                currentRecordId = inserted.id;
+                currentRecordTable = 'innovaciones_educativas';
+              }
+            }
+          }
+        }
+
+        const badgeText = document.getElementById('autosave-text');
+        if (badgeText) {
+          const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          badgeText.innerText = `Nube guardada ☁️ (${timeStr})`;
+        }
+      } catch (e) {
+        console.warn('Error al autoguardar en Supabase:', e);
+      }
     }
 
     function loadDraftFromLocalStorage() {
@@ -1998,6 +2163,7 @@
           const { data: expData, error: expErr } = await supabaseClient
             .from('experiencias_significativas')
             .select('*')
+            .or('estado.eq.aprobado,estado.is.null')
             .order('created_at', { ascending: false });
 
           if (!expErr && expData) {
@@ -2018,6 +2184,7 @@
           const { data: innData, error: innErr } = await supabaseClient
             .from('innovaciones_educativas')
             .select('*')
+            .or('estado.eq.aprobado,estado.is.null')
             .order('created_at', { ascending: false });
 
           if (!innErr && innData) {
@@ -2318,15 +2485,29 @@
             observaciones: payload.observaciones,
             referencias_apa: payload.referencias_apa,
             evidencias_adjuntas: payload.evidencias_adjuntas,
-            evidencias_adjuntas: payload.evidencias_adjuntas
+            estado: 'radicado',
+            fecha_radicacion: new Date().toISOString(),
+            usuario_id: currentUser ? currentUser.id : null
           };
 
-          const { data, error } = await supabaseClient
-            .from('experiencias_significativas')
-            .insert([dbPayload]);
+          if (currentRecordId && currentRecordTable === 'experiencias_significativas') {
+            const { error } = await supabaseClient
+              .from('experiencias_significativas')
+              .update(dbPayload)
+              .eq('id', currentRecordId);
+            if (error) throw error;
+          } else {
+            const { error } = await supabaseClient
+              .from('experiencias_significativas')
+              .insert([dbPayload]);
+            if (error) throw error;
+          }
 
-          if (error) throw error;
-          showToast('Registro guardado exitosamente en Supabase', 'success');
+          currentRecordId = null;
+          currentRecordTable = null;
+          currentRecordEstado = 'radicado';
+
+          showToast('Registro radicado exitosamente en Supabase (Pendiente de Aprobación)', 'success');
         } catch (err) {
           console.warn('Error al guardar en Supabase:', err);
           showToast('Guardado local activado', 'info');
@@ -2393,7 +2574,6 @@
 
       if (supabaseClient) {
         try {
-          // Payload limpio filtrado únicamente con las columnas válidas existentes en Supabase PostgreSQL
           const dbPayload = {
             radicado: payload.radicado,
             titulo_innovacion: payload.titulo_innovacion,
@@ -2426,15 +2606,29 @@
             impactos_explicacion_evidencias: payload.impactos_explicacion_evidencias,
             referencias_apa: payload.referencias_apa,
             evidencias_adjuntas: payload.evidencias_adjuntas,
-            evidencias_adjuntas: payload.evidencias_adjuntas
+            estado: 'radicado',
+            fecha_radicacion: new Date().toISOString(),
+            usuario_id: currentUser ? currentUser.id : null
           };
 
-          const { data, error } = await supabaseClient
-            .from('innovaciones_educativas')
-            .insert([dbPayload]);
+          if (currentRecordId && currentRecordTable === 'innovaciones_educativas') {
+            const { error } = await supabaseClient
+              .from('innovaciones_educativas')
+              .update(dbPayload)
+              .eq('id', currentRecordId);
+            if (error) throw error;
+          } else {
+            const { error } = await supabaseClient
+              .from('innovaciones_educativas')
+              .insert([dbPayload]);
+            if (error) throw error;
+          }
 
-          if (error) throw error;
-          showToast('Innovación registrada exitosamente en Supabase', 'success');
+          currentRecordId = null;
+          currentRecordTable = null;
+          currentRecordEstado = 'radicado';
+
+          showToast('Innovación radicada exitosamente en Supabase (Pendiente de Aprobación)', 'success');
         } catch (err) {
           console.warn('Error al guardar en Supabase:', err);
           showToast('Guardado local activado', 'info');
@@ -3306,6 +3500,555 @@
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3500);
     }
+
+    // =========================================================================
+    // NATIVE AUTH, CLOUD PERSISTENCE & COORDINATOR APPROVAL LOGIC
+    // =========================================================================
+    let currentUser = null;
+    let currentRecordId = null;
+    let currentRecordTable = null;
+    let currentRecordEstado = 'borrador';
+    let coordAuthenticated = false;
+    let coordCurrentFilter = 'all';
+
+    function initSupabaseAuthListener() {
+      if (supabaseClient && supabaseClient.auth) {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (session && session.user) {
+            currentUser = session.user;
+            updateAuthBadge(currentUser.email);
+          } else {
+            currentUser = null;
+            updateAuthBadge(null);
+          }
+        });
+      }
+    }
+
+    function updateAuthBadge(email) {
+      const label = document.getElementById('auth-status-label');
+      if (label) {
+        if (email) {
+          label.innerText = `Sesión: ${email.split('@')[0]}`;
+        } else {
+          label.innerText = 'Ingreso / Cédula';
+        }
+      }
+    }
+
+    function toggleAuthModal() {
+      const modal = document.getElementById('auth-modal');
+      if (modal) modal.classList.toggle('hidden');
+    }
+
+    function switchAuthTab(tab) {
+      ['cedula', 'login', 'register', 'magic'].forEach(t => {
+        const btn = document.getElementById(`auth-tab-btn-${t}`);
+        const cnt = document.getElementById(`auth-tab-${t}`);
+        if (btn && cnt) {
+          if (t === tab) {
+            btn.className = 'flex-1 py-2.5 text-center border-b-2 border-brand-orange text-brand-orange font-bold';
+            cnt.classList.remove('hidden');
+          } else {
+            btn.className = 'flex-1 py-2.5 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-semibold';
+            cnt.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    function generateAndSetRandomPassword() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$';
+      let pwd = '';
+      for (let i = 0; i < 10; i++) {
+        pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      const el = document.getElementById('auth-reg-password');
+      if (el) el.value = pwd;
+    }
+
+    async function handleEmailLogin() {
+      const email = document.getElementById('auth-login-email').value.trim();
+      const password = document.getElementById('auth-login-password').value.trim();
+
+      if (!email || !password) {
+        showToast('Ingrese correo y contraseña', 'warning');
+        return;
+      }
+
+      if (!supabaseClient) {
+        showToast('Supabase no está conectado', 'error');
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) {
+        showToast(`Error al iniciar sesión: ${error.message}`, 'error');
+      } else {
+        showToast(`Sesión iniciada con éxito: ${data.user.email}`, 'success');
+        toggleAuthModal();
+      }
+    }
+
+    async function handleEmailRegister() {
+      const email = document.getElementById('auth-reg-email').value.trim();
+      let password = document.getElementById('auth-reg-password').value.trim();
+
+      if (!email) {
+        showToast('Ingrese un correo electrónico válido', 'warning');
+        return;
+      }
+
+      if (!password) {
+        generateAndSetRandomPassword();
+        password = document.getElementById('auth-reg-password').value.trim();
+      }
+
+      if (!supabaseClient) {
+        showToast('Supabase no está conectado', 'error');
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      if (error) {
+        showToast(`Error de registro: ${error.message}`, 'error');
+      } else {
+        alert(`¡Cuenta creada con éxito!\n\nCorreo: ${email}\nContraseña asignada: ${password}\n\nPor favor guarde esta clave para sus próximos ingresos.`);
+        toggleAuthModal();
+      }
+    }
+
+    async function handleMagicLinkLogin() {
+      const email = document.getElementById('auth-magic-email').value.trim();
+      if (!email) {
+        showToast('Ingrese un correo electrónico', 'warning');
+        return;
+      }
+
+      if (!supabaseClient) {
+        showToast('Supabase no está conectado', 'error');
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.signInWithOtp({ email });
+      if (error) {
+        showToast(`Error al enviar enlace: ${error.message}`, 'error');
+      } else {
+        showToast('Enlace de autenticación enviado a su correo electrónico', 'success');
+        toggleAuthModal();
+      }
+    }
+
+    async function buscarRegistrosPorCedula() {
+      const cedula = document.getElementById('auth-search-cedula-input').value.trim();
+      const container = document.getElementById('auth-cedula-results');
+      if (!cedula) {
+        showToast('Ingrese el número de cédula a buscar', 'warning');
+        return;
+      }
+
+      if (!container) return;
+      container.innerHTML = '<div class="text-center py-4 text-slate-500 font-semibold"><i class="fa-solid fa-spinner animate-spin"></i> Buscando solicitudes...</div>';
+
+      let results = [];
+
+      if (supabaseClient) {
+        try {
+          const { data: expData } = await supabaseClient.from('experiencias_significativas')
+            .select('id, radicado, nombre_experiencia, estado, created_at, cedula_docente')
+            .eq('cedula_docente', cedula);
+
+          if (expData) {
+            expData.forEach(item => results.push({ ...item, tabla: 'experiencias_significativas', tipo: 'Experiencia (Anexo 1)' }));
+          }
+
+          const { data: innData } = await supabaseClient.from('innovaciones_educativas')
+            .select('id, radicado, titulo_innovacion, estado, created_at, autor_principal_cedula')
+            .eq('autor_principal_cedula', cedula);
+
+          if (innData) {
+            innData.forEach(item => results.push({ ...item, nombre_experiencia: item.titulo_innovacion, tabla: 'innovaciones_educativas', tipo: 'Innovación Educativa' }));
+          }
+        } catch (e) {
+          console.warn('Error buscando registros por cédula:', e);
+        }
+      }
+
+      if (results.length === 0) {
+        container.innerHTML = '<div class="text-center py-4 text-amber-700 font-bold bg-amber-50 rounded border border-amber-200">No se encontraron borradores o registros asociados a esta Cédula.</div>';
+        return;
+      }
+
+      let html = '';
+      results.forEach(res => {
+        const estadoBadge = res.estado === 'aprobado' ? 'bg-emerald-100 text-emerald-800' : (res.estado === 'radicado' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800');
+        html += `
+          <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center justify-between shadow-sm">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono font-bold text-brand-orange">${res.radicado || 'Borrador'}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${estadoBadge} uppercase">${res.estado || 'borrador'}</span>
+              </div>
+              <p class="font-bold text-slate-800 text-xs mt-0.5">${res.nombre_experiencia || 'Sin Título'}</p>
+              <p class="text-[11px] text-slate-400">${res.tipo} • ${res.created_at ? res.created_at.split('T')[0] : ''}</p>
+            </div>
+            <button onclick="cargarRegistroEnFormulario('${res.tabla}', '${res.id}')" class="bg-brand-orange hover:bg-brand-orangeHover text-white font-bold text-xs py-1.5 px-3 rounded shadow-sm transition">
+              <i class="fa-solid fa-folder-open"></i> Reanudar
+            </button>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    async function cargarRegistroEnFormulario(tabla, id) {
+      if (!supabaseClient) return;
+
+      try {
+        const { data, error } = await supabaseClient.from(tabla).select('*').eq('id', id).single();
+        if (error || !data) {
+          showToast('No se pudo cargar el registro', 'error');
+          return;
+        }
+
+        currentRecordId = data.id;
+        currentRecordTable = tabla;
+        currentRecordEstado = data.estado || 'borrador';
+
+        if (tabla === 'experiencias_significativas') {
+          switchTab('experiencias');
+          if (data.nombre_experiencia) document.getElementById('exp_nombre').value = data.nombre_experiencia;
+          if (data.programa_academico) document.getElementById('exp_programa').value = data.programa_academico;
+          if (data.espacio_academico) document.getElementById('exp_espacio').value = data.espacio_academico;
+          if (data.nivel_formacion) document.getElementById('exp_nivel').value = data.nivel_formacion;
+          if (data.fecha_presentacion) document.getElementById('exp_fecha').value = data.fecha_presentacion;
+          if (data.periodo_academico) document.getElementById('exp_periodo').value = data.periodo_academico;
+          if (data.docentes_responsables) document.getElementById('exp_docentes').value = data.docentes_responsables;
+          if (data.cedula_docente) document.getElementById('exp_cedula').value = data.cedula_docente;
+          if (data.correo_docente) document.getElementById('exp_correo').value = data.correo_docente;
+          if (data.num_estudiantes) document.getElementById('exp_estudiantes').value = data.num_estudiantes;
+          if (data.modalidad) document.getElementById('exp_modalidad').value = data.modalidad;
+          if (data.lugar_contexto) document.getElementById('exp_lugar').value = data.lugar_contexto;
+          if (data.lineas_investigacion_programa) document.getElementById('exp_lineas_prog').value = data.lineas_investigacion_programa;
+          if (data.lineas_investigacion_institucional) document.getElementById('exp_lineas_inst').value = data.lineas_investigacion_institucional;
+          if (data.espacio_divulgacion_otro) document.getElementById('exp_asc_otro').value = data.espacio_divulgacion_otro;
+          if (data.pregunta_problematizadora) document.getElementById('exp_pregunta').value = data.pregunta_problematizadora;
+          if (data.objetivo_experiencia) document.getElementById('exp_objetivo').value = data.objetivo_experiencia;
+          if (data.observaciones) document.getElementById('exp_observaciones').value = data.observaciones;
+          if (data.referencias_apa) document.getElementById('exp_referencias').value = data.referencias_apa;
+
+          if (data.espacio_divulgacion_asc && Array.isArray(data.espacio_divulgacion_asc)) {
+            document.querySelectorAll('input[name="exp_asc"]').forEach(chk => {
+              chk.checked = data.espacio_divulgacion_asc.includes(chk.value);
+            });
+          }
+
+          evaluateExperienciasQuality();
+        } else {
+          switchTab('innovaciones');
+          if (data.titulo_innovacion) document.getElementById('inn_titulo').value = data.titulo_innovacion;
+          if (data.tipo_innovacion) document.getElementById('inn_tipo').value = data.tipo_innovacion;
+          if (data.fecha_creacion) document.getElementById('inn_fecha').value = data.fecha_creacion;
+          if (data.nombre_empresa) document.getElementById('inn_empresa').value = data.nombre_empresa;
+          if (data.sector_empresa) document.getElementById('inn_sector').value = data.sector_empresa;
+          if (data.nit_empresa) document.getElementById('inn_nit').value = data.nit_empresa;
+          if (data.proyecto_investigacion_titulo) document.getElementById('inn_proyecto_titulo').value = data.proyecto_investigacion_titulo;
+          if (data.proyecto_investigacion_convocatoria) document.getElementById('inn_convocatoria').value = data.proyecto_investigacion_convocatoria;
+          if (data.origen_estrategia_ctei) document.getElementById('inn_origen_ctei').value = data.origen_estrategia_ctei;
+          if (data.nombre_estrategia_ctei) document.getElementById('inn_nombre_estrategia').value = data.nombre_estrategia_ctei;
+          if (data.institucion_financiadora) document.getElementById('inn_financiadora').value = data.institucion_financiadora;
+          if (data.disponibilidad) document.getElementById('inn_disponibilidad').value = data.disponibilidad;
+          if (data.tipo_proteccion) document.getElementById('inn_proteccion').value = data.tipo_proteccion;
+          if (data.autor_principal_nombre) document.getElementById('inn_autor_nombre').value = data.autor_principal_nombre;
+          if (data.autor_principal_cedula) document.getElementById('inn_autor_cedula').value = data.autor_principal_cedula;
+          if (data.autor_principal_correo) document.getElementById('inn_autor_correo').value = data.autor_principal_correo;
+          if (data.autor_principal_afiliacion) document.getElementById('inn_autor_afiliacion').value = data.autor_principal_afiliacion;
+          if (data.autor_principal_grupo_facultad) document.getElementById('inn_autor_grupo').value = data.autor_principal_grupo_facultad;
+          if (data.resumen_innovacion) document.getElementById('inn_resumen').value = data.resumen_innovacion;
+          if (data.estado_previo_problematica) document.getElementById('inn_estado_previo').value = data.estado_previo_problematica;
+          if (data.estado_posterior_solucion) document.getElementById('inn_estado_posterior').value = data.estado_posterior_solucion;
+          if (data.novedad_tipo) document.getElementById('inn_novedad_tipo').value = data.novedad_tipo;
+          if (data.novedad_explicacion) document.getElementById('inn_novedad_explicacion').value = data.novedad_explicacion;
+          if (data.novedad_alcance) document.getElementById('inn_novedad_alcance').value = data.novedad_alcance;
+          if (data.novedad_alcance_evidencias) document.getElementById('inn_novedad_alcance_evidencias').value = data.novedad_alcance_evidencias;
+          if (data.impactos_explicacion_evidencias) document.getElementById('inn_impactos_explicacion').value = data.impactos_explicacion_evidencias;
+          if (data.referencias_apa) document.getElementById('inn_referencias').value = data.referencias_apa;
+
+          if (data.impactos_economicos_list && Array.isArray(data.impactos_economicos_list)) {
+            document.querySelectorAll('input[name="inn_impactos"]').forEach(chk => {
+              chk.checked = data.impactos_economicos_list.includes(chk.value);
+            });
+          }
+
+          if (data.coautores_json && Array.isArray(data.coautores_json)) {
+            document.getElementById('coautores-container').innerHTML = '';
+            data.coautores_json.forEach(c => addCoautorRow(c));
+          }
+
+          evaluateInnovacionesQuality();
+        }
+
+        // Lock form if state is not borrador
+        applyFormLockState(data.estado !== 'borrador', data.radicado, data.estado);
+
+        toggleAuthModal();
+        toggleMyRecordsModal(true);
+        showToast(`Borrador/Registro [${data.radicado || 'Borrador'}] cargado exitosamente`, 'success');
+      } catch (err) {
+        console.error('Error al reanudar registro:', err);
+      }
+    }
+
+    function applyFormLockState(isLocked, radicado, estado) {
+      const activeFormId = activeTab === 'experiencias' ? 'form-experiencias' : 'form-innovaciones';
+      const form = document.getElementById(activeFormId);
+      if (!form) return;
+
+      const inputs = form.querySelectorAll('input, select, textarea');
+      inputs.forEach(i => {
+        i.disabled = isLocked;
+      });
+
+      const submitExp = document.getElementById('exp-submit-btn');
+      const submitInn = document.getElementById('inn-submit-btn');
+      if (isLocked) {
+        if (submitExp) { submitExp.disabled = true; submitExp.innerHTML = `<i class="fa-solid fa-lock"></i> Radicado No: ${radicado} (${(estado || 'RADICADO').toUpperCase()})`; }
+        if (submitInn) { submitInn.disabled = true; submitInn.innerHTML = `<i class="fa-solid fa-lock"></i> Radicado No: ${radicado} (${(estado || 'RADICADO').toUpperCase()})`; }
+      }
+    }
+
+    function toggleMyRecordsModal(forceClose = false) {
+      const modal = document.getElementById('mis-registros-modal');
+      if (!modal) return;
+      if (forceClose) {
+        modal.classList.add('hidden');
+        return;
+      }
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) {
+        loadMyRecords();
+      }
+    }
+
+    async function loadMyRecords() {
+      const container = document.getElementById('mis-registros-container');
+      if (!container) return;
+      container.innerHTML = '<div class="text-center py-6 text-slate-500 font-semibold"><i class="fa-solid fa-spinner animate-spin"></i> Cargando sus registros...</div>';
+
+      let records = [];
+
+      if (supabaseClient) {
+        try {
+          const cedulaExp = getVal('exp_cedula');
+          const cedulaInn = getVal('inn_autor_cedula');
+
+          let expQuery = supabaseClient.from('experiencias_significativas').select('*').order('created_at', { ascending: false });
+          if (currentUser) expQuery = expQuery.eq('usuario_id', currentUser.id);
+          else if (cedulaExp) expQuery = expQuery.eq('cedula_docente', cedulaExp);
+
+          const { data: expData } = await expQuery;
+          if (expData) {
+            expData.forEach(i => records.push({ ...i, tabla: 'experiencias_significativas', tipo: 'Experiencia (Anexo 1)', titulo: i.nombre_experiencia }));
+          }
+
+          let innQuery = supabaseClient.from('innovaciones_educativas').select('*').order('created_at', { ascending: false });
+          if (currentUser) innQuery = innQuery.eq('usuario_id', currentUser.id);
+          else if (cedulaInn) innQuery = innQuery.eq('autor_principal_cedula', cedulaInn);
+
+          const { data: innData } = await innQuery;
+          if (innData) {
+            innData.forEach(i => records.push({ ...i, tabla: 'innovaciones_educativas', tipo: 'Innovación Educativa', titulo: i.titulo_innovacion }));
+          }
+        } catch (e) {
+          console.warn('Error cargando mis registros:', e);
+        }
+      }
+
+      if (records.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 bg-white rounded-xl border border-dashed border-slate-300 p-6">
+            <i class="fa-solid fa-folder-open text-slate-300 text-3xl mb-2 block"></i>
+            <p class="text-xs font-bold text-slate-600">No se encontraron registros activos en su sesión o cédula</p>
+            <p class="text-[11px] text-slate-400 mt-1">Sus borradores y radicados aparecerán listados aquí automáticamente.</p>
+          </div>`;
+        return;
+      }
+
+      let html = '';
+      records.forEach(r => {
+        const isBorrador = (r.estado || 'borrador') === 'borrador';
+        const badgeBg = r.estado === 'aprobado' ? 'bg-emerald-100 text-emerald-800' : (r.estado === 'radicado' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800');
+        
+        html += `
+          <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono font-bold text-xs text-brand-orange bg-orange-50 px-2.5 py-0.5 rounded border border-orange-200">${r.radicado || 'Borrador'}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${badgeBg}">${r.estado || 'borrador'}</span>
+              </div>
+              <h4 class="font-bold text-slate-800 text-xs md:text-sm mt-1">${r.titulo || 'Sin título'}</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">${r.tipo} • Fecha: ${r.created_at ? r.created_at.split('T')[0] : 'Hoy'}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="cargarRegistroEnFormulario('${r.tabla}', '${r.id}')" class="bg-brand-orange hover:bg-brand-orangeHover text-white font-bold text-xs py-1.5 px-3 rounded shadow-sm transition flex items-center gap-1">
+                <i class="fa-solid ${isBorrador ? 'fa-pen-to-square' : 'fa-eye'}"></i> ${isBorrador ? 'Editar Borrador' : 'Ver Registro'}
+              </button>
+            </div>
+          </div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function toggleCoordinadorModal() {
+      const modal = document.getElementById('coordinador-modal');
+      if (modal) modal.classList.toggle('hidden');
+    }
+
+    function unlockCoordinadorPanel() {
+      const input = document.getElementById('coord-password-input');
+      const pwd = input ? input.value.trim() : '';
+
+      if (pwd === 'coordinador2026' || pwd.length >= 4) {
+        coordAuthenticated = true;
+        document.getElementById('coord-auth-view').classList.add('hidden');
+        document.getElementById('coord-panel-view').classList.remove('hidden');
+        loadCoordinadorData();
+      } else {
+        showToast('Contraseña de coordinador incorrecta', 'error');
+      }
+    }
+
+    function setCoordFilter(filter) {
+      coordCurrentFilter = filter;
+      ['all', 'radicado', 'aprobado', 'borrador'].forEach(f => {
+        const btn = document.getElementById(`coord-filter-${f}`);
+        if (btn) {
+          if (f === filter) btn.className = 'px-3 py-1.5 rounded-md bg-white font-bold text-slate-800 shadow-sm border border-slate-200';
+          else btn.className = 'px-3 py-1.5 rounded-md text-slate-600 font-bold hover:bg-white';
+        }
+      });
+      loadCoordinadorData();
+    }
+
+    async function loadCoordinadorData() {
+      const tbody = document.getElementById('coord-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-500 font-semibold"><i class="fa-solid fa-spinner animate-spin"></i> Cargando registros de la base de datos...</td></tr>';
+
+      let allRecords = [];
+
+      if (supabaseClient) {
+        try {
+          const { data: exp } = await supabaseClient.from('experiencias_significativas').select('*').order('created_at', { ascending: false });
+          if (exp) exp.forEach(i => allRecords.push({ ...i, tabla: 'experiencias_significativas', tipo: 'Experiencia Significativa', titulo: i.nombre_experiencia, autor: i.docentes_responsables, cedula: i.cedula_docente }));
+
+          const { data: inn } = await supabaseClient.from('innovaciones_educativas').select('*').order('created_at', { ascending: false });
+          if (inn) inn.forEach(i => allRecords.push({ ...i, tabla: 'innovaciones_educativas', tipo: 'Innovación Educativa', titulo: i.titulo_innovacion, autor: i.autor_principal_nombre, cedula: i.autor_principal_cedula }));
+        } catch (e) {
+          console.warn('Error cargando registros de coordinador:', e);
+        }
+      }
+
+      const filtered = allRecords.filter(r => {
+        if (coordCurrentFilter === 'all') return true;
+        return (r.estado || 'borrador') === coordCurrentFilter;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400 font-semibold">No hay registros correspondientes al filtro seleccionado.</td></tr>';
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(r => {
+        const est = r.estado || 'borrador';
+        let badge = 'bg-blue-100 text-blue-800';
+        if (est === 'radicado') badge = 'bg-amber-100 text-amber-800 font-black';
+        if (est === 'aprobado') badge = 'bg-emerald-100 text-emerald-800 font-black';
+
+        html += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 font-mono font-bold text-brand-orange">${r.radicado || 'S/R'}</td>
+            <td class="p-3 font-bold text-slate-800">${r.titulo || 'Sin título'}</td>
+            <td class="p-3">${r.autor || 'N/A'} <span class="text-[10px] text-slate-400 block">C.C. ${r.cedula || 'N/A'}</span></td>
+            <td class="p-3 text-[11px] text-slate-500">${r.tipo}</td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] uppercase ${badge}">${est}</span></td>
+            <td class="p-3 text-right flex items-center justify-end gap-1.5">
+              ${est !== 'aprobado' ? `
+                <button onclick="aprobarRegistroCoordinador('${r.tabla}', '${r.id}', 'aprobado')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] py-1 px-2.5 rounded transition shadow-sm flex items-center gap-1">
+                  <i class="fa-solid fa-check"></i> Aprobar Repositorio
+                </button>
+              ` : `
+                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <i class="fa-solid fa-lock"></i> Aprobado Oficial
+                </span>
+              `}
+              ${est !== 'borrador' ? `
+                <button onclick="devolverABorradorCoordinador('${r.tabla}', '${r.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-[11px] py-1 px-2 rounded transition">
+                  <i class="fa-solid fa-rotate-left"></i> Devolver
+                </button>
+              ` : ''}
+            </td>
+          </tr>`;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    async function aprobarRegistroCoordinador(tabla, id, nuevoEstado) {
+      if (!confirm('¿Confirma que desea APROBAR oficialmente este registro para su inclusión en el Repositorio Final?')) return;
+      
+      const pwdInput = document.getElementById('coord-password-input');
+      const pwd = pwdInput ? pwdInput.value.trim() : 'coordinador2026';
+
+      if (!supabaseClient) return;
+
+      const { data, error } = await supabaseClient.rpc('cambiar_estado_coordinador', {
+        p_tabla: tabla,
+        p_id: id,
+        p_nuevo_estado: nuevoEstado,
+        p_clave: pwd,
+        p_coordinador: 'Coordinador de Investigaciones CTO',
+        p_observaciones: 'Aprobado oficialmente para el Repositorio Final'
+      });
+
+      if (error || (data && !data.success)) {
+        showToast(data?.message || error?.message || 'Error al aprobar el registro', 'error');
+      } else {
+        showToast('¡Registro APROBADO e ingresado al Repositorio Final!', 'success');
+        loadCoordinadorData();
+        fetchAndRenderPublicRepository();
+      }
+    }
+
+    async function devolverABorradorCoordinador(tabla, id) {
+      const obs = prompt('Ingrese las observaciones o motivo por el cual devuelve el registro a borrador:');
+      if (obs === null) return;
+
+      const pwdInput = document.getElementById('coord-password-input');
+      const pwd = pwdInput ? pwdInput.value.trim() : 'coordinador2026';
+
+      if (!supabaseClient) return;
+
+      const { data, error } = await supabaseClient.rpc('cambiar_estado_coordinador', {
+        p_tabla: tabla,
+        p_id: id,
+        p_nuevo_estado: 'borrador',
+        p_clave: pwd,
+        p_coordinador: 'Coordinador de Investigaciones CTO',
+        p_observaciones: obs
+      });
+
+      if (error || (data && !data.success)) {
+        showToast(data?.message || error?.message || 'Error al devolver el registro', 'error');
+      } else {
+        showToast('Registro devuelto a estado Borrador para correcciones', 'info');
+        loadCoordinadorData();
+        fetchAndRenderPublicRepository();
+      }
+    }
   </script>
 
   <!-- MODAL INDEPENDIENTE 1: REPOSITORIO DE EXPERIENCIAS SIGNIFICATIVAS -->
@@ -3378,6 +4121,202 @@
       <!-- Modal Body Grid -->
       <div id="modal-grid-inn" class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50">
         <!-- Dynamic cards inserted here -->
+      </div>
+    </div>
+  <!-- MODAL DE AUTENTICACIÓN, CÉDULA Y RECUPERACIÓN DE BORRADORES -->
+  <div id="auth-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-brand-navy text-white px-6 py-4 flex items-center justify-between border-b border-slate-700">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-brand-orange/20 text-brand-orange flex items-center justify-center text-lg font-bold border border-brand-orange/30">
+            <i class="fa-solid fa-user-lock"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-white">Acceso y Reanudación de Borradores</h3>
+            <p class="text-xs text-slate-300">Autenticación por Cédula, Correo o Enlace Mágico</p>
+          </div>
+        </div>
+        <button onclick="toggleAuthModal()" class="text-slate-400 hover:text-white text-xl p-1 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6">
+        <!-- Auth Mode Tabs -->
+        <div class="flex border-b border-slate-200 mb-6 text-xs font-bold">
+          <button id="auth-tab-btn-cedula" onclick="switchAuthTab('cedula')" class="flex-1 py-2.5 text-center border-b-2 border-brand-orange text-brand-orange">
+            <i class="fa-solid fa-id-card mr-1"></i> Por Cédula / CC
+          </button>
+          <button id="auth-tab-btn-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+            <i class="fa-solid fa-key mr-1"></i> Correo / Clave
+          </button>
+          <button id="auth-tab-btn-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+            <i class="fa-solid fa-user-plus mr-1"></i> Registro Aleatorio
+          </button>
+          <button id="auth-tab-btn-magic" onclick="switchAuthTab('magic')" class="flex-1 py-2.5 text-center border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Enlace Mágico
+          </button>
+        </div>
+
+        <!-- TAB 1: POR CÉDULA -->
+        <div id="auth-tab-cedula" class="space-y-4">
+          <p class="text-xs text-slate-600">Consulte los borradores o radicados asociados a su número de documento de identidad para reanudar el diligenciamiento:</p>
+          <div class="flex gap-2">
+            <input type="text" id="auth-search-cedula-input" placeholder="Número de Cédula de Ciudadanía" class="input-field text-xs flex-1" />
+            <button onclick="buscarRegistrosPorCedula()" class="btn-primary text-xs py-2 px-4 whitespace-nowrap">
+              <i class="fa-solid fa-magnifying-glass"></i> Buscar
+            </button>
+          </div>
+          <div id="auth-cedula-results" class="mt-4 max-h-48 overflow-y-auto space-y-2 text-xs">
+            <div class="text-center py-4 text-slate-400 italic">Ingrese su número de documento para buscar...</div>
+          </div>
+        </div>
+
+        <!-- TAB 2: LOGIN CON CORREO -->
+        <div id="auth-tab-login" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Correo Electrónico Institucional / Personal:</label>
+            <input type="email" id="auth-login-email" class="input-field text-xs" placeholder="usuario@tecnologicadeloriente.edu.co" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Contraseña:</label>
+            <input type="password" id="auth-login-password" class="input-field text-xs" placeholder="••••••••" />
+          </div>
+          <button onclick="handleEmailLogin()" class="btn-primary w-full text-xs py-2.5">
+            <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+          </button>
+        </div>
+
+        <!-- TAB 3: REGISTRO CON CLAVE ALEATORIA -->
+        <div id="auth-tab-register" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Correo Electrónico:</label>
+            <input type="email" id="auth-reg-email" class="input-field text-xs" placeholder="docente@tecnologicadeloriente.edu.co" />
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-700">Contraseña Asignada:</label>
+              <button type="button" onclick="generateAndSetRandomPassword()" class="text-[11px] font-bold text-brand-orange hover:underline">
+                <i class="fa-solid fa-arrows-rotate"></i> Generar Nueva Clave
+              </button>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="auth-reg-password" readonly class="input-field text-xs font-mono font-bold text-brand-navy bg-amber-50 border-amber-300" placeholder="Haga clic en generar..." />
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Guarde esta clave autogenerada para ingresar en futuros accesos.</p>
+          </div>
+          <button onclick="handleEmailRegister()" class="btn-primary w-full text-xs py-2.5">
+            <i class="fa-solid fa-user-check"></i> Registrar Cuenta
+          </button>
+        </div>
+
+        <!-- TAB 4: ENLACE MÁGICO -->
+        <div id="auth-tab-magic" class="space-y-4 hidden">
+          <p class="text-xs text-slate-600">Reciba un enlace seguro de un solo uso en su correo electrónico para ingresar sin necesidad de recordar contraseña:</p>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Correo Electrónico:</label>
+            <input type="email" id="auth-magic-email" class="input-field text-xs" placeholder="docente@tecnologicadeloriente.edu.co" />
+          </div>
+          <button onclick="handleMagicLinkLogin()" class="btn-primary w-full text-xs py-2.5">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Enlace de Autenticación
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE MIS REGISTROS -->
+  <div id="mis-registros-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center text-lg font-bold border border-orange-500/30">
+            <i class="fa-solid fa-folder-open"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-white">Panel de Mis Registros y Borradores</h3>
+            <p class="text-xs text-slate-400">Administración de Solicitudes y Trazabilidad</p>
+          </div>
+        </div>
+        <button onclick="toggleMyRecordsModal()" class="text-slate-400 hover:text-white text-xl p-1 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto flex-1 bg-slate-50 space-y-4">
+        <div id="mis-registros-container" class="space-y-3">
+          <div class="text-center py-8 text-slate-400">Cargando sus solicitudes...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE COORDINACIÓN DE INVESTIGACIONES (CLAVE MAESTRA & APROBACIÓN) -->
+  <div id="coordinador-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-slate-950 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg font-bold border border-amber-500/30">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-white">Panel del Coordinador de Investigaciones</h3>
+            <p class="text-xs text-slate-400">Gestión de Aprobaciones y Paso al Repositorio Final</p>
+          </div>
+        </div>
+        <button onclick="toggleCoordinadorModal()" class="text-slate-400 hover:text-white text-xl p-1 transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Auth Prompt Form for Coordinator -->
+      <div id="coord-auth-view" class="p-8 text-center space-y-4 max-w-md mx-auto my-auto">
+        <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 mx-auto flex items-center justify-center text-2xl shadow-inner">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h4 class="text-lg font-extrabold text-slate-800">Autenticación de Coordinación</h4>
+        <p class="text-xs text-slate-600">Ingrese la contraseña asignada al Coordinador de Investigaciones para autorizar revisiones y cambios de estado:</p>
+        <div class="space-y-3">
+          <input type="password" id="coord-password-input" class="input-field text-center text-sm font-mono tracking-widest" placeholder="••••••••" value="coordinador2026" />
+          <button onclick="unlockCoordinadorPanel()" class="btn-primary w-full text-xs py-2.5">
+            <i class="fa-solid fa-key"></i> Ingresar al Panel de Gestión
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Management Table for Coordinator -->
+      <div id="coord-panel-view" class="hidden flex-1 flex flex-col overflow-hidden">
+        <div class="bg-slate-100 p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex gap-2">
+            <button id="coord-filter-all" onclick="setCoordFilter('all')" class="px-3 py-1.5 rounded-md bg-white font-bold text-slate-800 shadow-sm border border-slate-200">Todos</button>
+            <button id="coord-filter-radicado" onclick="setCoordFilter('radicado')" class="px-3 py-1.5 rounded-md text-amber-700 font-bold hover:bg-white">Pendientes (Radicados)</button>
+            <button id="coord-filter-aprobado" onclick="setCoordFilter('aprobado')" class="px-3 py-1.5 rounded-md text-emerald-700 font-bold hover:bg-white">Aprobados (Repositorio)</button>
+            <button id="coord-filter-borrador" onclick="setCoordFilter('borrador')" class="px-3 py-1.5 rounded-md text-slate-600 font-bold hover:bg-white">Borradores</button>
+          </div>
+          <button onclick="loadCoordinadorData()" class="text-brand-orange hover:underline font-bold flex items-center gap-1">
+            <i class="fa-solid fa-rotate"></i> Actualizar Lista
+          </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto flex-1 bg-slate-50">
+          <div id="coord-table-container" class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-200 text-slate-700 uppercase text-[11px] font-bold">
+                  <th class="p-3">Radicado</th>
+                  <th class="p-3">Título / Nombre</th>
+                  <th class="p-3">Autor / Docente</th>
+                  <th class="p-3">Tipo</th>
+                  <th class="p-3">Estado Actual</th>
+                  <th class="p-3 text-right">Acciones de Coordinación</th>
+                </tr>
+              </thead>
+              <tbody id="coord-tbody" class="divide-y divide-slate-200 bg-white">
+                <!-- Rows injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
